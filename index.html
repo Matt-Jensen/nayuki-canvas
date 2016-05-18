@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <title>Nayuki Canvas</title>
+
+  <!-- Livereload -->
+  <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+  <style>
+    #canvas {
+      width: 300px;
+      height: 300px;
+      background-color: gray;
+    }
+  </style>
+</head>
+<body>
+  <h1>Nayuki Canvas</h1>
+  <canvas id="canvas"></canvas>
+  <script src='../dist/nayuki-canvas.js'></script>
+  <script>
+    var myCanvas = nayukiCanvas.create(document.getElementById('canvas'));
+    console.log(myCanvas);
+  </script>
+</body>
+</html>
