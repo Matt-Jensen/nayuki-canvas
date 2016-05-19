@@ -14,7 +14,7 @@ const tape = require('gulp-tape');
 const tapColorize = require('tap-colorize');
 
 gulp.task('watch', function() {
-  watch('./src/*.js', compile);
+  watch('./src/**/*.js', compile);
   return compile();
 })
 
