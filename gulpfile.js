@@ -1,30 +1,30 @@
-const gulp = require('gulp');
-const sourcemaps = require('gulp-sourcemaps');
-const rollup = require('gulp-rollup');
-const babel = require('gulp-babel');
-const rename = require('gulp-rename');
-const util = require('gulp-util');
-const jscs = require('gulp-jscs');
-const watch = require('gulp-watch');
-const livereload = require('gulp-livereload');
-const plumber = require('gulp-plumber');
-const print = require('gulp-print');
-const uglify = require('gulp-uglify');
-const tape = require('gulp-tape');
-const tapColorize = require('tap-colorize');
+const gulp = require('gulp')
+const sourcemaps = require('gulp-sourcemaps')
+const rollup = require('gulp-rollup')
+const babel = require('gulp-babel')
+const clean = require('gulp-clean')
+const rename = require('gulp-rename')
+const util = require('gulp-util')
+const jscs = require('gulp-jscs')
+const watch = require('gulp-watch')
+const livereload = require('gulp-livereload')
+const plumber = require('gulp-plumber')
+const print = require('gulp-print')
+const uglify = require('gulp-uglify')
+const tape = require('gulp-tape')
+const tapColorize = require('tap-colorize')
 
 gulp.task('watch', function() {
-  watch('./src/**/*.js', compile);
-  return compile();
+  watch('./src/**/*.js', compile)
+  return compile()
 })
 
-gulp.task('lint', lint);
-
+gulp.task('lint', lint)
 gulp.task('test', function() {
-  return gulp.src('./tests/*.js')
+  gulp.src('./tests/*.js')
   .pipe(tape({
     reporter: tapColorize()
-  }));
+  }))
 })
 
 gulp.task('default', ['watch'])
@@ -58,4 +58,10 @@ function lint() {
   return gulp.src(['./src/*.js', './tests/*.js'])
   .pipe(jscs({ fix: true, configPath: '.jscsrc' }))
   .pipe(jscs.reporter())
+}
+
+function toPromise(stream){
+  return new Promise(function(resolve) {
+    stream.once('end', resolve)
+  })
 }
