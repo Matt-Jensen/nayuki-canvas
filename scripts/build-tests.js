@@ -1,6 +1,6 @@
-const rollup = require('rollup')
-const babel = require('rollup-plugin-babel')
-const getJsPaths = require('./get-js-paths')
+const rollup = require('rollup');
+const babel = require('rollup-plugin-babel');
+const getJsPaths = require('./utils/get-js-paths');
 
 getJsPaths('src')
 .then(function(paths) {
@@ -13,7 +13,7 @@ getJsPaths('src')
           presets: ['es2015-rollup']
         })
       ]
-    })
+    });
   }))
   .then(function(bundles) {
     return paths.map(p => {
@@ -21,15 +21,13 @@ getJsPaths('src')
         path: p.replace('src/', 'tmp/'),
         bundle: bundles.shift()
       }
-    })
+    });
   })
 })
 .then(function(bundles) {
-  bundles.map(function(file) {
-    return file.bundle.write({
-      dest: file.path,
-      format: 'cjs'
-    })
-  })
+  return bundles.map(file => file.bundle.write({
+    dest: file.path,
+    format: 'cjs'
+  }));
 })
-.catch(console.error)
+.catch(console.error);

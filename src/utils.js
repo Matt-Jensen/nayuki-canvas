@@ -12,6 +12,7 @@ export function containsEdge(array, edge) {
   return false
 }
 
+
 // Returns a new array of edge objects that is a minimal spanning tree on the given set
 // of nodes, with edges in ascending order of weight. Note that the returned edge objects
 // are missing the opacity property. Pure function, no side effects.
