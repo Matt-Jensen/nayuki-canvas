@@ -1,5 +1,5 @@
 // Redraws the canvas based on the given values. No other side effects.
-export default function redrawCanvas() {
+export default function redrawCanvas () {
   const { canvasElem, graphics, nodes, edges } = this;
 
   // Get pixel dimensions

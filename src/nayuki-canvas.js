@@ -1,4 +1,4 @@
-import nayukiCore from './core/core'
+import nayukiCore from './core/core';
 
 const networkStyleKey = {
   mesh: 0,
@@ -7,7 +7,7 @@ const networkStyleKey = {
 };
 
 const nayukiCanvas = {
-  create(canvasElem, options) {
+  create (canvasElem, options) {
 
     if (canvasElem instanceof HTMLElement === false || canvasElem.nodeName !== 'CANVAS') {
       throw new Error('Nayuki Canvas requires a canvas DOM node as the first argument');
@@ -28,25 +28,25 @@ const nayukiCanvas = {
     const proto = Object.assign({}, { config }, nayukiCore);
     const canvas = Object.create(proto, {
       idealNumNodes: {
-        get() {
+        get () {
           return parseInt(this.config.numNodes, 10);
         }
       },
       maxExtraEdges: {
-        get() {
+        get () {
           const { extraEdges, numNodes } = this.config;
           return Math.round(parseFloat(extraEdges) / 100 * numNodes);
         }
       },
       radiiWeightPower: {
-        get() {
+        get () {
           const { networkStyle } = this.config;
           const radiiWeightPower = networkStyleKey[networkStyle];
           return parseFloat(radiiWeightPower);
         }
       },
       driftSpeed: {
-        get() {
+        get () {
           const driftSpeed = this.config.driftSpeed;
           if (!isNaN(driftSpeed)) {
             return driftSpeed * 0.0001;
@@ -54,13 +54,13 @@ const nayukiCanvas = {
             return driftSpeed;
           }
         },
-        set(value) {
+        set (value) {
           this.config.driftSpeed = parseFloat(value);
           return this.driftSpeed;
         }
       },
       repulsionForce: {
-        get() {
+        get () {
           const repulsionForce = this.config.repulsionForce;
           if (!isNaN(repulsionForce)) {
             return repulsionForce * 0.000001;
@@ -68,7 +68,7 @@ const nayukiCanvas = {
             return repulsionForce;
           }
         },
-        set(value) {
+        set (value) {
           this.config.repulsionForce = parseFloat(value);
           return this.repulsionForce;
         }
@@ -77,7 +77,7 @@ const nayukiCanvas = {
     canvas.canvasElem = canvasElem;
 
     // Initialize canvas and inputs
-    const graphics = canvas.graphics = canvasElem.getContext('2d');
+    canvas.graphics = canvasElem.getContext('2d');
 
     // State of graph nodes - each object has these properties:
     // - posX: Horizontal position in relative coordinates, typically in the range [0.0, relWidth], where relWidth <= 1.0
@@ -96,8 +96,7 @@ const nayukiCanvas = {
 
     // This important top-level function updates the arrays of nodes and edges, then redraws the canvas.
     // We define it within the closure to give it access to key variables that persist across iterations.
-    canvas.stepFrame = function stepFrame() {
-      const { canvasElem, graphics } = this;
+    canvas.stepFrame = function stepFrame () {
       this.nodes = this.updateNodes();
       this.edges = this.updateEdges();
       this.redrawCanvas();

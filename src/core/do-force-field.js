@@ -2,7 +2,7 @@
 * Updates the position of each node in the given array (in place), based on
 * their existing positions. Returns nothing. No other side effects.
 */
-export default function doForceField() {
+export default function doForceField () {
   let i = 0;
   const deltas = [];
   const { repulsionForce, nodes } = this;

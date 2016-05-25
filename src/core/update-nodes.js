@@ -2,13 +2,13 @@
 * Returns a new array of nodes by updating/adding/removing nodes based on the given array. Although the
 * argument array is not modified, the node objects themselves are modified. No other side effects.
 */
-export default function updateNodes() {
-  const pixWidth = this.canvasElem.clientWidth
-  const pixHeight = this.canvasElem.clientHeight
+export default function updateNodes () {
+  const pixWidth = this.canvasElem.clientWidth;
+  const pixHeight = this.canvasElem.clientHeight;
   const { nodes } = this;
 
   // At least one of relWidth or relHeight is exactly 1. The aspect ratio relWidth:relHeight is equal to w:h.
-  const relWidth  = pixWidth  / Math.max(pixWidth, pixHeight);
+  const relWidth = pixWidth / Math.max(pixWidth, pixHeight);
   const relHeight = pixHeight / Math.max(pixWidth, pixHeight);
 
   // Update position, velocity, opacity; prune faded nodes

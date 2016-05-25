@@ -3,7 +3,7 @@ const babel = require('rollup-plugin-babel');
 const getJsPaths = require('./utils/get-js-paths');
 
 getJsPaths('src')
-.then(function(paths) {
+.then(function (paths) {
   return Promise.all(paths.map(p => {
     return rollup.rollup({
       entry: p,
@@ -15,16 +15,14 @@ getJsPaths('src')
       ]
     });
   }))
-  .then(function(bundles) {
-    return paths.map(p => {
-      return {
-        path: p.replace('src/', 'tmp/'),
-        bundle: bundles.shift()
-      }
-    });
-  })
+  .then(function (bundles) {
+    return paths.map(p => ({
+      path: p.replace('src/', 'tmp/'),
+      bundle: bundles.shift()
+    }));
+  });
 })
-.then(function(bundles) {
+.then(function (bundles) {
   return bundles.map(file => file.bundle.write({
     dest: file.path,
     format: 'cjs'

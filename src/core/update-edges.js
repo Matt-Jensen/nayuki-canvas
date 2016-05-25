@@ -1,16 +1,16 @@
-import { calcAllEdgeWeights, calcSpanningTree, containsEdge } from '../utils'
+import { calcAllEdgeWeights, calcSpanningTree, containsEdge } from '../utils';
 
 /*
 * Returns a new array of edges by reading the given array of nodes and by updating/adding/removing edges
 * based on the other given array. Although both argument arrays and nodes are unmodified,
 * the edge objects themselves are modified. No other side effects.
 */
-export default function updateEdges() {
+export default function updateEdges () {
   let i = 0;
   const { nodes, edges } = this;
 
   // Calculate array of spanning tree edges, then add some extra low-weight edges
-  let allEdges = calcAllEdgeWeights(nodes, this.radiiWeightPower)
+  let allEdges = calcAllEdgeWeights(nodes, this.radiiWeightPower);
   const idealEdges = calcSpanningTree(allEdges, nodes);
 
   for (i = 0; i < allEdges.length && idealEdges.length < nodes.length - 1 + this.maxExtraEdges; i++) {

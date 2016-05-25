@@ -1,8 +1,8 @@
 const fs = require('fs');
 
-module.exports = function getJsPaths(target) {
+module.exports = function getJsPaths (target) {
   return new Promise((resolve, reject) => {
-    fs.readdir(target, function(err, files) {
+    fs.readdir(target, function (err, files) {
       if (err) {
         reject(err);
       }
@@ -18,7 +18,7 @@ module.exports = function getJsPaths(target) {
       }
 
       Promise.all(list)
-      .then(function(result) {
+      .then(function (result) {
         resolve([].concat.apply([], result));
       });
     });
