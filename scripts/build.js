@@ -2,7 +2,7 @@ const rollup = require('rollup');
 const babel = require('rollup-plugin-babel');
 const uglify = require('rollup-plugin-uglify');
 const pkg = require('../package.json');
-const mainDest = `${__dirname}/../dist/${pkg.name}`
+const mainDest = `${__dirname}/../dist/${pkg.name}`;
 const configs = [
   {
     dest: `${mainDest}.js`,
@@ -12,8 +12,11 @@ const configs = [
         presets: ['es2015-rollup']
       })
     ]
-  },
-  {
+  }
+];
+
+if (process.argv[2] !== 'dev') {
+  configs.push({
     dest: `${mainDest}.min.js`,
     plugins: [
       babel({
@@ -22,8 +25,8 @@ const configs = [
       }),
       uglify()
     ]
-  }
-];
+  });
+}
 
 // Generate distros
 for (let config of configs) {
@@ -37,8 +40,7 @@ for (let config of configs) {
   .then(bundle => {
     bundle.write({
       dest,
-      format: 'iife',
-      moduleName: 'nayukiCanvas'
+      format: 'iife'
     });
   })
   .catch(console.error);
