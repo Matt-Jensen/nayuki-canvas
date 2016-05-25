@@ -38,8 +38,16 @@ export default function redrawCanvas () {
       graphics.beginPath();
 
       // Shorten the edge so that it only touches the circumference of each circle
-      graphics.moveTo((nodeA.posX - dx * nodeA.radius) * size, (nodeA.posY - dy * nodeA.radius) * size);
-      graphics.lineTo((nodeB.posX + dx * nodeB.radius) * size, (nodeB.posY + dy * nodeB.radius) * size);
+      graphics.moveTo(
+        (nodeA.posX - dx * nodeA.radius) * size,
+        (nodeA.posY - dy * nodeA.radius) * size
+      );
+      graphics.lineTo(
+        (nodeB.posX + dx * nodeB.radius) * size,
+        (nodeB.posY + dy * nodeB.radius) * size
+      );
+
+      // add to canvas
       graphics.stroke();
     }
   });

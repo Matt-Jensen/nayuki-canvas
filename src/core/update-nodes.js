@@ -3,8 +3,8 @@
 * argument array is not modified, the node objects themselves are modified. No other side effects.
 */
 export default function updateNodes () {
-  const pixWidth = this.canvasElem.clientWidth;
-  const pixHeight = this.canvasElem.clientHeight;
+  const pixWidth = this.canvasElem.width;
+  const pixHeight = this.canvasElem.height;
   const { nodes } = this;
 
   // At least one of relWidth or relHeight is exactly 1. The aspect ratio relWidth:relHeight is equal to w:h.

@@ -102,10 +102,10 @@ const nayukiCanvas = {
       this.redrawCanvas();
     };
 
-    canvas.initialize();
-
     // Periodically execute stepFrame() to create animation
     setInterval(() => canvas.stepFrame(), config.FRAME_INTERVAL);
+
+    // chart instance
     return canvas;
   }
 };

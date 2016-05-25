@@ -55,8 +55,8 @@
   function updateNodes() {
     var _this = this;
 
-    var pixWidth = this.canvasElem.clientWidth;
-    var pixHeight = this.canvasElem.clientHeight;
+    var pixWidth = this.canvasElem.width;
+    var pixHeight = this.canvasElem.height;
     var nodes = this.nodes;
 
     // At least one of relWidth or relHeight is exactly 1. The aspect ratio relWidth:relHeight is equal to w:h.
@@ -120,23 +120,23 @@
     }
 
     function getRepr(i) {
-      if (parents[i] != i) {
+      if (parents[i] !== i) {
         parents[i] = getRepr(parents[i]);
       }
       return parents[i];
     }
 
-    this.mergeSets = function (i, j) {
+    this.mergeSets = function mergeSets(i, j) {
       var repr0 = getRepr(i);
       var repr1 = getRepr(j);
 
-      if (repr0 == repr1) {
+      if (repr0 === repr1) {
         return false;
       }
 
       var cmp = ranks[repr0] - ranks[repr1];
       if (cmp >= 0) {
-        if (cmp == 0) {
+        if (cmp === 0) {
           ranks[repr0]++;
         }
         parents[repr1] = repr0;
@@ -153,7 +153,7 @@
   function containsEdge(array, edge) {
     for (var i = 0; i < array.length; i++) {
       var elem = array[i];
-      if (elem.nodeA == edge.nodeA && elem.nodeB == edge.nodeB || elem.nodeA == edge.nodeB && elem.nodeB == edge.nodeA) {
+      if (elem.nodeA === edge.nodeA && elem.nodeB === edge.nodeB || elem.nodeA === edge.nodeB && elem.nodeB === edge.nodeA) {
         return true;
       }
     }
@@ -360,6 +360,8 @@
         // Shorten the edge so that it only touches the circumference of each circle
         graphics.moveTo((nodeA.posX - dx * nodeA.radius) * size, (nodeA.posY - dy * nodeA.radius) * size);
         graphics.lineTo((nodeB.posX + dx * nodeB.radius) * size, (nodeB.posY + dy * nodeB.radius) * size);
+
+        // add to canvas
         graphics.stroke();
       }
     });
@@ -368,10 +370,12 @@
   // Populate initial nodes and edges, then improve on them
   function initialize() {
     this.stepFrame(); // Generate nodes
+
     for (var i = 0; i < 300; i++) {
       // Spread out nodes to avoid ugly clumping
       this.doForceField();
     }
+
     this.edges = [];
     this.stepFrame(); // Redo spanning tree and extra edges because nodes have moved
 
@@ -473,7 +477,7 @@
       canvas.canvasElem = canvasElem;
 
       // Initialize canvas and inputs
-      var graphics = canvas.graphics = canvasElem.getContext('2d');
+      canvas.graphics = canvasElem.getContext('2d');
 
       // State of graph nodes - each object has these properties:
       // - posX: Horizontal position in relative coordinates, typically in the range [0.0, relWidth], where relWidth <= 1.0
@@ -493,20 +497,17 @@
       // This important top-level function updates the arrays of nodes and edges, then redraws the canvas.
       // We define it within the closure to give it access to key variables that persist across iterations.
       canvas.stepFrame = function stepFrame() {
-        var canvasElem = this.canvasElem;
-        var graphics = this.graphics;
-
         this.nodes = this.updateNodes();
         this.edges = this.updateEdges();
         this.redrawCanvas();
       };
 
-      canvas.initialize();
-
       // Periodically execute stepFrame() to create animation
       setInterval(function () {
         return canvas.stepFrame();
       }, config.FRAME_INTERVAL);
+
+      // chart instance
       return canvas;
     }
   };

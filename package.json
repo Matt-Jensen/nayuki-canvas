@@ -5,11 +5,11 @@
   "main": "dist/nayuki-canvas.js",
   "scripts": {
     "lint": "eslint src scripts tests",
-    "pretest": "npm run -s lint && node sripts/build.js dev && node scripts/build-tests.js",
+    "pretest": "npm run -s lint && node scripts/build.js dev && node scripts/build-tests.js",
     "posttest": "node scripts/clean-tests.js",
     "build": "node scripts/build.js",
     "test": "tape tests/**/*.js",
-    "watch": "watch 'clear && npm run -s test'"
+    "watch": "watch 'clear && npm run -s test' src"
   },
   "repository": {
     "type": "git",

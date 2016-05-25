@@ -8,7 +8,7 @@
   <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 </head>
 <body>
-  <canvas id="canvas" style="display:block; width: 800px; height: 500px; background-color: gray;"></canvas>
+  <canvas id="canvas" style="display:block; margin: 0 auto; background-color: gray;" width="800" height="500"></canvas>
   <script src='../dist/nayuki-canvas.js'></script>
   <script>
     var myCanvas = nayukiCanvas.create(document.getElementById('canvas'));
@@ -23,6 +23,10 @@
       'FADE_OUT_RATE', myCanvas.config.FADE_OUT_RATE,
       'FRAME_INTERVAL', myCanvas.config.FRAME_INTERVAL
     );
+    var hash = document.location.hash.replace('#', '');
+    hash = parseInt(hash, 10);
+    hash = isNaN(hash) ? 0 : hash;
+    document.location.hash = hash + 1 + '';
   </script>
 </body>
 </html>
