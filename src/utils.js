@@ -5,7 +5,10 @@ import DisjointSet from './disjoint-set';
 export function containsEdge (array, edge) {
   for (let i = 0; i < array.length; i++) {
     const elem = array[i];
-    if (elem.nodeA === edge.nodeA && elem.nodeB === edge.nodeB || elem.nodeA === edge.nodeB && elem.nodeB === edge.nodeA) {
+    const sameEdge = elem.nodeA === edge.nodeA && elem.nodeB === edge.nodeB;
+    const symetricalEdge = elem.nodeA === edge.nodeB && elem.nodeB === edge.nodeA;
+
+    if (sameEdge || symetricalEdge) {
       return true;
     }
   }
@@ -24,8 +27,7 @@ export function calcSpanningTree (allEdges, nodes) {
 
   for (let i = 0; i < allEdges.length && result.length < nodes.length - 1; i++) {
     const edge = allEdges[i];
-    const j = edge[1];
-    const k = edge[2];
+    const [, j, k] = edge;
 
     if (ds.mergeSets(j, k)) {
       result.push({ nodeA: nodes[j], nodeB: nodes[k] });
@@ -53,11 +55,5 @@ export function calcAllEdgeWeights (nodes, radiiWeightPower) {
   }
 
   // Sort array by ascending weight
-  result.sort((a, b) => {
-    const [x] = a;
-    const [y] = b;
-    return x < y ? -1 : (x > y ? 1 : 0);
-  });
-
-  return result;
+  return result.sort(([x], [y]) => x < y ? -1 : (x > y ? 1 : 0));
 }

@@ -153,7 +153,10 @@
   function containsEdge(array, edge) {
     for (var i = 0; i < array.length; i++) {
       var elem = array[i];
-      if (elem.nodeA === edge.nodeA && elem.nodeB === edge.nodeB || elem.nodeA === edge.nodeB && elem.nodeB === edge.nodeA) {
+      var sameEdge = elem.nodeA === edge.nodeA && elem.nodeB === edge.nodeB;
+      var symetricalEdge = elem.nodeA === edge.nodeB && elem.nodeB === edge.nodeA;
+
+      if (sameEdge || symetricalEdge) {
         return true;
       }
     }
@@ -171,8 +174,12 @@
 
     for (var i = 0; i < allEdges.length && result.length < nodes.length - 1; i++) {
       var edge = allEdges[i];
-      var j = edge[1];
-      var k = edge[2];
+
+      var _edge = babelHelpers.slicedToArray(edge, 3);
+
+      var j = _edge[1];
+      var k = _edge[2];
+
 
       if (ds.mergeSets(j, k)) {
         result.push({ nodeA: nodes[j], nodeB: nodes[k] });
@@ -201,19 +208,16 @@
     }
 
     // Sort array by ascending weight
-    result.sort(function (a, b) {
-      var _a = babelHelpers.slicedToArray(a, 1);
+    return result.sort(function (_ref, _ref2) {
+      var _ref4 = babelHelpers.slicedToArray(_ref, 1);
 
-      var x = _a[0];
+      var x = _ref4[0];
 
-      var _b = babelHelpers.slicedToArray(b, 1);
+      var _ref3 = babelHelpers.slicedToArray(_ref2, 1);
 
-      var y = _b[0];
-
+      var y = _ref3[0];
       return x < y ? -1 : x > y ? 1 : 0;
     });
-
-    return result;
   }
 
   /*
