@@ -1,4 +1,4 @@
-import DisjointSet from './disjoint-set';
+import disjointSet from './disjoint-set';
 
 // Tests whether the given array of edge objects contains an edge with
 // the given endpoints (undirected). Pure function, no side effects.
@@ -23,7 +23,7 @@ export function calcSpanningTree (allEdges, nodes) {
 
   // Kruskal's MST algorithm
   const result = [];
-  const ds = new DisjointSet(nodes.length);
+  const ds = disjointSet.create(nodes.length);
 
   for (let i = 0; i < allEdges.length && result.length < nodes.length - 1; i++) {
     const edge = allEdges[i];

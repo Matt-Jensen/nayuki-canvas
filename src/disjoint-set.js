@@ -1,38 +1,46 @@
-// The union-find data structure. A heavily stripped-down version derived from https://www.nayuki.io/page/disjoint-set-data-structure .
-export default function DisjointSet (size) {
-  const parents = [];
-  const ranks = [];
-
-  for (let i = 0; i < size; i++) {
-    parents.push(i);
-    ranks.push(0);
-  }
-
-  function getRepr (i) {
-    if (parents[i] !== i) {
-      parents[i] = getRepr(parents[i]);
+const core = {
+  getRepr (i) {
+    if (this.parents[i] !== i) {
+      this.parents[i] = this.getRepr(this.parents[i]);
     }
-    return parents[i];
-  }
+    return this.parents[i];
+  },
 
-  this.mergeSets = function mergeSets (i, j) {
-    const repr0 = getRepr(i);
-    const repr1 = getRepr(j);
+  mergeSets (i, j) {
+    const repr0 = this.getRepr(i);
+    const repr1 = this.getRepr(j);
 
     if (repr0 === repr1) {
       return false;
     }
 
-    const cmp = ranks[repr0] - ranks[repr1];
+    const cmp = this.ranks[repr0] - this.ranks[repr1];
     if (cmp >= 0) {
       if (cmp === 0) {
-        ranks[repr0]++;
+        this.ranks[repr0]++;
       }
-      parents[repr1] = repr0;
+      this.parents[repr1] = repr0;
     } else {
-      parents[repr0] = repr1;
+      this.parents[repr0] = repr1;
     }
 
     return true;
-  };
-}
+  }
+};
+
+// The union-find data structure. A heavily stripped-down version derived from https://www.nayuki.io/page/disjoint-set-data-structure .
+export default {
+  create (size) {
+    const instance = {
+      parents: { value: [] },
+      ranks: { value: [], writable: true }
+    };
+
+    for (let i = 0; i < size; i++) {
+      instance.parents.value.push(i);
+      instance.ranks.value.push(0);
+    }
+
+    return Object.create(core, instance);
+  }
+};

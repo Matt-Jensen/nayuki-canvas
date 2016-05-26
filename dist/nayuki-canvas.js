@@ -109,44 +109,51 @@
     return newNodes;
   }
 
-  // The union-find data structure. A heavily stripped-down version derived from https://www.nayuki.io/page/disjoint-set-data-structure .
-  function DisjointSet(size) {
-    var parents = [];
-    var ranks = [];
-
-    for (var i = 0; i < size; i++) {
-      parents.push(i);
-      ranks.push(0);
-    }
-
-    function getRepr(i) {
-      if (parents[i] !== i) {
-        parents[i] = getRepr(parents[i]);
+  var core = {
+    getRepr: function getRepr(i) {
+      if (this.parents[i] !== i) {
+        this.parents[i] = this.getRepr(this.parents[i]);
       }
-      return parents[i];
-    }
-
-    this.mergeSets = function mergeSets(i, j) {
-      var repr0 = getRepr(i);
-      var repr1 = getRepr(j);
+      return this.parents[i];
+    },
+    mergeSets: function mergeSets(i, j) {
+      var repr0 = this.getRepr(i);
+      var repr1 = this.getRepr(j);
 
       if (repr0 === repr1) {
         return false;
       }
 
-      var cmp = ranks[repr0] - ranks[repr1];
+      var cmp = this.ranks[repr0] - this.ranks[repr1];
       if (cmp >= 0) {
         if (cmp === 0) {
-          ranks[repr0]++;
+          this.ranks[repr0]++;
         }
-        parents[repr1] = repr0;
+        this.parents[repr1] = repr0;
       } else {
-        parents[repr0] = repr1;
+        this.parents[repr0] = repr1;
       }
 
       return true;
-    };
-  }
+    }
+  };
+
+  // The union-find data structure. A heavily stripped-down version derived from https://www.nayuki.io/page/disjoint-set-data-structure .
+  var disjointSet = {
+    create: function create(size) {
+      var instance = {
+        parents: { value: [] },
+        ranks: { value: [], writable: true }
+      };
+
+      for (var i = 0; i < size; i++) {
+        instance.parents.value.push(i);
+        instance.ranks.value.push(0);
+      }
+
+      return Object.create(core, instance);
+    }
+  };
 
   // Tests whether the given array of edge objects contains an edge with
   // the given endpoints (undirected). Pure function, no side effects.
@@ -170,7 +177,7 @@
 
     // Kruskal's MST algorithm
     var result = [];
-    var ds = new DisjointSet(nodes.length);
+    var ds = disjointSet.create(nodes.length);
 
     for (var i = 0; i < allEdges.length && result.length < nodes.length - 1; i++) {
       var edge = allEdges[i];
