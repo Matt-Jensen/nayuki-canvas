@@ -1,4 +1,5 @@
 const test = require('tape');
+const createNodes = require('./helpers/create').createNodes;
 const getNodeTrajectory = require('../tmp/core/update-nodes').getNodeTrajectory;
 const getNodeOpacity = require('../tmp/core/update-nodes').getNodeOpacity;
 const updateNodes = require('../tmp/core/update-nodes').default;
@@ -15,11 +16,6 @@ const config = {
 };
 const createInstance = (...include) =>
   Object.assign({ canvasElem, idealNumNodes, driftSpeed, config }, { updateNodes }, ...include);
-const createNodes = (times = 1, conf = {}) => {
-  return Array.apply(null, { length: times }).map(() => {
-    return Object.assign({ posX: 1, posY: 1, velX: 1, velY: 1, opacity: 1 }, conf);
-  });
-};
 
 test('`getNodeTrajectory` should not update given node', assert => {
   const msg = 'should not update node';

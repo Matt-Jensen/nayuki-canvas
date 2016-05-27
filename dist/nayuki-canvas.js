@@ -259,15 +259,15 @@
     }
   }
 
-  function isEdgeFadedOut(edge) {
+  function isEdgeActive(edge) {
     return edge.opacity > 0 && edge.nodeA.opacity > 0 && edge.nodeB.opacity > 0;
   }
 
   function isTargetSmaller(target, goal) {
-    var addExtras = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
+    var addLength = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
 
     return function () {
-      return target.length < goal.length - 1 + addExtras;
+      return target.length < goal.length - 1 + addLength;
     };
   }
 
@@ -310,10 +310,12 @@
     // Checking whether it is in the ideal set
     // Prune faded edges
     edges.map(function (edge) {
-      edge.opacity = getEdgeOpacity(containsEdge(idealEdges, edge), edge, FADE_IN_RATE, FADE_OUT_RATE);
+      var e = Object.assign({}, edge);
 
-      if (isEdgeFadedOut(edge)) {
-        newEdges.push(edge);
+      e.opacity = getEdgeOpacity(containsEdge(idealEdges, e), e, FADE_IN_RATE, FADE_OUT_RATE);
+
+      if (isEdgeActive(e)) {
+        newEdges.push(e);
       }
     });
 

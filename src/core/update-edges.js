@@ -8,12 +8,12 @@ export function getEdgeOpacity (isFadingIn, edge, FADE_IN_RATE, FADE_OUT_RATE) {
   }
 }
 
-export function isEdgeFadedOut (edge) {
+export function isEdgeActive (edge) {
   return edge.opacity > 0 && edge.nodeA.opacity > 0 && edge.nodeB.opacity > 0;
 }
 
-export function isTargetSmaller (target, goal, addExtras = 0) {
-  return () => target.length < goal.length - 1 + addExtras;
+export function isTargetSmaller (target, goal, addLength = 0) {
+  return () => target.length < goal.length - 1 + addLength;
 }
 
 /*
@@ -49,15 +49,17 @@ export default function updateEdges () {
   // Checking whether it is in the ideal set
   // Prune faded edges
   edges.map(edge => {
-    edge.opacity = getEdgeOpacity(
-      containsEdge(idealEdges, edge),
-      edge,
+    const e = Object.assign({}, edge);
+
+    e.opacity = getEdgeOpacity(
+      containsEdge(idealEdges, e),
+      e,
       FADE_IN_RATE,
       FADE_OUT_RATE
     );
 
-    if (isEdgeFadedOut(edge)) {
-      newEdges.push(edge);
+    if (isEdgeActive(e)) {
+      newEdges.push(e);
     }
   });
 
