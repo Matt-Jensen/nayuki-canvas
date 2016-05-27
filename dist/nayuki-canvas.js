@@ -251,50 +251,81 @@
     });
   }
 
+  function getEdgeOpacity(isFadingIn, edge, FADE_IN_RATE, FADE_OUT_RATE) {
+    if (isFadingIn) {
+      return Math.min(edge.opacity + FADE_IN_RATE, 1);
+    } else {
+      return Math.max(edge.opacity - FADE_OUT_RATE, 0);
+    }
+  }
+
+  function isEdgeFadedOut(edge) {
+    return edge.opacity > 0 && edge.nodeA.opacity > 0 && edge.nodeB.opacity > 0;
+  }
+
+  function isTargetSmaller(target, goal) {
+    var addExtras = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
+
+    return function () {
+      return target.length < goal.length - 1 + addExtras;
+    };
+  }
+
   /*
   * Returns a new array of edges by reading the given array of nodes and by updating/adding/removing edges
   * based on the other given array. Although both argument arrays and nodes are unmodified,
   * the edge objects themselves are modified. No other side effects.
   */
   function updateEdges() {
-    var _this = this;
-
     var i = 0;
     var nodes = this.nodes;
     var edges = this.edges;
+    var maxExtraEdges = this.maxExtraEdges;
+    var radiiWeightPower = this.radiiWeightPower;
+    var _config = this.config;
+    var FADE_IN_RATE = _config.FADE_IN_RATE;
+    var FADE_OUT_RATE = _config.FADE_OUT_RATE;
 
-    // Calculate array of spanning tree edges, then add some extra low-weight edges
 
-    var allEdges = calcAllEdgeWeights(nodes, this.radiiWeightPower);
+    var newEdges = [];
+
+    // Calculate array of spanning tree edges
+    // then add some extra low-weight edges
+    var allEdges = calcAllEdgeWeights(nodes, radiiWeightPower);
     var idealEdges = calcSpanningTree(allEdges, nodes);
 
-    for (i = 0; i < allEdges.length && idealEdges.length < nodes.length - 1 + this.maxExtraEdges; i++) {
-      var edge = { nodeA: nodes[allEdges[i][1]], nodeB: nodes[allEdges[i][2]] }; // Convert data formats
+    var idealEdgesLimitReached = isTargetSmaller(idealEdges, nodes, maxExtraEdges);
+    for (i = 0; i < allEdges.length && idealEdgesLimitReached(); i++) {
+      var edge = {
+        nodeA: nodes[allEdges[i][1]],
+        nodeB: nodes[allEdges[i][2]]
+      };
+
       if (!containsEdge(idealEdges, edge)) {
         idealEdges.push(edge);
       }
     }
-    allEdges = null; // Let this big array become garbage sooner
 
-    // Classify each current edge, checking whether it is in the ideal set; prune faded edges
-    var newEdges = [];
-    edges.forEach(function (edge) {
-      if (containsEdge(idealEdges, edge)) {
-        edge.opacity = Math.min(edge.opacity + _this.config.FADE_IN_RATE, 1);
-      } else {
-        edge.opacity = Math.max(edge.opacity - _this.config.FADE_OUT_RATE, 0);
-      }
-      if (edge.opacity > 0 && edge.nodeA.opacity > 0 && edge.nodeB.opacity > 0) {
+    // Classify each current edge
+    // Checking whether it is in the ideal set
+    // Prune faded edges
+    edges.map(function (edge) {
+      edge.opacity = getEdgeOpacity(containsEdge(idealEdges, edge), edge, FADE_IN_RATE, FADE_OUT_RATE);
+
+      if (isEdgeFadedOut(edge)) {
         newEdges.push(edge);
       }
     });
 
-    // If there is room for new edges, add some missing spanning tree edges (higher priority), then extra edges
-    for (i = 0; i < idealEdges.length && newEdges.length < nodes.length - 1 + this.maxExtraEdges; i++) {
+    // Add necessary new edges,
+    // Add some missing spanning tree edges (higher priority), then extra edges
+    var newEdgesLimitReached = isTargetSmaller(newEdges, nodes, maxExtraEdges);
+    for (i = 0; i < idealEdges.length && newEdgesLimitReached(); i++) {
       var _edge = idealEdges[i];
+
       if (!containsEdge(newEdges, _edge)) {
-        _edge.opacity = 0.0; // Add missing property
-        newEdges.push(_edge);
+        _edge.opacity = 0; // Add missing property
+        newEdges.push(_edge); // Add rendered edges
       }
     }
 
