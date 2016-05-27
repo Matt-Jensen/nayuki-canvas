@@ -48,51 +48,78 @@
 
   babelHelpers;
 
+  function getNodeTrajectory(_ref, driftSpeed) {
+    var posX = _ref.posX;
+    var posY = _ref.posY;
+    var velX = _ref.velX;
+    var velY = _ref.velY;
+
+    return {
+      // Move based on velocity
+      posX: posX + velX * driftSpeed,
+      posY: posY + velY * driftSpeed,
+
+      // Randomly perturb velocity, with damping
+      velX: velX * 0.99 + (Math.random() - 0.5) * 0.3,
+      velY: velY * 0.99 + (Math.random() - 0.5) * 0.3
+    };
+  }
+
+  function getNodeOpacity(isFadingOut, opacity, FADE_IN_RATE, FADE_OUT_RATE) {
+    if (isFadingOut) {
+      return Math.max(opacity - FADE_OUT_RATE, 0);
+    } else {
+      // Fade in ones otherwise
+      return Math.min(opacity + FADE_IN_RATE, 1);
+    }
+  }
+
   /*
   * Returns a new array of nodes by updating/adding/removing nodes based on the given array. Although the
   * argument array is not modified, the node objects themselves are modified. No other side effects.
   */
   function updateNodes() {
-    var _this = this;
-
-    var pixWidth = this.canvasElem.width;
-    var pixHeight = this.canvasElem.height;
+    var _canvasElem = this.canvasElem;
+    var width = _canvasElem.width;
+    var height = _canvasElem.height;
     var nodes = this.nodes;
+    var idealNumNodes = this.idealNumNodes;
+    var driftSpeed = this.driftSpeed;
+    var _config = this.config;
+    var FADE_IN_RATE = _config.FADE_IN_RATE;
+    var FADE_OUT_RATE = _config.FADE_OUT_RATE;
+    var BORDER_FADE = _config.BORDER_FADE;
 
     // At least one of relWidth or relHeight is exactly 1. The aspect ratio relWidth:relHeight is equal to w:h.
 
-    var relWidth = pixWidth / Math.max(pixWidth, pixHeight);
-    var relHeight = pixHeight / Math.max(pixWidth, pixHeight);
+    var relWidth = width / Math.max(width, height);
+    var relHeight = height / Math.max(width, height);
+
+    // nodes to render
+    var newNodes = [];
+
+    // Fade out nodes near the borders of the space or exceeding the target number of nodes
+    var isNodeFadingOut = function isNodeFadingOut(node, index) {
+      return index >= idealNumNodes || node.posX < BORDER_FADE || relWidth - node.posX < BORDER_FADE || node.posY < BORDER_FADE || relHeight - node.posY < BORDER_FADE;
+    };
 
     // Update position, velocity, opacity; prune faded nodes
-    var newNodes = [];
-    nodes.forEach(function (node, index) {
+    nodes.map(function (node, index) {
 
-      // Move based on velocity
-      node.posX += node.velX * _this.driftSpeed;
-      node.posY += node.velY * _this.driftSpeed;
+      // update node with new position & velocity
+      Object.assign({}, node, getNodeTrajectory(node, driftSpeed));
 
-      // Randomly perturb velocity, with damping
-      node.velX = node.velX * 0.99 + (Math.random() - 0.5) * 0.3;
-      node.velY = node.velY * 0.99 + (Math.random() - 0.5) * 0.3;
+      // update node opacity
+      node.opacity = getNodeOpacity(isNodeFadingOut(node, index), node.opacity, FADE_IN_RATE, FADE_OUT_RATE);
 
-      // Fade out nodes near the borders of the space or exceeding the target number of nodes
-      if (index >= _this.idealNumNodes || node.posX < _this.config.BORDER_FADE || relWidth - node.posX < _this.config.BORDER_FADE || node.posY < _this.config.BORDER_FADE || relHeight - node.posY < _this.config.BORDER_FADE) {
-        node.opacity = Math.max(node.opacity - _this.config.FADE_OUT_RATE, 0);
-      } else {
-        // Fade in ones otherwise
-        node.opacity = Math.min(node.opacity + _this.config.FADE_IN_RATE, 1);
-      }
-
+      // Only keep visible nodes
       if (node.opacity > 0) {
-
-        // Only keep visible nodes
         newNodes.push(node);
       }
     });
 
     // Add new nodes to fade in
-    for (var i = newNodes.length; i < this.idealNumNodes; i++) {
+    for (var i = newNodes.length; i < idealNumNodes; i++) {
       newNodes.push({ // Random position and radius, other properties initially zero
         posX: Math.random() * relWidth,
         posY: Math.random() * relHeight,
@@ -102,9 +129,6 @@
         opacity: 0.0
       });
     }
-
-    // Spread out nodes a bit
-    this.doForceField();
 
     return newNodes;
   }
@@ -510,6 +534,10 @@
       canvas.stepFrame = function stepFrame() {
         this.nodes = this.updateNodes();
         this.edges = this.updateEdges();
+
+        // Spread out nodes a bit
+        this.doForceField();
+
         this.redrawCanvas();
       };
 

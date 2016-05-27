@@ -91,7 +91,7 @@ test('`DisjointSet.mergeSets` should set correct parent w/ inverse rank index', 
 });
 
 test('`DisjointSet.mergeSets` should set correct parent index w/ normal rank index', assert => {
-  const msg = 'should have updated correctly';
+  const msg = 'should have updated parents correctly';
   const calls = [0, 1]; // will yield 1 - 0 from rank positions 0 & 1
   const ranks = [0, 1];
   const reprStub = () => {

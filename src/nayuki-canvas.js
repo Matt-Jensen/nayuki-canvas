@@ -99,6 +99,10 @@ const nayukiCanvas = {
     canvas.stepFrame = function stepFrame () {
       this.nodes = this.updateNodes();
       this.edges = this.updateEdges();
+
+      // Spread out nodes a bit
+      this.doForceField();
+
       this.redrawCanvas();
     };
 
