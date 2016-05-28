@@ -46,6 +46,16 @@
     };
   }();
 
+  babelHelpers.toConsumableArray = function (arr) {
+    if (Array.isArray(arr)) {
+      for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+      return arr2;
+    } else {
+      return Array.from(arr);
+    }
+  };
+
   babelHelpers;
 
   function getNodeTrajectory(_ref, driftSpeed) {
@@ -377,62 +387,168 @@
     }
   }
 
-  // Redraws the canvas based on the given values. No other side effects.
+  /**
+   * Factory that generates a Frame Background instance
+   * @type Object
+   */
+  var frameBackground = {
+
+    /**
+     * Generates a Frame Background instance
+     * @type Method
+     * @return Object (Frame Background)
+     */
+
+    create: function create(config) {
+      var data = Object.assign({
+        startColor: '#575E85', // TODO make gradient start color configurable
+        stopColor: '#2E3145' // TODO make gradient end color configurable
+        //, background: '' // TODO allow single color backgrounds
+      }, config);
+
+      return Object.create({ data: data }, {
+        radialGradient: {
+          get: function get() {
+            var _data = this.data;
+            var width = _data.width;
+            var height = _data.height;
+            var size = _data.size;
+            var graphics = _data.graphics;
+            var startColor = _data.startColor;
+            var stopColor = _data.stopColor;
+
+            var gradient = graphics.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, size / 2);
+            gradient.addColorStop(0.0, startColor);
+            gradient.addColorStop(1.0, stopColor);
+            return gradient;
+          }
+        }
+      });
+    }
+  };
+
+  /**
+   * Factory that generates Frame instances
+   * @type Object
+   */
+  var canvasFrame = {
+
+    /**
+     * Generates a Canvas Frame instances
+     * @type Method
+     * @return Object (Canvas Frame)
+     */
+
+    create: function create(config) {
+      var data = Object.assign({
+        // Get frame dimensions
+        width: config.canvasElem.width,
+        height: config.canvasElem.height,
+        size: Math.max(config.canvasElem.width, config.canvasElem.height)
+      }, config);
+
+      return Object.create({ data: data }, {
+        background: {
+          get: function get() {
+            return frameBackground.create(this.data).radialGradient; // TODO make gradient type configurable
+          }
+        },
+
+        nodes: {
+          get: function get() {
+            var size = this.data.size;
+
+            var color = '129,139,197'; // TODO make node color configurable
+
+            return this.data.nodes.map(function (node) {
+              return {
+                fill: 'rgba(' + color + ',' + node.opacity.toFixed(3) + ')',
+                arc: [node.posX * size, node.posY * size, node.radius * size, 0, Math.PI * 2]
+              };
+            });
+          }
+        },
+
+        edges: {
+          get: function get() {
+            var size = this.data.size;
+
+            var color = '129,139,197'; // TODO make edge color configurable
+
+            return this.data.edges.map(function (edge) {
+              var nodeA = edge.nodeA;
+              var nodeB = edge.nodeB;
+
+
+              var dx = nodeA.posX - nodeB.posX;
+              var dy = nodeA.posY - nodeB.posY;
+
+              var opacity = Math.min(Math.min(nodeA.opacity, nodeB.opacity), edge.opacity);
+              var mag = Math.hypot(dx, dy);
+
+              dx /= mag; // Make dx a unit vector, pointing from B to A
+              dy /= mag; // Make dy a unit vector, pointing from B to A
+
+              // If circles don't intersect ignore
+              if (mag <= nodeA.radius + nodeB.radius) {
+                return false;
+              }
+
+              return {
+                style: 'rgba(' + color + ',' + opacity.toFixed(3) + ')',
+
+                // Shorten edge so it only touches the circumference of node
+                start: [(nodeA.posX - dx * nodeA.radius) * size, (nodeA.posY - dy * nodeA.radius) * size],
+                end: [(nodeB.posX + dx * nodeB.radius) * size, (nodeB.posY + dy * nodeB.radius) * size]
+              };
+            }).filter(function (e) {
+              return e;
+            }); // remove non-interesting edges
+          }
+        }
+      });
+    }
+  };
+
+  /**
+   * Creates a new frame and renders it to the canvas
+   * @type Method
+   * @return Frame (generated frame instance)
+   */
   function redrawCanvas() {
     var canvasElem = this.canvasElem;
     var graphics = this.graphics;
     var nodes = this.nodes;
     var edges = this.edges;
 
-    // Get pixel dimensions
+    var frame = canvasFrame.create({ canvasElem: canvasElem, graphics: graphics, nodes: nodes, edges: edges });
 
-    var width = canvasElem.width;
-    var height = canvasElem.height;
+    // Set background first (render below nodes & edges)
+    graphics.fillStyle = frame.background;
+    graphics.fillRect(0, 0, frame.data.width, frame.data.height);
 
-    var size = Math.max(width, height);
-
-    // Draw background gradient to overwrite everything
-    var gradient = graphics.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, size / 2);
-    gradient.addColorStop(0.0, '#575E85');
-    gradient.addColorStop(1.0, '#2E3145');
-    graphics.fillStyle = gradient;
-    graphics.fillRect(0, 0, width, height);
-
-    // Draw every node
-    nodes.forEach(function (node) {
-      graphics.fillStyle = 'rgba(129,139,197,' + node.opacity.toFixed(3) + ')';
+    // Draw nodes (render below edges)
+    frame.nodes.forEach(function (node) {
+      graphics.fillStyle = node.fill;
       graphics.beginPath();
-      graphics.arc(node.posX * size, node.posY * size, node.radius * size, 0, Math.PI * 2);
+      graphics.arc.apply(graphics, babelHelpers.toConsumableArray(node.arc));
       graphics.fill();
     });
 
-    // Draw every edge
-    graphics.lineWidth = size / 800;
-    edges.forEach(function (edge) {
-      var nodeA = edge.nodeA;
-      var nodeB = edge.nodeB;
+    graphics.lineWidth = frame.data.size / 800; // TODO make edge width configurable
 
-      var dx = nodeA.posX - nodeB.posX;
-      var dy = nodeA.posY - nodeB.posY;
-      var mag = Math.hypot(dx, dy);
+    // Draw edges (render on top)
+    frame.edges.forEach(function (e) {
+      graphics.strokeStyle = e.style;
+      graphics.beginPath();
 
-      if (mag > nodeA.radius + nodeB.radius) {
-        // Draw edge only if circles don't intersect
-        dx /= mag; // Make (dx, dy) a unit vector, pointing from B to A
-        dy /= mag;
+      graphics.moveTo.apply(graphics, babelHelpers.toConsumableArray(e.start));
+      graphics.lineTo.apply(graphics, babelHelpers.toConsumableArray(e.end));
 
-        var opacity = Math.min(Math.min(nodeA.opacity, nodeB.opacity), edge.opacity);
-        graphics.strokeStyle = 'rgba(129,139,197,' + opacity.toFixed(3) + ')';
-        graphics.beginPath();
-
-        // Shorten the edge so that it only touches the circumference of each circle
-        graphics.moveTo((nodeA.posX - dx * nodeA.radius) * size, (nodeA.posY - dy * nodeA.radius) * size);
-        graphics.lineTo((nodeB.posX + dx * nodeB.radius) * size, (nodeB.posY + dy * nodeB.radius) * size);
-
-        // add to canvas
-        graphics.stroke();
-      }
+      graphics.stroke(); // add to canvas
     });
+
+    return frame;
   }
 
   // Populate initial nodes and edges, then improve on them

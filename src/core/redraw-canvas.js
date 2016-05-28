@@ -1,54 +1,151 @@
-// Redraws the canvas based on the given values. No other side effects.
+/**
+ * Factory that generates a Frame Background instance
+ * @type Object
+ */
+const frameBackground = {
+
+  /**
+   * Generates a Frame Background instance
+   * @type Method
+   * @return Object (Frame Background)
+   */
+  create (config) {
+    const data = Object.assign({
+      startColor: '#575E85', // TODO make gradient start color configurable
+      stopColor: '#2E3145' // TODO make gradient end color configurable
+      //, background: '' // TODO allow single color backgrounds
+    }, config);
+
+    return Object.create({ data }, {
+      radialGradient: {
+        get () {
+          const { width, height, size, graphics, startColor, stopColor } = this.data;
+          const gradient = graphics.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, size / 2);
+          gradient.addColorStop(0.0, startColor);
+          gradient.addColorStop(1.0, stopColor);
+          return gradient;
+        }
+      }
+    });
+  }
+};
+
+/**
+ * Factory that generates Frame instances
+ * @type Object
+ */
+const canvasFrame = {
+
+  /**
+   * Generates a Canvas Frame instances
+   * @type Method
+   * @return Object (Canvas Frame)
+   */
+  create (config) {
+    const data = Object.assign({
+      // Get frame dimensions
+      width: config.canvasElem.width,
+      height: config.canvasElem.height,
+      size: Math.max(config.canvasElem.width, config.canvasElem.height)
+    }, config);
+
+    return Object.create({ data }, {
+      background: {
+        get () {
+          return frameBackground.create(this.data).radialGradient; // TODO make gradient type configurable
+        }
+      },
+
+      nodes: {
+        get () {
+          const { size } = this.data;
+          const color = '129,139,197'; // TODO make node color configurable
+
+          return this.data.nodes.map(node => ({
+            fill: `rgba(${color},${node.opacity.toFixed(3)})`,
+            arc: [node.posX * size, node.posY * size, node.radius * size, 0, Math.PI * 2]
+          }));
+        }
+      },
+
+      edges: {
+        get () {
+          const { size } = this.data;
+          const color = '129,139,197'; // TODO make edge color configurable
+
+          return this.data.edges.map(edge => {
+            const { nodeA, nodeB } = edge;
+
+            let dx = nodeA.posX - nodeB.posX;
+            let dy = nodeA.posY - nodeB.posY;
+
+            const opacity = Math.min(Math.min(nodeA.opacity, nodeB.opacity), edge.opacity);
+            const mag = Math.hypot(dx, dy);
+
+            dx /= mag; // Make dx a unit vector, pointing from B to A
+            dy /= mag; // Make dy a unit vector, pointing from B to A
+
+            // If circles don't intersect ignore
+            if (mag <= nodeA.radius + nodeB.radius) {
+              return false;
+            }
+
+            return {
+              style: `rgba(${color},${opacity.toFixed(3)})`,
+
+              // Shorten edge so it only touches the circumference of node
+              start: [
+                (nodeA.posX - dx * nodeA.radius) * size,
+                (nodeA.posY - dy * nodeA.radius) * size
+              ],
+              end: [
+                (nodeB.posX + dx * nodeB.radius) * size,
+                (nodeB.posY + dy * nodeB.radius) * size
+              ]
+            };
+          })
+          .filter(e => e); // remove non-interesting edges
+        }
+      }
+    });
+  }
+};
+
+/**
+ * Creates a new frame and renders it to the canvas
+ * @type Method
+ * @return Frame (generated frame instance)
+ */
 export default function redrawCanvas () {
   const { canvasElem, graphics, nodes, edges } = this;
+  const frame = canvasFrame.create({ canvasElem, graphics, nodes, edges });
 
-  // Get pixel dimensions
-  const { width, height } = canvasElem;
-  const size = Math.max(width, height);
+  // Set background first (render below nodes & edges)
+  graphics.fillStyle = frame.background;
+  graphics.fillRect(0, 0, frame.data.width, frame.data.height);
 
-  // Draw background gradient to overwrite everything
-  const gradient = graphics.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, size / 2);
-  gradient.addColorStop(0.0, '#575E85');
-  gradient.addColorStop(1.0, '#2E3145');
-  graphics.fillStyle = gradient;
-  graphics.fillRect(0, 0, width, height);
-
-  // Draw every node
-  nodes.forEach((node) => {
-    graphics.fillStyle = `rgba(129,139,197,${node.opacity.toFixed(3)})`;
+  // Draw nodes (render below edges)
+  frame.nodes
+  .forEach(node => {
+    graphics.fillStyle = node.fill;
     graphics.beginPath();
-    graphics.arc(node.posX * size, node.posY * size, node.radius * size, 0, Math.PI * 2);
+    graphics.arc(...node.arc);
     graphics.fill();
   });
 
-  // Draw every edge
-  graphics.lineWidth = size / 800;
-  edges.forEach((edge) => {
-    const { nodeA, nodeB } = edge;
-    let dx = nodeA.posX - nodeB.posX;
-    let dy = nodeA.posY - nodeB.posY;
-    const mag = Math.hypot(dx, dy);
+  graphics.lineWidth = (frame.data.size / 800); // TODO make edge width configurable
 
-    if (mag > nodeA.radius + nodeB.radius) {  // Draw edge only if circles don't intersect
-      dx /= mag;  // Make (dx, dy) a unit vector, pointing from B to A
-      dy /= mag;
+  // Draw edges (render on top)
+  frame.edges
+  .forEach(e => {
+    graphics.strokeStyle = e.style;
+    graphics.beginPath();
 
-      const opacity = Math.min(Math.min(nodeA.opacity, nodeB.opacity), edge.opacity);
-      graphics.strokeStyle = `rgba(129,139,197,${opacity.toFixed(3)})`;
-      graphics.beginPath();
+    graphics.moveTo(...e.start);
+    graphics.lineTo(...e.end);
 
-      // Shorten the edge so that it only touches the circumference of each circle
-      graphics.moveTo(
-        (nodeA.posX - dx * nodeA.radius) * size,
-        (nodeA.posY - dy * nodeA.radius) * size
-      );
-      graphics.lineTo(
-        (nodeB.posX + dx * nodeB.radius) * size,
-        (nodeB.posY + dy * nodeB.radius) * size
-      );
-
-      // add to canvas
-      graphics.stroke();
-    }
+    graphics.stroke(); // add to canvas
   });
+
+  return frame;
 }
