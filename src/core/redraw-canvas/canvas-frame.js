@@ -1,5 +1,10 @@
 import frameBackground from './frame-background';
 
+function isEdgeVisible (edge, mag) {
+  // Do edge's nodes overlap
+  return mag > edge.nodeA.radius + edge.nodeB.radius;
+}
+
 /**
  * Factory that generates Frame instances
  * @type Object
@@ -19,10 +24,10 @@ export default {
       size: Math.max(config.canvasElem.width, config.canvasElem.height)
     }, config);
 
-    return Object.create({ data }, {
+    return Object.create({ data, frameBackground, isEdgeVisible }, {
       background: {
         get () {
-          return frameBackground.create(this.data).radialGradient; // TODO make gradient type configurable
+          return this.frameBackground.create(this.data).radialGradient; // TODO make gradient type configurable
         }
       },
 
@@ -55,9 +60,8 @@ export default {
             dx /= mag; // Make dx a unit vector, pointing from B to A
             dy /= mag; // Make dy a unit vector, pointing from B to A
 
-            // If circles don't intersect ignore
-            if (mag <= nodeA.radius + nodeB.radius) {
-              return false;
+            if (this.isEdgeVisible(edge, mag) === false) {
+              return false; // don't render
             }
 
             return {

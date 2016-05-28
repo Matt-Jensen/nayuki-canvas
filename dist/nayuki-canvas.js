@@ -427,6 +427,11 @@
     }
   };
 
+  function isEdgeVisible(edge, mag) {
+    // Do edge's nodes overlap
+    return mag > edge.nodeA.radius + edge.nodeB.radius;
+  }
+
   /**
    * Factory that generates Frame instances
    * @type Object
@@ -447,10 +452,10 @@
         size: Math.max(config.canvasElem.width, config.canvasElem.height)
       }, config);
 
-      return Object.create({ data: data }, {
+      return Object.create({ data: data, frameBackground: frameBackground, isEdgeVisible: isEdgeVisible }, {
         background: {
           get: function get() {
-            return frameBackground.create(this.data).radialGradient; // TODO make gradient type configurable
+            return this.frameBackground.create(this.data).radialGradient; // TODO make gradient type configurable
           }
         },
 
@@ -471,6 +476,8 @@
 
         edges: {
           get: function get() {
+            var _this = this;
+
             var size = this.data.size;
 
             var color = '129,139,197'; // TODO make edge color configurable
@@ -489,9 +496,8 @@
               dx /= mag; // Make dx a unit vector, pointing from B to A
               dy /= mag; // Make dy a unit vector, pointing from B to A
 
-              // If circles don't intersect ignore
-              if (mag <= nodeA.radius + nodeB.radius) {
-                return false;
+              if (_this.isEdgeVisible(edge, mag) === false) {
+                return false; // don't render
               }
 
               return {

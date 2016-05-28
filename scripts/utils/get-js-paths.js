@@ -3,6 +3,8 @@ const fs = require('fs');
 module.exports = function getJsPaths (target) {
   return new Promise((resolve, reject) => {
     fs.readdir(target, function (err, files) {
+      files = files.filter(f => f[0] !== '.'); // ignore system files
+
       if (err) {
         reject(err);
       }
