@@ -1,7 +1,12 @@
 import disjointSet from './disjoint-set';
 
-// Tests whether the given array of edge objects contains an edge with
-// the given endpoints (undirected). Pure function, no side effects.
+/**
+ * Tests whether the given array of edge objects contains an edge with
+ * the given endpoints (undirected). Pure function, no side effects.
+ *
+ * @type Function
+ * @return Boolean
+ */
 export function containsEdge (array, edge) {
   for (let i = 0; i < array.length; i++) {
     const elem = array[i];
@@ -16,9 +21,14 @@ export function containsEdge (array, edge) {
 }
 
 
-// Returns a new array of edge objects that is a minimal spanning tree on the given set
-// of nodes, with edges in ascending order of weight. Note that the returned edge objects
-// are missing the opacity property. Pure function, no side effects.
+/**
+ * Returns a new array of edge objects that is a minimal spanning tree on the given set
+ * of nodes, with edges in ascending order of weight. Note that the returned edge objects
+ * are missing the opacity property. Pure function, no side effects.
+ *
+ * @type Function
+ * @return Array
+ */
 export function calcSpanningTree (allEdges, nodes) {
 
   // Kruskal's MST algorithm
@@ -37,7 +47,12 @@ export function calcSpanningTree (allEdges, nodes) {
   return result;
 }
 
-// Returns a sorted array of edges with weights, for all unique edge pairs. Pure function, no side effects.
+/**
+ * Returns a sorted array of edges with weights, for all unique edge pairs. Pure function, no side effects.
+ *
+ * @type Function
+ * @return Array
+ */
 export function calcAllEdgeWeights (nodes, radiiWeightPower) {
 
   // Each entry has the form [weight, nodeAIndex, nodeBIndex], where nodeAIndex < nodeBIndex
