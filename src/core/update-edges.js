@@ -1,5 +1,12 @@
 import { calcAllEdgeWeights, calcSpanningTree, containsEdge } from '../utils';
 
+/**
+ * Determines edge opacity based on if it's fading in
+ * @param  Boolean isFadingIn
+ * @param  Object  edge
+ * @type Function
+ * @return Number
+ */
 export function getEdgeOpacity (isFadingIn, edge, FADE_IN_RATE, FADE_OUT_RATE) {
   if (isFadingIn) {
     return Math.min(edge.opacity + FADE_IN_RATE, 1);
@@ -8,18 +15,34 @@ export function getEdgeOpacity (isFadingIn, edge, FADE_IN_RATE, FADE_OUT_RATE) {
   }
 }
 
+/**
+ * Determines if an edge is active based on opacity of itself and connected nodes
+ * @param  Object  edge
+ * @type Function
+ * @return Boolean
+ */
 export function isEdgeActive (edge) {
   return edge.opacity > 0 && edge.nodeA.opacity > 0 && edge.nodeB.opacity > 0;
 }
 
+/**
+ * Higher order function that compares a target's array length to another
+ * @param  Array  target
+ * @param  Array  goal
+ * @param  Number  addLength
+ * @type Function
+ * @return Boolean
+ */
 export function isTargetSmaller (target, goal, addLength = 0) {
   return () => target.length < goal.length - 1 + addLength;
 }
 
-/*
+/**
 * Returns a new array of edges by reading the given array of nodes and by updating/adding/removing edges
 * based on the other given array. Although both argument arrays and nodes are unmodified,
 * the edge objects themselves are modified. No other side effects.
+* @type Method
+* @return Array
 */
 export default function updateEdges () {
   let i = 0;
