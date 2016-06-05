@@ -384,67 +384,69 @@
 
   /**
    * Factory that produces grouping of caclulations based on a pair of nodes
-   * @type {Object}
+   * @type {Function}
    */
-  var nodePair = {
-    create: function create(nodeA, nodeB, repulsionForce) {
-      return Object.create(null, {
-        nodeA: { value: nodeA },
-        nodeB: { value: nodeB },
-        repulsionForce: { value: repulsionForce },
-        x: {
-          get: function get() {
-            var nodeA = this.nodeA;
-            var nodeB = this.nodeB;
+  function nodePair(nodeA, nodeB, repulsionForce) {
+    return Object.create(null, {
+      nodeA: { value: nodeA },
+      nodeB: { value: nodeB },
+      repulsionForce: { value: repulsionForce },
 
-            return nodeA.posX - nodeB.posX;
-          }
-        },
-        y: {
-          get: function get() {
-            var nodeA = this.nodeA;
-            var nodeB = this.nodeB;
+      x: {
+        get: function get() {
+          var nodeA = this.nodeA;
+          var nodeB = this.nodeB;
 
-            return nodeA.posY - nodeB.posY;
-          }
-        },
-        distSqr: {
-          get: function get() {
-            var x = this.x;
-            var y = this.y;
-
-            return x * x + y * y;
-          }
-        },
-
-        /**
-         * 1/sqrt(distSqr) make (x, y) into a unit vector
-         * 1/distSqr is the inverse square law, with a smoothing constant added to prevent singularity.
-         * @return {Number}
-         */
-        factor: {
-          get: function get() {
-            var distSqr = this.distSqr;
-            var repulsionForce = this.repulsionForce;
-
-            return repulsionForce / (Math.sqrt(distSqr) * (distSqr + 0.00001));
-          }
-        },
-        deltas: {
-          get: function get() {
-            var x = this.x;
-            var y = this.y;
-            var factor = this.factor;
-
-            return {
-              dx: x * factor,
-              dy: y * factor
-            };
-          }
+          return nodeA.posX - nodeB.posX;
         }
-      });
-    }
-  };
+      },
+
+      y: {
+        get: function get() {
+          var nodeA = this.nodeA;
+          var nodeB = this.nodeB;
+
+          return nodeA.posY - nodeB.posY;
+        }
+      },
+
+      distSqr: {
+        get: function get() {
+          var x = this.x;
+          var y = this.y;
+
+          return x * x + y * y;
+        }
+      },
+
+      /**
+       * 1/sqrt(distSqr) make (x, y) into a unit vector
+       * 1/distSqr is the inverse square law, with a smoothing constant added to prevent singularity.
+       * @return {Number}
+       */
+      factor: {
+        get: function get() {
+          var distSqr = this.distSqr;
+          var repulsionForce = this.repulsionForce;
+
+          return repulsionForce / (Math.sqrt(distSqr) * (distSqr + 0.00001));
+        }
+      },
+
+      deltas: {
+        get: function get() {
+          var x = this.x;
+          var y = this.y;
+          var factor = this.factor;
+
+          return {
+            dx: x * factor,
+            dy: y * factor
+          };
+        }
+      }
+    });
+  }
 
   /**
    * create array of deltas based on list of nodes
@@ -452,7 +454,7 @@
    * @param  {Number} repulsionForce
    * @return {Array}
    */
-  function createNodeDeltas(nodes, repulsionForce) {
+  function nodeDeltas(nodes, repulsionForce) {
     var i = 0;
     var deltas = [];
 
@@ -463,7 +465,7 @@
     // For simplicitly, we perturb positions directly, instead of velocities
     nodes.forEach(function (nodeA, i) {
       for (var j = 0; j < i; j++) {
-        var np = nodePair.create(nodeA, nodes[j], repulsionForce);
+        var np = nodePair(nodeA, nodes[j], repulsionForce);
         var _np$deltas = np.deltas;
         var dx = _np$deltas.dx;
         var dy = _np$deltas.dy;
@@ -484,7 +486,7 @@
   * @type {Method}
   * @return {Array} (list of updated nodes)
   */
-  function getForceField(nodes) {
+  function getPushNodes(nodes) {
     var repulsionForce = this.repulsionForce;
 
 
@@ -493,7 +495,7 @@
     }
 
     var resultNodes = Array.prototype.slice.call(nodes); // clone `nodes`
-    var deltas = createNodeDeltas(resultNodes, repulsionForce);
+    var deltas = nodeDeltas(resultNodes, repulsionForce);
 
     return resultNodes.map(function (node, i) {
       node.posX += deltas[i * 2 + 0];
@@ -678,7 +680,7 @@
 
     for (var i = 0; i < 300; i++) {
       // Spread out nodes to avoid ugly clumping
-      this.nodes = this.getForceField();
+      this.nodes = this.getPushedNodes();
     }
 
     this.edges = [];
@@ -696,7 +698,7 @@
   var nayukiCore = {
     updateNodes: updateNodes,
     updateEdges: updateEdges,
-    getForceField: getForceField,
+    getPushedNodes: getPushNodes,
     redrawCanvas: redrawCanvas,
     initialize: initialize
   };
@@ -802,7 +804,7 @@
       // This important top-level function updates the arrays of nodes and edges, then redraws the canvas.
       // We define it within the closure to give it access to key variables that persist across iterations.
       canvas.stepFrame = function stepFrame() {
-        this.nodes = this.getForceField(this.updateNodes());
+        this.nodes = this.getPushedNodes(this.updateNodes());
         this.edges = this.updateEdges();
         this.redrawCanvas();
       };

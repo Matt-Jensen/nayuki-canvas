@@ -4,7 +4,7 @@ export default function initialize () {
 
   for (let i = 0; i < 300; i++) {
     // Spread out nodes to avoid ugly clumping
-    this.nodes = this.getForceField();
+    this.nodes = this.getPushedNodes();
   }
 
   this.edges = [];

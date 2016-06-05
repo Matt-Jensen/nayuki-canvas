@@ -97,7 +97,7 @@ const nayukiCanvas = {
     // This important top-level function updates the arrays of nodes and edges, then redraws the canvas.
     // We define it within the closure to give it access to key variables that persist across iterations.
     canvas.stepFrame = function stepFrame () {
-      this.nodes = this.getForceField(this.updateNodes());
+      this.nodes = this.getPushedNodes(this.updateNodes());
       this.edges = this.updateEdges();
       this.redrawCanvas();
     };
