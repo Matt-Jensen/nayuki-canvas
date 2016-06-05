@@ -2,8 +2,9 @@
 export default function initialize () {
   this.stepFrame();  // Generate nodes
 
-  for (let i = 0; i < 300; i++) {  // Spread out nodes to avoid ugly clumping
-    this.doForceField();
+  for (let i = 0; i < 300; i++) {
+    // Spread out nodes to avoid ugly clumping
+    this.nodes = this.getForceField();
   }
 
   this.edges = [];

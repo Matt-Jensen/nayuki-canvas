@@ -189,8 +189,13 @@
     }
   };
 
-  // Tests whether the given array of edge objects contains an edge with
-  // the given endpoints (undirected). Pure function, no side effects.
+  /**
+   * Tests whether the given array of edge objects contains an edge with
+   * the given endpoints (undirected). Pure function, no side effects.
+   *
+   * @type Function
+   * @return Boolean
+   */
   function containsEdge(array, edge) {
     for (var i = 0; i < array.length; i++) {
       var elem = array[i];
@@ -204,9 +209,14 @@
     return false;
   }
 
-  // Returns a new array of edge objects that is a minimal spanning tree on the given set
-  // of nodes, with edges in ascending order of weight. Note that the returned edge objects
-  // are missing the opacity property. Pure function, no side effects.
+  /**
+   * Returns a new array of edge objects that is a minimal spanning tree on the given set
+   * of nodes, with edges in ascending order of weight. Note that the returned edge objects
+   * are missing the opacity property. Pure function, no side effects.
+   *
+   * @type Function
+   * @return Array
+   */
   function calcSpanningTree(allEdges, nodes) {
 
     // Kruskal's MST algorithm
@@ -230,7 +240,12 @@
     return result;
   }
 
-  // Returns a sorted array of edges with weights, for all unique edge pairs. Pure function, no side effects.
+  /**
+   * Returns a sorted array of edges with weights, for all unique edge pairs. Pure function, no side effects.
+   *
+   * @type Function
+   * @return Array
+   */
   function calcAllEdgeWeights(nodes, radiiWeightPower) {
 
     // Each entry has the form [weight, nodeAIndex, nodeBIndex], where nodeAIndex < nodeBIndex
@@ -261,6 +276,13 @@
     });
   }
 
+  /**
+   * Determines edge opacity based on if it's fading in
+   * @param  Boolean isFadingIn
+   * @param  Object  edge
+   * @type Function
+   * @return Number
+   */
   function getEdgeOpacity(isFadingIn, edge, FADE_IN_RATE, FADE_OUT_RATE) {
     if (isFadingIn) {
       return Math.min(edge.opacity + FADE_IN_RATE, 1);
@@ -269,10 +291,24 @@
     }
   }
 
+  /**
+   * Determines if an edge is active based on opacity of itself and connected nodes
+   * @param  Object  edge
+   * @type Function
+   * @return Boolean
+   */
   function isEdgeActive(edge) {
     return edge.opacity > 0 && edge.nodeA.opacity > 0 && edge.nodeB.opacity > 0;
   }
 
+  /**
+   * Higher order function that compares a target's array length to another
+   * @param  Array  target
+   * @param  Array  goal
+   * @param  Number  addLength
+   * @type Function
+   * @return Boolean
+   */
   function isTargetSmaller(target, goal) {
     var addLength = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
 
@@ -281,10 +317,12 @@
     };
   }
 
-  /*
+  /**
   * Returns a new array of edges by reading the given array of nodes and by updating/adding/removing edges
   * based on the other given array. Although both argument arrays and nodes are unmodified,
   * the edge objects themselves are modified. No other side effects.
+  * @type Method
+  * @return Array
   */
   function updateEdges() {
     var i = 0;
@@ -344,47 +382,124 @@
     return newEdges;
   }
 
-  /*
-  * Updates the position of each node in the given array (in place), based on
-  * their existing positions. Returns nothing. No other side effects.
-  */
-  function doForceField() {
+  /**
+   * Factory that produces grouping of caclulations based on a pair of nodes
+   * @type {Object}
+   */
+  var nodePair = {
+    create: function create(nodeA, nodeB, repulsionForce) {
+      return Object.create(null, {
+        nodeA: { value: nodeA },
+        nodeB: { value: nodeB },
+        repulsionForce: { value: repulsionForce },
+        x: {
+          get: function get() {
+            var nodeA = this.nodeA;
+            var nodeB = this.nodeB;
+
+            return nodeA.posX - nodeB.posX;
+          }
+        },
+        y: {
+          get: function get() {
+            var nodeA = this.nodeA;
+            var nodeB = this.nodeB;
+
+            return nodeA.posY - nodeB.posY;
+          }
+        },
+        distSqr: {
+          get: function get() {
+            var x = this.x;
+            var y = this.y;
+
+            return x * x + y * y;
+          }
+        },
+
+        /**
+         * 1/sqrt(distSqr) make (x, y) into a unit vector
+         * 1/distSqr is the inverse square law, with a smoothing constant added to prevent singularity.
+         * @return {Number}
+         */
+        factor: {
+          get: function get() {
+            var distSqr = this.distSqr;
+            var repulsionForce = this.repulsionForce;
+
+            return repulsionForce / (Math.sqrt(distSqr) * (distSqr + 0.00001));
+          }
+        },
+        deltas: {
+          get: function get() {
+            var x = this.x;
+            var y = this.y;
+            var factor = this.factor;
+
+            return {
+              dx: x * factor,
+              dy: y * factor
+            };
+          }
+        }
+      });
+    }
+  };
+
+  /**
+   * create array of deltas based on list of nodes
+   * @param  {Array} nodes
+   * @param  {Number} repulsionForce
+   * @return {Array}
+   */
+  function createNodeDeltas(nodes, repulsionForce) {
     var i = 0;
     var deltas = [];
-    var repulsionForce = this.repulsionForce;
-    var nodes = this.nodes;
-
 
     for (i = 0; i < nodes.length * 2; i++) {
-      deltas.push(0.0);
+      deltas.push(0);
     }
 
     // For simplicitly, we perturb positions directly, instead of velocities
-    for (i = 0; i < nodes.length; i++) {
-      var nodeA = nodes[i];
-
+    nodes.forEach(function (nodeA, i) {
       for (var j = 0; j < i; j++) {
-        var nodeB = nodes[j];
-        var dx = nodeA.posX - nodeB.posX;
-        var dy = nodeA.posY - nodeB.posY;
-        var distSqr = dx * dx + dy * dy;
+        var np = nodePair.create(nodeA, nodes[j], repulsionForce);
+        var _np$deltas = np.deltas;
+        var dx = _np$deltas.dx;
+        var dy = _np$deltas.dy;
 
-        // Notes: The factor 1/sqrt(distSqr) is to make (dx, dy) into a unit vector.
-        // 1/distSqr is the inverse square law, with a smoothing constant added to prevent singularity.
-        var factor = repulsionForce / (Math.sqrt(distSqr) * (distSqr + 0.00001));
-        dx *= factor;
-        dy *= factor;
         deltas[i * 2 + 0] += dx;
         deltas[i * 2 + 1] += dy;
         deltas[j * 2 + 0] -= dx;
         deltas[j * 2 + 1] -= dy;
       }
+    });
+
+    return deltas;
+  }
+
+  /**
+  * Updates the position of each node in the given array (in place), based on
+  * their existing positions. Returns nothing.
+  * @type {Method}
+  * @return {Array} (list of updated nodes)
+  */
+  function getForceField(nodes) {
+    var repulsionForce = this.repulsionForce;
+
+
+    if (!nodes) {
+      nodes = this.nodes;
     }
 
-    for (i = 0; i < nodes.length; i++) {
-      nodes[i].posX += deltas[i * 2 + 0];
-      nodes[i].posY += deltas[i * 2 + 1];
-    }
+    var resultNodes = Array.prototype.slice.call(nodes); // clone `nodes`
+    var deltas = createNodeDeltas(resultNodes, repulsionForce);
+
+    return resultNodes.map(function (node, i) {
+      node.posX += deltas[i * 2 + 0];
+      node.posY += deltas[i * 2 + 1];
+      return node;
+    });
   }
 
   /**
@@ -563,7 +678,7 @@
 
     for (var i = 0; i < 300; i++) {
       // Spread out nodes to avoid ugly clumping
-      this.doForceField();
+      this.nodes = this.getForceField();
     }
 
     this.edges = [];
@@ -581,7 +696,7 @@
   var nayukiCore = {
     updateNodes: updateNodes,
     updateEdges: updateEdges,
-    doForceField: doForceField,
+    getForceField: getForceField,
     redrawCanvas: redrawCanvas,
     initialize: initialize
   };
@@ -687,12 +802,8 @@
       // This important top-level function updates the arrays of nodes and edges, then redraws the canvas.
       // We define it within the closure to give it access to key variables that persist across iterations.
       canvas.stepFrame = function stepFrame() {
-        this.nodes = this.updateNodes();
+        this.nodes = this.getForceField(this.updateNodes());
         this.edges = this.updateEdges();
-
-        // Spread out nodes a bit
-        this.doForceField();
-
         this.redrawCanvas();
       };
 
