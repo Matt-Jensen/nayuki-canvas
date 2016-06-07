@@ -1,5 +1,5 @@
 const test = require('tape');
-const nodePair = require('../../../tmp/core/get-pushed-nodes/node-pair');
+const nodePair = require('../../../tmp/core/get-node-deltas/node-pair');
 
 test('should have a `x` that is the difference between given nodes', assert => {
   const msg = 'should be a difference of `1`';
