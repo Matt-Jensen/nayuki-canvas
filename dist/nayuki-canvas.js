@@ -73,15 +73,13 @@
 
     // Add new nodes to fade in
     for (var i = newNodes.length; i < idealNumNodes; i++) {
-      newNodes.push({
-        // Random position and radius, other properties initially zero
+      newNodes.push({ // Random position and radius, other properties initially zero
         posX: Math.random() * relWidth,
         posY: Math.random() * relHeight,
-
         radius: (Math.pow(Math.random(), 5) + 0.35) * 0.015, // Skew toward smaller values
-        velX: 0,
-        velY: 0,
-        opacity: 0
+        velX: 0.0,
+        velY: 0.0,
+        opacity: 0.0
       });
     }
 
@@ -660,25 +658,12 @@
     return frame;
   }
 
-  // Populate initial nodes and edges, then improve on them
   function initialize() {
-    this.stepFrame(); // Generate nodes
 
-    for (var i = 0; i < 300; i++) {
-      // Spread out nodes to avoid ugly clumping
-      this.nodes = this.getPushedNodes();
+    // Spread out nodes to avoid ugly clumping
+    for (var i = 0; i < 70; i++) {
+      this.stepFrame();
     }
-
-    this.edges = [];
-    this.stepFrame(); // Redo spanning tree and extra edges because nodes have moved
-
-    // Make everything render immediately instead of fading in
-    this.nodes.concat(this.edges).forEach(function (item) {
-      // Duck typing
-      item.opacity = 1;
-    });
-
-    this.redrawCanvas();
   }
 
   var nayukiCore = {
