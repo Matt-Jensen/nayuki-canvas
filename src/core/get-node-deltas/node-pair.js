@@ -2,28 +2,28 @@
  * Factory that produces grouping of caclulations based on a pair of nodes
  * @type {Function}
  */
-export default function nodePair(nodeA, nodeB, repulsionForce) {
+export default function nodePair (node1, node2, rf) {
   return Object.create(null, {
-    nodeA: { value: nodeA },
-    nodeB: { value: nodeB },
-    repulsionForce: { value: repulsionForce },
+    nodeA: { value: node1 },
+    nodeB: { value: node2 },
+    repulsionForce: { value: rf },
 
     x: {
-      get() {
+      get () {
         const { nodeA, nodeB } = this;
         return nodeA.posX - nodeB.posX;
       }
     },
 
     y: {
-      get() {
+      get () {
         const { nodeA, nodeB } = this;
         return nodeA.posY - nodeB.posY;
       }
     },
 
     distSqr: {
-      get() {
+      get () {
         const { x, y } = this;
         return x * x + y * y;
       }
@@ -35,14 +35,14 @@ export default function nodePair(nodeA, nodeB, repulsionForce) {
      * @return {Number}
      */
     factor: {
-      get() {
+      get () {
         const { distSqr, repulsionForce } = this;
         return repulsionForce / (Math.sqrt(distSqr) * (distSqr + 0.00001));
       }
     },
 
     deltas: {
-      get() {
+      get () {
         const { x, y, factor } = this;
         return {
           dx: (x * factor),

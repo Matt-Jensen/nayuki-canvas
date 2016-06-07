@@ -1,63 +1,6 @@
 (function () {
   'use strict';
 
-  var babelHelpers = {};
-  babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-    return typeof obj;
-  } : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-  };
-
-  babelHelpers.slicedToArray = function () {
-    function sliceIterator(arr, i) {
-      var _arr = [];
-      var _n = true;
-      var _d = false;
-      var _e = undefined;
-
-      try {
-        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-          _arr.push(_s.value);
-
-          if (i && _arr.length === i) break;
-        }
-      } catch (err) {
-        _d = true;
-        _e = err;
-      } finally {
-        try {
-          if (!_n && _i["return"]) _i["return"]();
-        } finally {
-          if (_d) throw _e;
-        }
-      }
-
-      return _arr;
-    }
-
-    return function (arr, i) {
-      if (Array.isArray(arr)) {
-        return arr;
-      } else if (Symbol.iterator in Object(arr)) {
-        return sliceIterator(arr, i);
-      } else {
-        throw new TypeError("Invalid attempt to destructure non-iterable instance");
-      }
-    };
-  }();
-
-  babelHelpers.toConsumableArray = function (arr) {
-    if (Array.isArray(arr)) {
-      for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-      return arr2;
-    } else {
-      return Array.from(arr);
-    }
-  };
-
-  babelHelpers;
-
   function getNodeTrajectory(_ref, driftSpeed) {
     var posX = _ref.posX;
     var posY = _ref.posY;
@@ -130,13 +73,15 @@
 
     // Add new nodes to fade in
     for (var i = newNodes.length; i < idealNumNodes; i++) {
-      newNodes.push({ // Random position and radius, other properties initially zero
+      newNodes.push({
+        // Random position and radius, other properties initially zero
         posX: Math.random() * relWidth,
         posY: Math.random() * relHeight,
+
         radius: (Math.pow(Math.random(), 5) + 0.35) * 0.015, // Skew toward smaller values
-        velX: 0.0,
-        velY: 0.0,
-        opacity: 0.0
+        velX: 0,
+        velY: 0,
+        opacity: 0
       });
     }
 
@@ -189,6 +134,60 @@
     }
   };
 
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+    return typeof obj;
+  } : function (obj) {
+    return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+  };
+
+  var slicedToArray = function () {
+    function sliceIterator(arr, i) {
+      var _arr = [];
+      var _n = true;
+      var _d = false;
+      var _e = undefined;
+
+      try {
+        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+          _arr.push(_s.value);
+
+          if (i && _arr.length === i) break;
+        }
+      } catch (err) {
+        _d = true;
+        _e = err;
+      } finally {
+        try {
+          if (!_n && _i["return"]) _i["return"]();
+        } finally {
+          if (_d) throw _e;
+        }
+      }
+
+      return _arr;
+    }
+
+    return function (arr, i) {
+      if (Array.isArray(arr)) {
+        return arr;
+      } else if (Symbol.iterator in Object(arr)) {
+        return sliceIterator(arr, i);
+      } else {
+        throw new TypeError("Invalid attempt to destructure non-iterable instance");
+      }
+    };
+  }();
+
+  var toConsumableArray = function (arr) {
+    if (Array.isArray(arr)) {
+      for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+      return arr2;
+    } else {
+      return Array.from(arr);
+    }
+  };
+
   /**
    * Tests whether the given array of edge objects contains an edge with
    * the given endpoints (undirected). Pure function, no side effects.
@@ -226,7 +225,7 @@
     for (var i = 0; i < allEdges.length && result.length < nodes.length - 1; i++) {
       var edge = allEdges[i];
 
-      var _edge = babelHelpers.slicedToArray(edge, 3);
+      var _edge = slicedToArray(edge, 3);
 
       var j = _edge[1];
       var k = _edge[2];
@@ -265,15 +264,23 @@
 
     // Sort array by ascending weight
     return result.sort(function (_ref, _ref2) {
-      var _ref4 = babelHelpers.slicedToArray(_ref, 1);
+      var _ref4 = slicedToArray(_ref, 1);
 
       var x = _ref4[0];
 
-      var _ref3 = babelHelpers.slicedToArray(_ref2, 1);
+      var _ref3 = slicedToArray(_ref2, 1);
 
       var y = _ref3[0];
       return x < y ? -1 : x > y ? 1 : 0;
     });
+  }
+
+  /**
+   * Create a deep copy of a given collection
+   * @type Function
+   */
+  function deepCopy(c) {
+    return JSON.parse(JSON.stringify(c));
   }
 
   /**
@@ -386,11 +393,11 @@
    * Factory that produces grouping of caclulations based on a pair of nodes
    * @type {Function}
    */
-  function nodePair(nodeA, nodeB, repulsionForce) {
+  function nodePair(node1, node2, rf) {
     return Object.create(null, {
-      nodeA: { value: nodeA },
-      nodeB: { value: nodeB },
-      repulsionForce: { value: repulsionForce },
+      nodeA: { value: node1 },
+      nodeB: { value: node2 },
+      repulsionForce: { value: rf },
 
       x: {
         get: function get() {
@@ -449,59 +456,38 @@
   }
 
   /**
-   * create array of deltas based on list of nodes
+   * Create array of deltas based on list of nodes
    * @param  {Array} nodes
    * @param  {Number} repulsionForce
    * @return {Array}
    */
-  function nodeDeltas(nodes, repulsionForce) {
-    var i = 0;
-    var deltas = [];
+  function getNodeDeltas() {
+    var nodes = arguments.length <= 0 || arguments[0] === undefined ? this.nodes : arguments[0];
+    var repulsionForce = arguments.length <= 1 || arguments[1] === undefined ? this.repulsionForce : arguments[1];
 
-    for (i = 0; i < nodes.length * 2; i++) {
+    var deltas = [];
+    var nodesCp = deepCopy(nodes);
+
+    for (var i = 0; i < nodesCp.length * 2; i++) {
       deltas.push(0);
     }
 
     // For simplicitly, we perturb positions directly, instead of velocities
-    nodes.forEach(function (nodeA, i) {
-      for (var j = 0; j < i; j++) {
-        var np = nodePair(nodeA, nodes[j], repulsionForce);
+    nodesCp.forEach(function (nodeA, k) {
+      for (var j = 0; j < k; j++) {
+        var np = nodePair(nodeA, nodesCp[j], repulsionForce);
         var _np$deltas = np.deltas;
         var dx = _np$deltas.dx;
         var dy = _np$deltas.dy;
 
-        deltas[i * 2 + 0] += dx;
-        deltas[i * 2 + 1] += dy;
+        deltas[k * 2 + 0] += dx;
+        deltas[k * 2 + 1] += dy;
         deltas[j * 2 + 0] -= dx;
         deltas[j * 2 + 1] -= dy;
       }
     });
 
     return deltas;
-  }
-
-  /**
-  * Updates the position of each node in the given array (in place), based on
-  * their existing positions. Returns nothing.
-  * @type {Method}
-  * @return {Array} (list of updated nodes)
-  */
-  function getPushNodes(nodes) {
-    var repulsionForce = this.repulsionForce;
-
-
-    if (!nodes) {
-      nodes = this.nodes;
-    }
-
-    var resultNodes = Array.prototype.slice.call(nodes); // clone `nodes`
-    var deltas = nodeDeltas(resultNodes, repulsionForce);
-
-    return resultNodes.map(function (node, i) {
-      node.posX += deltas[i * 2 + 0];
-      node.posY += deltas[i * 2 + 1];
-      return node;
-    });
   }
 
   /**
@@ -654,7 +640,7 @@
     frame.nodes.forEach(function (node) {
       graphics.fillStyle = node.fill;
       graphics.beginPath();
-      graphics.arc.apply(graphics, babelHelpers.toConsumableArray(node.arc));
+      graphics.arc.apply(graphics, toConsumableArray(node.arc));
       graphics.fill();
     });
 
@@ -665,8 +651,8 @@
       graphics.strokeStyle = e.style;
       graphics.beginPath();
 
-      graphics.moveTo.apply(graphics, babelHelpers.toConsumableArray(e.start));
-      graphics.lineTo.apply(graphics, babelHelpers.toConsumableArray(e.end));
+      graphics.moveTo.apply(graphics, toConsumableArray(e.start));
+      graphics.lineTo.apply(graphics, toConsumableArray(e.end));
 
       graphics.stroke(); // add to canvas
     });
@@ -698,7 +684,7 @@
   var nayukiCore = {
     updateNodes: updateNodes,
     updateEdges: updateEdges,
-    getPushedNodes: getPushNodes,
+    getNodeDeltas: getNodeDeltas,
     redrawCanvas: redrawCanvas,
     initialize: initialize
   };
@@ -804,7 +790,17 @@
       // This important top-level function updates the arrays of nodes and edges, then redraws the canvas.
       // We define it within the closure to give it access to key variables that persist across iterations.
       canvas.stepFrame = function stepFrame() {
-        this.nodes = this.getPushedNodes(this.updateNodes());
+        this.nodes = this.updateNodes();
+
+        var deltas = this.getNodeDeltas();
+
+        // Apply "push" to nodes
+        this.nodes.map(function (node, i) {
+          node.posX += deltas[i * 2 + 0];
+          node.posY += deltas[i * 2 + 1];
+          return node;
+        });
+
         this.edges = this.updateEdges();
         this.redrawCanvas();
       };
@@ -819,7 +815,7 @@
     }
   };
 
-  if ((typeof exports === 'undefined' ? 'undefined' : babelHelpers.typeof(exports)) === 'object') {
+  if ((typeof exports === 'undefined' ? 'undefined' : _typeof(exports)) === 'object') {
     module.exports = nayukiCanvas;
   } else if (typeof define === 'function' && typeof define.amd !== 'undefined') {
     define(function () {

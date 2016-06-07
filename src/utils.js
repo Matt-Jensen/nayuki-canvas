@@ -20,7 +20,6 @@ export function containsEdge (array, edge) {
   return false;
 }
 
-
 /**
  * Returns a new array of edge objects that is a minimal spanning tree on the given set
  * of nodes, with edges in ascending order of weight. Note that the returned edge objects
@@ -72,3 +71,11 @@ export function calcAllEdgeWeights (nodes, radiiWeightPower) {
   // Sort array by ascending weight
   return result.sort(([x], [y]) => x < y ? -1 : (x > y ? 1 : 0));
 }
+
+/**
+ * Create a deep copy of a given collection
+ * @type Function
+ */
+ export function deepCopy (c) {
+   return JSON.parse(JSON.stringify(c));
+ }
