@@ -46,8 +46,7 @@ export function isTargetSmaller (target, goal, addLength = 0) {
 */
 export default function updateEdges () {
   let i = 0;
-  const { nodes, edges, maxExtraEdges, radiiWeightPower } = this;
-  const { FADE_IN_RATE, FADE_OUT_RATE } = this.config;
+  const { nodes, edges, maxExtraEdges, radiiWeightPower, FADE_IN_RATE, FADE_OUT_RATE } = this;
 
   const newEdges = [];
 

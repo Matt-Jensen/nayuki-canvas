@@ -24,8 +24,7 @@ export function getNodeOpacity (isFadingOut, opacity, FADE_IN_RATE, FADE_OUT_RAT
 */
 export default function updateNodes () {
   const { width, height } = this.canvasElem;
-  const { nodes, idealNumNodes, driftSpeed } = this;
-  const { FADE_IN_RATE, FADE_OUT_RATE, BORDER_FADE } = this.config;
+  const { nodes, idealNumNodes, driftSpeed, FADE_IN_RATE, FADE_OUT_RATE, BORDER_FADE } = this;
 
   // At least one of relWidth or relHeight is exactly 1. The aspect ratio relWidth:relHeight is equal to w:h.
   const relWidth = width / Math.max(width, height);

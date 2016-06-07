@@ -15,7 +15,7 @@ const config = {
   BORDER_FADE: -0.02
 };
 const createInstance = (...include) =>
-  Object.assign({ canvasElem, idealNumNodes, driftSpeed, config }, { updateNodes }, ...include);
+  Object.assign({ canvasElem, idealNumNodes, driftSpeed }, config, { updateNodes }, ...include);
 
 test('`getNodeTrajectory` should not update given node', assert => {
   const msg = 'should not update node';

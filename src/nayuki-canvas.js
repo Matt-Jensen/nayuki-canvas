@@ -17,89 +17,116 @@ const nayukiCanvas = {
       throw new Error('Nayuki Canvas requires a canvas element for the first argument');
     }
 
-    // Overwrite config with user options
+    // overwrite config with user options
     const config = Object.assign({
       extraEdges: 20,
       numNodes: 70,
       networkStyle: 'balanced',
-      driftSpeed: 1,
-      repulsionForce: 1,
+      speed: 1,
+      repulsion: 1,
       BORDER_FADE: -0.02,
       FADE_IN_RATE: 0.06,  // In the range (0.0, 1.0]
       FADE_OUT_RATE: 0.03,  // In the range (0.0, 1.0]
       FRAME_INTERVAL: 20  // In milliseconds
     }, options);
-    const prototype = Object.assign({}, { config }, { updateNodes, updateEdges, getNodeDeltas, redrawCanvas, initialize });
+
+    const prototype = {
+      updateNodes,
+      updateEdges,
+      getNodeDeltas,
+      redrawCanvas,
+      initialize
+    };
+
     const canvas = Object.create(prototype, {
       idealNumNodes: {
         get () {
-          return parseInt(this.config.numNodes, 10);
+          return parseInt(this.numNodes, 10);
         }
       },
+
       maxExtraEdges: {
         get () {
-          const { extraEdges, numNodes } = this.config;
+          const { extraEdges, numNodes } = this;
           return Math.round(parseFloat(extraEdges) / 100 * numNodes);
         }
       },
+
       radiiWeightPower: {
         get () {
-          const { networkStyle } = this.config;
+          const { networkStyle } = this;
           const radiiWeightPower = networkStyleKey[networkStyle];
           return parseFloat(radiiWeightPower);
         }
       },
+
       driftSpeed: {
         get () {
-          const driftSpeed = this.config.driftSpeed;
-          if (!isNaN(driftSpeed)) {
-            return driftSpeed * 0.0001;
+          const { speed } = this;
+
+          if (!isNaN(speed)) {
+            return speed * 0.0001;
           } else {
-            return driftSpeed;
+            return speed;
           }
         },
+
         set (value) {
-          this.config.driftSpeed = parseFloat(value);
-          return this.driftSpeed;
+          this.speed = parseFloat(value);
+          return this.speed;
         }
       },
+
       repulsionForce: {
         get () {
-          const repulsionForce = this.config.repulsionForce;
-          if (!isNaN(repulsionForce)) {
-            return repulsionForce * 0.000001;
+          const { repulsion } = this;
+          if (!isNaN(repulsion)) {
+            return repulsion * 0.000001;
           } else {
-            return repulsionForce;
+            return repulsion;
           }
         },
+
         set (value) {
-          this.config.repulsionForce = parseFloat(value);
-          return this.repulsionForce;
+          this.repulsion = parseFloat(value);
+          return this.repulsion;
         }
       }
     });
+
+    // apply configuration to canvas
+    Object.assign(canvas, config);
+
     canvas.canvasElem = canvasElem;
 
     // Initialize canvas and inputs
     canvas.graphics = canvasElem.getContext('2d');
 
-    // State of graph nodes - each object has these properties:
-    // - posX: Horizontal position in relative coordinates, typically in the range [0.0, relWidth], where relWidth <= 1.0
-    // - posY: Vertical position in relative coordinates, typically in the range [0.0, relHeight], where relHeight <= 1.0
-    // - velX: Horizontal velocity in relative units (not pixels)
-    // - velY: Vertical velocity in relative units (not pixels)
-    // - radius: Radius of the node, a positive real number
-    // - opacity: A number in the range [0.0, 1.0] representing the strength of the node
+    /**
+     * Node properties
+     * - posX: Horizontal position in relative coordinates, typically in the range [0.0, relWidth], where relWidth <= 1.0
+     * - posY: Vertical position in relative coordinates, typically in the range [0.0, relHeight], where relHeight <= 1.0
+     * - velX: Horizontal velocity in relative units (not pixels)
+     * - velY: Vertical velocity in relative units (not pixels)
+     * - radius: Radius of the node, a positive real number
+     * - opacity: A number in the range [0.0, 1.0] representing the strength of the node
+     */
     canvas.nodes = [];
 
-    // State of graph edges - each object has these properties:
-    // - nodeA: A reference to the node object representing one side of the undirected edge
-    // - nodeB: A reference to the node object representing another side of the undirected edge (must be distinct from NodeA)
-    // - opacity: A number in the range [0.0, 1.0] representing the strength of the edge
+    /**
+     * Edge Properties
+     * - nodeA: A reference to the node object representing one side of the undirected edge
+     * - nodeB: A reference to the node object representing another side of the undirected edge (must be distinct from NodeA)
+     * - opacity: A number in the range [0.0, 1.0] representing the strength of the edge
+     */
     canvas.edges = [];
 
-    // This important top-level function updates the arrays of nodes and edges, then redraws the canvas.
-    // We define it within the closure to give it access to key variables that persist across iterations.
+    /**
+     * WARNING all side effects on `nodes` & `edges` are done in this method!
+     * Updates nodes, edges then draws new canvas frame
+     * @type Method
+     * @return Object     canvas instance
+     */
     canvas.stepFrame = function stepFrame () {
       this.nodes = this.updateNodes();
 
@@ -114,6 +141,8 @@ const nayukiCanvas = {
 
       this.edges = this.updateEdges();
       this.redrawCanvas();
+
+      return this;
     };
 
     // Periodically execute stepFrame() to create animation

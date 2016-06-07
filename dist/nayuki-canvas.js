@@ -38,10 +38,9 @@
     var nodes = this.nodes;
     var idealNumNodes = this.idealNumNodes;
     var driftSpeed = this.driftSpeed;
-    var _config = this.config;
-    var FADE_IN_RATE = _config.FADE_IN_RATE;
-    var FADE_OUT_RATE = _config.FADE_OUT_RATE;
-    var BORDER_FADE = _config.BORDER_FADE;
+    var FADE_IN_RATE = this.FADE_IN_RATE;
+    var FADE_OUT_RATE = this.FADE_OUT_RATE;
+    var BORDER_FADE = this.BORDER_FADE;
 
     // At least one of relWidth or relHeight is exactly 1. The aspect ratio relWidth:relHeight is equal to w:h.
 
@@ -335,9 +334,8 @@
     var edges = this.edges;
     var maxExtraEdges = this.maxExtraEdges;
     var radiiWeightPower = this.radiiWeightPower;
-    var _config = this.config;
-    var FADE_IN_RATE = _config.FADE_IN_RATE;
-    var FADE_OUT_RATE = _config.FADE_OUT_RATE;
+    var FADE_IN_RATE = this.FADE_IN_RATE;
+    var FADE_OUT_RATE = this.FADE_OUT_RATE;
 
 
     var newEdges = [];
@@ -679,93 +677,119 @@
         throw new Error('Nayuki Canvas requires a canvas element for the first argument');
       }
 
-      // Overwrite config with user options
+      // overwrite config with user options
       var config = Object.assign({
         extraEdges: 20,
         numNodes: 70,
         networkStyle: 'balanced',
-        driftSpeed: 1,
-        repulsionForce: 1,
+        speed: 1,
+        repulsion: 1,
         BORDER_FADE: -0.02,
         FADE_IN_RATE: 0.06, // In the range (0.0, 1.0]
         FADE_OUT_RATE: 0.03, // In the range (0.0, 1.0]
         FRAME_INTERVAL: 20 // In milliseconds
       }, options);
-      var prototype = Object.assign({}, { config: config }, { updateNodes: updateNodes, updateEdges: updateEdges, getNodeDeltas: getNodeDeltas, redrawCanvas: redrawCanvas, initialize: initialize });
+
+      var prototype = {
+        updateNodes: updateNodes,
+        updateEdges: updateEdges,
+        getNodeDeltas: getNodeDeltas,
+        redrawCanvas: redrawCanvas,
+        initialize: initialize
+      };
+
       var canvas = Object.create(prototype, {
         idealNumNodes: {
           get: function get() {
-            return parseInt(this.config.numNodes, 10);
+            return parseInt(this.numNodes, 10);
           }
         },
+
         maxExtraEdges: {
           get: function get() {
-            var _config = this.config;
-            var extraEdges = _config.extraEdges;
-            var numNodes = _config.numNodes;
+            var extraEdges = this.extraEdges;
+            var numNodes = this.numNodes;
 
             return Math.round(parseFloat(extraEdges) / 100 * numNodes);
           }
         },
+
         radiiWeightPower: {
           get: function get() {
-            var networkStyle = this.config.networkStyle;
+            var networkStyle = this.networkStyle;
 
             var radiiWeightPower = networkStyleKey[networkStyle];
             return parseFloat(radiiWeightPower);
           }
         },
+
         driftSpeed: {
           get: function get() {
-            var driftSpeed = this.config.driftSpeed;
-            if (!isNaN(driftSpeed)) {
-              return driftSpeed * 0.0001;
+            var speed = this.speed;
+
+
+            if (!isNaN(speed)) {
+              return speed * 0.0001;
             } else {
-              return driftSpeed;
+              return speed;
             }
           },
           set: function set(value) {
-            this.config.driftSpeed = parseFloat(value);
-            return this.driftSpeed;
+            this.speed = parseFloat(value);
+            return this.speed;
           }
         },
+
         repulsionForce: {
           get: function get() {
-            var repulsionForce = this.config.repulsionForce;
-            if (!isNaN(repulsionForce)) {
-              return repulsionForce * 0.000001;
+            var repulsion = this.repulsion;
+
+            if (!isNaN(repulsion)) {
+              return repulsion * 0.000001;
             } else {
-              return repulsionForce;
+              return repulsion;
             }
           },
           set: function set(value) {
-            this.config.repulsionForce = parseFloat(value);
-            return this.repulsionForce;
+            this.repulsion = parseFloat(value);
+            return this.repulsion;
           }
         }
       });
+
+      // apply configuration to canvas
+      Object.assign(canvas, config);
+
       canvas.canvasElem = canvasElem;
 
       // Initialize canvas and inputs
       canvas.graphics = canvasElem.getContext('2d');
 
-      // State of graph nodes - each object has these properties:
-      // - posX: Horizontal position in relative coordinates, typically in the range [0.0, relWidth], where relWidth <= 1.0
-      // - posY: Vertical position in relative coordinates, typically in the range [0.0, relHeight], where relHeight <= 1.0
-      // - velX: Horizontal velocity in relative units (not pixels)
-      // - velY: Vertical velocity in relative units (not pixels)
-      // - radius: Radius of the node, a positive real number
-      // - opacity: A number in the range [0.0, 1.0] representing the strength of the node
+      /**
+       * Node properties
+       * - posX: Horizontal position in relative coordinates, typically in the range [0.0, relWidth], where relWidth <= 1.0
+       * - posY: Vertical position in relative coordinates, typically in the range [0.0, relHeight], where relHeight <= 1.0
+       * - velX: Horizontal velocity in relative units (not pixels)
+       * - velY: Vertical velocity in relative units (not pixels)
+       * - radius: Radius of the node, a positive real number
+       * - opacity: A number in the range [0.0, 1.0] representing the strength of the node
+       */
       canvas.nodes = [];
 
-      // State of graph edges - each object has these properties:
-      // - nodeA: A reference to the node object representing one side of the undirected edge
-      // - nodeB: A reference to the node object representing another side of the undirected edge (must be distinct from NodeA)
-      // - opacity: A number in the range [0.0, 1.0] representing the strength of the edge
+      /**
+       * Edge Properties
+       * - nodeA: A reference to the node object representing one side of the undirected edge
+       * - nodeB: A reference to the node object representing another side of the undirected edge (must be distinct from NodeA)
+       * - opacity: A number in the range [0.0, 1.0] representing the strength of the edge
+       */
       canvas.edges = [];
 
-      // This important top-level function updates the arrays of nodes and edges, then redraws the canvas.
-      // We define it within the closure to give it access to key variables that persist across iterations.
+      /**
+       * Warning all side effects have been are restricted to this method!
+       * Updates nodes, edges then draws new canvas frame
+       * @type Method
+       * @return Object     canvas instance
+       */
       canvas.stepFrame = function stepFrame() {
         this.nodes = this.updateNodes();
 
@@ -780,6 +804,8 @@
 
         this.edges = this.updateEdges();
         this.redrawCanvas();
+
+        return this;
       };
 
       // Periodically execute stepFrame() to create animation
