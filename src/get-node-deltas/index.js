@@ -1,5 +1,5 @@
 import nodePair from './node-pair';
-import { deepCopy } from '../../utils';
+import { deepCopy } from '../utils';
 
 /**
  * Create array of deltas based on list of nodes

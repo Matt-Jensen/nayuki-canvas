@@ -1,9 +1,9 @@
 const test = require('tape');
 const { createNodes, createEdges } = require('./helpers/create');
-const updateEdges = require('../tmp/core/update-edges').default;
-const getEdgeOpacity = require('../tmp/core/update-edges').getEdgeOpacity;
-const isEdgeActive = require('../tmp/core/update-edges').isEdgeActive;
-const isTargetSmaller = require('../tmp/core/update-edges').isTargetSmaller;
+const updateEdges = require('../tmp/update-edges').default;
+const getEdgeOpacity = require('../tmp/update-edges').getEdgeOpacity;
+const isEdgeActive = require('../tmp/update-edges').isEdgeActive;
+const isTargetSmaller = require('../tmp/update-edges').isTargetSmaller;
 
 const config = {
   FADE_IN_RATE: 0.05,

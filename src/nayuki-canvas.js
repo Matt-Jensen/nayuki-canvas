@@ -1,4 +1,8 @@
-import nayukiCore from './core/core';
+import updateNodes from './update-nodes';
+import updateEdges from './update-edges';
+import getNodeDeltas from './get-node-deltas/index';
+import redrawCanvas from './redraw-canvas/index';
+import initialize from './initialize';
 
 const networkStyleKey = {
   mesh: 0,
@@ -10,7 +14,7 @@ const nayukiCanvas = {
   create (canvasElem, options) {
 
     if (canvasElem instanceof HTMLElement === false || canvasElem.nodeName !== 'CANVAS') {
-      throw new Error('Nayuki Canvas requires a canvas DOM node as the first argument');
+      throw new Error('Nayuki Canvas requires a canvas element for the first argument');
     }
 
     // Overwrite config with user options
@@ -25,8 +29,8 @@ const nayukiCanvas = {
       FADE_OUT_RATE: 0.03,  // In the range (0.0, 1.0]
       FRAME_INTERVAL: 20  // In milliseconds
     }, options);
-    const proto = Object.assign({}, { config }, nayukiCore);
-    const canvas = Object.create(proto, {
+    const prototype = Object.assign({}, { config }, { updateNodes, updateEdges, getNodeDeltas, redrawCanvas, initialize });
+    const canvas = Object.create(prototype, {
       idealNumNodes: {
         get () {
           return parseInt(this.config.numNodes, 10);

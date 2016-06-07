@@ -1,8 +1,8 @@
 const test = require('tape');
 const createNodes = require('./helpers/create').createNodes;
-const getNodeTrajectory = require('../tmp/core/update-nodes').getNodeTrajectory;
-const getNodeOpacity = require('../tmp/core/update-nodes').getNodeOpacity;
-const updateNodes = require('../tmp/core/update-nodes').default;
+const getNodeTrajectory = require('../tmp/update-nodes').getNodeTrajectory;
+const getNodeOpacity = require('../tmp/update-nodes').getNodeOpacity;
+const updateNodes = require('../tmp/update-nodes').default;
 const canvasElem = {
   width: 100,
   height: 100

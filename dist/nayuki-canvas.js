@@ -666,14 +666,6 @@
     }
   }
 
-  var nayukiCore = {
-    updateNodes: updateNodes,
-    updateEdges: updateEdges,
-    getNodeDeltas: getNodeDeltas,
-    redrawCanvas: redrawCanvas,
-    initialize: initialize
-  };
-
   var networkStyleKey = {
     mesh: 0,
     balanced: 0.5,
@@ -684,7 +676,7 @@
     create: function create(canvasElem, options) {
 
       if (canvasElem instanceof HTMLElement === false || canvasElem.nodeName !== 'CANVAS') {
-        throw new Error('Nayuki Canvas requires a canvas DOM node as the first argument');
+        throw new Error('Nayuki Canvas requires a canvas element for the first argument');
       }
 
       // Overwrite config with user options
@@ -699,8 +691,8 @@
         FADE_OUT_RATE: 0.03, // In the range (0.0, 1.0]
         FRAME_INTERVAL: 20 // In milliseconds
       }, options);
-      var proto = Object.assign({}, { config: config }, nayukiCore);
-      var canvas = Object.create(proto, {
+      var prototype = Object.assign({}, { config: config }, { updateNodes: updateNodes, updateEdges: updateEdges, getNodeDeltas: getNodeDeltas, redrawCanvas: redrawCanvas, initialize: initialize });
+      var canvas = Object.create(prototype, {
         idealNumNodes: {
           get: function get() {
             return parseInt(this.config.numNodes, 10);

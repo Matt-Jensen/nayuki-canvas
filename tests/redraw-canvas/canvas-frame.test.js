@@ -1,7 +1,7 @@
 const test = require('tape');
 const { isObject, isUndefined } = require('util');
-const { createNodes, createEdges } = require('../../helpers/create');
-const canvasFrame = require('../../../tmp/core/redraw-canvas/canvas-frame');
+const { createNodes, createEdges } = require('../helpers/create');
+const canvasFrame = require('../../tmp/redraw-canvas/canvas-frame');
 
 const canvasElem = { width: 100, height: 100 };
 

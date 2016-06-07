@@ -1,4 +1,4 @@
-import { calcAllEdgeWeights, calcSpanningTree, containsEdge } from '../utils';
+import { calcAllEdgeWeights, calcSpanningTree, containsEdge } from './utils';
 
 /**
  * Determines edge opacity based on if it's fading in
