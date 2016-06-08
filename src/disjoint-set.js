@@ -1,4 +1,4 @@
-const core = {
+const prototype = {
   getRepr (i) {
     if (this.parents[i] !== i) {
       this.parents[i] = this.getRepr(this.parents[i]);
@@ -28,19 +28,22 @@ const core = {
   }
 };
 
-// The union-find data structure. A heavily stripped-down version derived from https://www.nayuki.io/page/disjoint-set-data-structure .
-export default {
-  create (size) {
-    const instance = {
-      parents: { value: [] },
-      ranks: { value: [], writable: true }
-    };
+/**
+ * The union-find data structure.
+ * A lite version of https://www.nayuki.io/page/disjoint-set-data-structure .
+ * @param  {Number} size
+ * @return {Object}
+ */
+export default function disjointSet (size) {
+  const instance = {
+    parents: { value: [] },
+    ranks: { value: [], writable: true }
+  };
 
-    for (let i = 0; i < size; i++) {
-      instance.parents.value.push(i);
-      instance.ranks.value.push(0);
-    }
-
-    return Object.create(core, instance);
+  for (let i = 0; i < size; i++) {
+    instance.parents.value.push(i);
+    instance.ranks.value.push(0);
   }
-};
+
+  return Object.create(prototype, instance);
+}

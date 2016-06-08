@@ -12,7 +12,7 @@ test('should exist', assert => {
 test('should create parents proportional to size', assert => {
   const msg = 'should be proportional';
 
-  const actual = disjointSet.create(3).parents;
+  const actual = disjointSet(3).parents;
   const expected = [0, 1, 2];
 
   assert.deepEqual(actual, expected, msg);
@@ -22,7 +22,7 @@ test('should create parents proportional to size', assert => {
 test('should create ranks proportional to size', assert => {
   const msg = 'should be proportional';
 
-  const actual = disjointSet.create(3).ranks;
+  const actual = disjointSet(3).ranks;
   const expected = [0, 0, 0];
 
   assert.deepEqual(actual, expected, msg);
@@ -32,7 +32,7 @@ test('should create ranks proportional to size', assert => {
 test('should return the parent value at given index with `getRepr`', assert => {
   const msg = 'should be proportional';
 
-  const ds = disjointSet.create(3);
+  const ds = disjointSet(3);
   const actual = ds.getRepr(1);
   const expected = 1;
 
@@ -44,7 +44,7 @@ test('should return false from `mergeSets` if `getRepr` returns same value', ass
   const msg = 'should return false for same value';
   const reprStub = () => 0;
 
-  const ds = disjointSet.create(3);
+  const ds = disjointSet(3);
   const originalRepr = ds.getRepr;
   ds.getRepr = reprStub;
 
@@ -63,7 +63,7 @@ test('should increment rank via `mergeSets` with a zero rank index', assert => {
     return calls.shift();
   };
 
-  const ds = disjointSet.create(2);
+  const ds = disjointSet(2);
   const originalRepr = ds.getRepr;
   ds.getRepr = reprStub;
 
@@ -84,7 +84,7 @@ test('should set correct parent with `mergeSets` via inverse rank index', assert
     return calls.shift();
   };
 
-  const ds = disjointSet.create(2);
+  const ds = disjointSet(2);
   const originalRepr = ds.getRepr;
   ds.getRepr = reprStub;
   ds.ranks = ranks;
@@ -106,7 +106,7 @@ test('should set correct parent index with `mergeSets` when normal rank index', 
     return calls.shift();
   };
 
-  const ds = disjointSet.create(2);
+  const ds = disjointSet(2);
   const originalRepr = ds.getRepr;
   ds.getRepr = reprStub;
   ds.ranks = ranks;

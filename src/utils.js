@@ -32,7 +32,7 @@ export function calcSpanningTree (allEdges, nodes) {
 
   // Kruskal's MST algorithm
   const result = [];
-  const ds = disjointSet.create(nodes.length);
+  const ds = disjointSet(nodes.length);
 
   for (let i = 0; i < allEdges.length && result.length < nodes.length - 1; i++) {
     const edge = allEdges[i];

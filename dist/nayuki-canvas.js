@@ -85,7 +85,7 @@
     return newNodes;
   }
 
-  var core = {
+  var prototype = {
     getRepr: function getRepr(i) {
       if (this.parents[i] !== i) {
         this.parents[i] = this.getRepr(this.parents[i]);
@@ -114,22 +114,25 @@
     }
   };
 
-  // The union-find data structure. A heavily stripped-down version derived from https://www.nayuki.io/page/disjoint-set-data-structure .
-  var disjointSet = {
-    create: function create(size) {
-      var instance = {
-        parents: { value: [] },
-        ranks: { value: [], writable: true }
-      };
+  /**
+   * The union-find data structure.
+   * A lite version of https://www.nayuki.io/page/disjoint-set-data-structure .
+   * @param  {Number} size
+   * @return {Object}
+   */
+  function disjointSet(size) {
+    var instance = {
+      parents: { value: [] },
+      ranks: { value: [], writable: true }
+    };
 
-      for (var i = 0; i < size; i++) {
-        instance.parents.value.push(i);
-        instance.ranks.value.push(0);
-      }
-
-      return Object.create(core, instance);
+    for (var i = 0; i < size; i++) {
+      instance.parents.value.push(i);
+      instance.ranks.value.push(0);
     }
-  };
+
+    return Object.create(prototype, instance);
+  }
 
   var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
     return typeof obj;
@@ -217,7 +220,7 @@
 
     // Kruskal's MST algorithm
     var result = [];
-    var ds = disjointSet.create(nodes.length);
+    var ds = disjointSet(nodes.length);
 
     for (var i = 0; i < allEdges.length && result.length < nodes.length - 1; i++) {
       var edge = allEdges[i];
@@ -785,7 +788,7 @@
       canvas.edges = [];
 
       /**
-       * Warning all side effects have been are restricted to this method!
+       * WARNING all side effects on `nodes` & `edges` are done in this method!
        * Updates nodes, edges then draws new canvas frame
        * @type Method
        * @return Object     canvas instance
