@@ -3,9 +3,10 @@ const getNodeDeltas = require('../../tmp/get-node-deltas');
 const { createNodes } = require('../helpers/create');
 
 test('should exist', assert => {
-  const msg = 'did not export a module';
-  const actual = getNodeDeltas;
-  assert.ok(actual, msg);
+  const msg = 'exports a module';
+  const actual = !!getNodeDeltas;
+  const expected = true;
+  assert.equal(actual, expected, msg);
   assert.end();
 });
 

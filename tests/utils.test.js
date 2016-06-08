@@ -1,6 +1,30 @@
 const test = require('tape');
 const utils = require('../tmp/utils');
 const { containsEdge, calcSpanningTree, calcAllEdgeWeights } = utils;
+const { createNodes, createEdges } = require('./helpers/create');
+
+test('all utils should exist', assert => {
+  const msg = 'exports 3 modules';
+  const actual = !!(containsEdge && calcSpanningTree && calcAllEdgeWeights);
+  const expected = true;
+  assert.equal(actual, expected, msg);
+  assert.end();
+});
+
+test('`containsEdge` should be a pure function', assert => {
+  const msg = 'did not updated arguments';
+  const nodes = createNodes(2);
+  const actual = {
+    edge: createEdges(1, { nodeA: nodes[0], nodeB: nodes[1] }),
+  };
+  actual.allEdges = [].concat(createEdges(1), [actual.edge]);
+  const expected = JSON.parse(JSON.stringify(actual)); // clone
+
+  containsEdge(actual.allEdges, actual.edge);
+
+  assert.deepEqual(actual, expected, msg);
+  assert.end();
+});
 
 test('`containsEdge` should return false if edge not found', assert => {
   const msg = 'should return `false` for not found';
@@ -20,6 +44,20 @@ test('`containsEdge` should return true if edge found', assert => {
   const expected = true;
 
   assert.same(actual, expected, msg);
+  assert.end();
+});
+
+test('`calcSpanningTree` should be a pure function', assert => {
+  const msg = 'did not updated arguments';
+  const actual = {
+    edges: createEdges(1),
+    nodes: createNodes(2)
+  };
+  const expected = JSON.parse(JSON.stringify(actual)); // clone
+
+  containsEdge(actual.edges, actual.nodes);
+
+  assert.deepEqual(actual, expected, msg);
   assert.end();
 });
 
@@ -62,6 +100,20 @@ test('`calcSpanningTree` should not change inputs', assert => {
 
   assert.deepEqual(actualEdges, expectedEdges, msg);
   assert.deepEqual(actualNodes, expectedNodes, msg);
+  assert.end();
+});
+
+test('`calcAllEdgeWeights` should be a pure function', assert => {
+  const msg = 'did not updated arguments';
+  const actual = {
+    nodes: createNodes(2),
+    radiiWeightPower: 1
+  };
+  const expected = JSON.parse(JSON.stringify(actual)); // clone
+
+  calcAllEdgeWeights(actual.nodes, actual.radiiWeightPower);
+
+  assert.deepEqual(actual, expected, msg);
   assert.end();
 });
 

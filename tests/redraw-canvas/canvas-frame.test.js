@@ -5,6 +5,28 @@ const canvasFrame = require('../../tmp/redraw-canvas/canvas-frame');
 
 const canvasElem = { width: 100, height: 100 };
 
+test('should exist', assert => {
+  const msg = 'exports a module';
+  const actual = !!canvasFrame;
+  const expected = true;
+  assert.equal(actual, expected, msg);
+  assert.end();
+});
+
+test('should provide only pure functions', assert => {
+  const msg = '`nodes` were updated';
+  const actual = { nodes: createNodes(2), edges: createEdges(2), canvasElem };
+  const expected = JSON.parse(JSON.stringify(actual)); // clone
+
+  const cf = canvasFrame.create(actual);
+
+  // invoke all enumerables
+  Object.keys(cf).forEach(k => cf[k]);
+
+  assert.deepEqual(actual, expected, msg);
+  assert.end();
+});
+
 test('should `create()` new Canvas Frame instances', assert => {
   const msg = 'should be an object';
 

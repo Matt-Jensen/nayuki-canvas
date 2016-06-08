@@ -1,5 +1,28 @@
 const test = require('tape');
 const nodePair = require('../../tmp/get-node-deltas/node-pair');
+const { createNodes } = require('../helpers/create');
+
+test('should exist', assert => {
+  const msg = 'exports a module';
+  const actual = !!nodePair;
+  const expected = true;
+  assert.equal(actual, expected, msg);
+  assert.end();
+});
+
+test('should provide only pure functions', assert => {
+  const msg = '`nodes` were updated';
+  const actual = createNodes(2);
+  const expected = JSON.parse(JSON.stringify(actual)); // clone
+
+  const np = nodePair(...actual);
+
+  // invoke all enumerables
+  Object.keys(np).forEach(k => np[k]);
+
+  assert.deepEqual(actual, expected, msg);
+  assert.end();
+});
 
 test('should have a `x` that is the difference between given nodes', assert => {
   const msg = 'should be a difference of `1`';
