@@ -1,5 +1,3 @@
-import getNodeTrajectory from './get-node-trajectory';
-
 /**
 * Returns an array of updated nodes
 * Updates/adds/removes current nodes based on the given array
@@ -11,7 +9,6 @@ export default function updateNodes () {
   const {
     nodes,
     idealNumNodes,
-    driftSpeed,
     BORDER_FADE
   } = this;
 
@@ -29,10 +26,6 @@ export default function updateNodes () {
 
   // Update position, velocity, opacity; prune faded nodes
   nodes.map((node, index) => {
-    // TODO remove code (not doing anything)
-    // update node with new position & velocity
-    Object.assign({}, node, getNodeTrajectory(node, driftSpeed));
-
     // update node opacity
     const isFadingIn = !isNodeFadingOut(node, index);
     node.opacity = this._getOpacity(isFadingIn, node);

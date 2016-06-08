@@ -1,4 +1,4 @@
-import updateNodes from './update-nodes/index';
+import updateNodes from './update-nodes';
 import updateEdges from './update-edges/index';
 import getNodeDeltas from './get-node-deltas/index';
 import redrawCanvas from './redraw-canvas/index';
@@ -23,7 +23,6 @@ const nayukiCanvas = {
       extraEdges: 20,
       numNodes: 70,
       networkStyle: 'balanced',
-      speed: 1,
       repulsion: 1,
       BORDER_FADE: -0.02,
       FADE_IN_RATE: 0.06,  // In the range (0.0, 1.0]
@@ -59,23 +58,6 @@ const nayukiCanvas = {
           const { networkStyle } = this;
           const radiiWeightPower = networkStyleKey[networkStyle];
           return parseFloat(radiiWeightPower);
-        }
-      },
-
-      driftSpeed: {
-        get () {
-          const { speed } = this;
-
-          if (!isNaN(speed)) {
-            return speed * 0.0001;
-          } else {
-            return speed;
-          }
-        },
-
-        set (value) {
-          this.speed = parseFloat(value);
-          return this.speed;
         }
       },
 

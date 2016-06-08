@@ -1,31 +1,6 @@
 (function () {
   'use strict';
 
-  // TODO remove this function and it's test (not doing anything)
-
-  /**
-   * Creates a new trajectory object from a given node and drift speed
-   * @param  {Object} node
-   * @param  {Number} driftSpeed
-   * @return {Object} trajectory
-   */
-  function getNodeTrajectory(_ref, driftSpeed) {
-    var posX = _ref.posX;
-    var posY = _ref.posY;
-    var velX = _ref.velX;
-    var velY = _ref.velY;
-
-    return {
-      // Move based on velocity
-      posX: posX + velX * driftSpeed,
-      posY: posY + velY * driftSpeed,
-
-      // Randomly perturb velocity, with damping
-      velX: velX * 0.99 + (Math.random() - 0.5) * 0.3,
-      velY: velY * 0.99 + (Math.random() - 0.5) * 0.3
-    };
-  }
-
   /**
   * Returns an array of updated nodes
   * Updates/adds/removes current nodes based on the given array
@@ -40,7 +15,6 @@
     var height = _canvasElem.height;
     var nodes = this.nodes;
     var idealNumNodes = this.idealNumNodes;
-    var driftSpeed = this.driftSpeed;
     var BORDER_FADE = this.BORDER_FADE;
 
     // At least one of relWidth or relHeight is exactly 1. The aspect ratio relWidth:relHeight is equal to w:h.
@@ -58,10 +32,6 @@
 
     // Update position, velocity, opacity; prune faded nodes
     nodes.map(function (node, index) {
-      // TODO remove code (not doing anything)
-      // update node with new position & velocity
-      Object.assign({}, node, getNodeTrajectory(node, driftSpeed));
-
       // update node opacity
       var isFadingIn = !isNodeFadingOut(node, index);
       node.opacity = _this._getOpacity(isFadingIn, node);
@@ -650,7 +620,7 @@
    * @param {Object}  input
    * @param {Number} FADE_IN_RATE
    * @param {Number} FADE_OUT_RATE
-   * @type {Function}
+   * @type {Method}
    * @return {Number}
    */
   function getOpacity(isFadingIn, input) {
@@ -690,7 +660,6 @@
         extraEdges: 20,
         numNodes: 70,
         networkStyle: 'balanced',
-        speed: 1,
         repulsion: 1,
         BORDER_FADE: -0.02,
         FADE_IN_RATE: 0.06, // In the range (0.0, 1.0]
@@ -729,23 +698,6 @@
 
             var radiiWeightPower = networkStyleKey[networkStyle];
             return parseFloat(radiiWeightPower);
-          }
-        },
-
-        driftSpeed: {
-          get: function get() {
-            var speed = this.speed;
-
-
-            if (!isNaN(speed)) {
-              return speed * 0.0001;
-            } else {
-              return speed;
-            }
-          },
-          set: function set(value) {
-            this.speed = parseFloat(value);
-            return this.speed;
           }
         },
 

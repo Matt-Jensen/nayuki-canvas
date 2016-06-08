@@ -1,11 +1,10 @@
 const test = require('tape');
-const { createNodes } = require('../helpers/create');
-const updateNodes = require('../../tmp/update-nodes/index');
-const _getOpacity = require('../../tmp/get-opacity');
+const { createNodes } = require('./helpers/create');
+const updateNodes = require('../tmp/update-nodes');
+const _getOpacity = require('../tmp/get-opacity');
 
 const settings = {
   idealNumNodes: 2,
-  driftSpeed: 1,
   BORDER_FADE: -0.02,
   canvasElem: {
     width: 100,
