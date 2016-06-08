@@ -1,3 +1,5 @@
+// TODO remove this function and it's test (not doing anything)
+
 /**
  * Creates a new trajectory object from a given node and drift speed
  * @param  {Object} node

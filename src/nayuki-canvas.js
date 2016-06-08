@@ -2,6 +2,7 @@ import updateNodes from './update-nodes/index';
 import updateEdges from './update-edges/index';
 import getNodeDeltas from './get-node-deltas/index';
 import redrawCanvas from './redraw-canvas/index';
+import _getOpacity from './get-opacity';
 import initialize from './initialize';
 
 const networkStyleKey = {
@@ -35,6 +36,7 @@ const nayukiCanvas = {
       updateEdges,
       getNodeDeltas,
       redrawCanvas,
+      _getOpacity,
       initialize
     };
 

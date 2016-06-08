@@ -1,6 +1,8 @@
 (function () {
   'use strict';
 
+  // TODO remove this function and it's test (not doing anything)
+
   /**
    * Creates a new trajectory object from a given node and drift speed
    * @param  {Object} node
@@ -24,15 +26,6 @@
     };
   }
 
-  function getNodeOpacity(isFadingOut, opacity, FADE_IN_RATE, FADE_OUT_RATE) {
-    if (isFadingOut) {
-      return Math.max(opacity - FADE_OUT_RATE, 0);
-    } else {
-      // Fade in ones otherwise
-      return Math.min(opacity + FADE_IN_RATE, 1);
-    }
-  }
-
   /**
   * Returns an array of updated nodes
   * Updates/adds/removes current nodes based on the given array
@@ -40,14 +33,14 @@
   * @return {Array} Nodes
   */
   function updateNodes() {
+    var _this = this;
+
     var _canvasElem = this.canvasElem;
     var width = _canvasElem.width;
     var height = _canvasElem.height;
     var nodes = this.nodes;
     var idealNumNodes = this.idealNumNodes;
     var driftSpeed = this.driftSpeed;
-    var FADE_IN_RATE = this.FADE_IN_RATE;
-    var FADE_OUT_RATE = this.FADE_OUT_RATE;
     var BORDER_FADE = this.BORDER_FADE;
 
     // At least one of relWidth or relHeight is exactly 1. The aspect ratio relWidth:relHeight is equal to w:h.
@@ -65,12 +58,13 @@
 
     // Update position, velocity, opacity; prune faded nodes
     nodes.map(function (node, index) {
-
+      // TODO remove code (not doing anything)
       // update node with new position & velocity
       Object.assign({}, node, getNodeTrajectory(node, driftSpeed));
 
       // update node opacity
-      node.opacity = getNodeOpacity(isNodeFadingOut(node, index), node.opacity, FADE_IN_RATE, FADE_OUT_RATE);
+      var isFadingIn = !isNodeFadingOut(node, index);
+      node.opacity = _this._getOpacity(isFadingIn, node);
 
       // Only keep visible nodes
       if (node.opacity > 0) {
@@ -292,21 +286,6 @@
   }
 
   /**
-   * Determines edge opacity based on if it's fading in
-   * @param {Boolean} isFadingIn
-   * @param {Object}  edge
-   * @type {Function}
-   * @return {Number}
-   */
-  function getEdgeOpacity(isFadingIn, edge, FADE_IN_RATE, FADE_OUT_RATE) {
-    if (isFadingIn) {
-      return Math.min(edge.opacity + FADE_IN_RATE, 1);
-    } else {
-      return Math.max(edge.opacity - FADE_OUT_RATE, 0);
-    }
-  }
-
-  /**
    * Determines if an edge is active based on opacity of itself and connected nodes
    * @param {Object}  edge
    * @type {Function}
@@ -340,12 +319,12 @@
   * @return {Array}
   */
   function updateEdges() {
+    var _this = this;
+
     var nodes = this.nodes;
     var edges = this.edges;
     var maxExtraEdges = this.maxExtraEdges;
     var radiiWeightPower = this.radiiWeightPower;
-    var FADE_IN_RATE = this.FADE_IN_RATE;
-    var FADE_OUT_RATE = this.FADE_OUT_RATE;
 
 
     var newEdges = [];
@@ -370,8 +349,9 @@
     // update existing egdge opacity and prune faded edges
     edges.map(function (edge) {
       var e = Object.assign({}, edge);
+      var isFadingIn = containsEdge(idealEdges, e);
 
-      e.opacity = getEdgeOpacity(containsEdge(idealEdges, e), e, FADE_IN_RATE, FADE_OUT_RATE);
+      e.opacity = _this._getOpacity(isFadingIn, e);
 
       if (isEdgeActive(e)) {
         newEdges.push(e);
@@ -664,6 +644,26 @@
     return frame;
   }
 
+  /**
+   * Determines input opacity
+   * @param {Boolean} isFadingIn
+   * @param {Object}  input
+   * @param {Number} FADE_IN_RATE
+   * @param {Number} FADE_OUT_RATE
+   * @type {Function}
+   * @return {Number}
+   */
+  function getOpacity(isFadingIn, input) {
+    var FADE_IN_RATE = arguments.length <= 2 || arguments[2] === undefined ? this.FADE_IN_RATE : arguments[2];
+    var FADE_OUT_RATE = arguments.length <= 3 || arguments[3] === undefined ? this.FADE_OUT_RATE : arguments[3];
+
+    if (isFadingIn) {
+      return Math.min(input.opacity + FADE_IN_RATE, 1);
+    } else {
+      return Math.max(input.opacity - FADE_OUT_RATE, 0);
+    }
+  }
+
   function initialize() {
 
     // Spread out nodes to avoid ugly clumping
@@ -703,6 +703,7 @@
         updateEdges: updateEdges,
         getNodeDeltas: getNodeDeltas,
         redrawCanvas: redrawCanvas,
+        _getOpacity: getOpacity,
         initialize: initialize
       };
 

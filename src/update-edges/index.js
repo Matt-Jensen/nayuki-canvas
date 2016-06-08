@@ -1,5 +1,4 @@
 import { calcAllEdgeWeights, calcSpanningTree, containsEdge } from '../utils';
-import getEdgeOpacity from './get-edge-opacity';
 import isEdgeActive from './is-edge-active';
 import isTargetSmaller from './is-target-smaller';
 
@@ -15,9 +14,7 @@ export default function updateEdges () {
     nodes,
     edges,
     maxExtraEdges,
-    radiiWeightPower,
-    FADE_IN_RATE,
-    FADE_OUT_RATE
+    radiiWeightPower
   } = this;
 
   const newEdges = [];
@@ -42,13 +39,9 @@ export default function updateEdges () {
   // update existing egdge opacity and prune faded edges
   edges.map(edge => {
     const e = Object.assign({}, edge);
+    const isFadingIn = containsEdge(idealEdges, e);
 
-    e.opacity = getEdgeOpacity(
-      containsEdge(idealEdges, e),
-      e,
-      FADE_IN_RATE,
-      FADE_OUT_RATE
-    );
+    e.opacity = this._getOpacity(isFadingIn, e);
 
     if (isEdgeActive(e)) {
       newEdges.push(e);

@@ -1,5 +1,4 @@
 import getNodeTrajectory from './get-node-trajectory';
-import getNodeOpacity from './get-node-opacity';
 
 /**
 * Returns an array of updated nodes
@@ -9,7 +8,12 @@ import getNodeOpacity from './get-node-opacity';
 */
 export default function updateNodes () {
   const { width, height } = this.canvasElem;
-  const { nodes, idealNumNodes, driftSpeed, FADE_IN_RATE, FADE_OUT_RATE, BORDER_FADE } = this;
+  const {
+    nodes,
+    idealNumNodes,
+    driftSpeed,
+    BORDER_FADE
+  } = this;
 
   // At least one of relWidth or relHeight is exactly 1. The aspect ratio relWidth:relHeight is equal to w:h.
   const relWidth = width / Math.max(width, height);
@@ -25,17 +29,13 @@ export default function updateNodes () {
 
   // Update position, velocity, opacity; prune faded nodes
   nodes.map((node, index) => {
-
+    // TODO remove code (not doing anything)
     // update node with new position & velocity
     Object.assign({}, node, getNodeTrajectory(node, driftSpeed));
 
     // update node opacity
-    node.opacity = getNodeOpacity(
-      isNodeFadingOut(node, index),
-      node.opacity,
-      FADE_IN_RATE,
-      FADE_OUT_RATE
-    );
+    const isFadingIn = !isNodeFadingOut(node, index);
+    node.opacity = this._getOpacity(isFadingIn, node);
 
     // Only keep visible nodes
     if (node.opacity > 0) {

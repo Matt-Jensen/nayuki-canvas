@@ -1,19 +1,18 @@
 const test = require('tape');
 const { isArray } = require('util');
 const { createNodes, createEdges } = require('../helpers/create');
+const _getOpacity = require('../../tmp/get-opacity');
 const updateEdges = require('../../tmp/update-edges/index');
 
 const settings = {
   nodes: [],
   edges: [],
   maxExtraEdges: 20,
-  radiiWeightPower: 0.5,
-  FADE_IN_RATE: 0.05,
-  FADE_OUT_RATE: 0.05
+  radiiWeightPower: 0.5
 };
 
 const createInstance = (conf = {}) =>
-  Object.assign(Object.create({ updateEdges }), settings, conf);
+  Object.assign(Object.create({ updateEdges, _getOpacity }), settings, conf);
 
 test('should exist', assert => {
   const msg = 'exports a module';
