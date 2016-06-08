@@ -1,21 +1,16 @@
 const test = require('tape');
 const { createNodes } = require('./helpers/create');
 const updateNodes = require('../tmp/update-nodes');
-const _getOpacity = require('../tmp/get-opacity');
 
 const settings = {
   idealNumNodes: 2,
   BORDER_FADE: -0.02,
   relWidth: 100,
-  relHeight: 100,
-  canvasElem: {
-    width: 100,
-    height: 100
-  }
+  relHeight: 100
 };
 
 const createInstance = (...conf) =>
-  Object.assign(Object.create({ updateNodes, _getOpacity }), settings, ...conf);
+  Object.assign(Object.create({ updateNodes }), settings, ...conf);
 
 test('should exist', assert => {
   const msg = 'exports a module';

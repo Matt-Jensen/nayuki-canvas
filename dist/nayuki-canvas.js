@@ -620,8 +620,72 @@
 
     // Spread out nodes to avoid ugly clumping
     for (var i = 0; i < 70; i++) {
-      this.stepFrame();
+      this.next();
     }
+  }
+
+  /**
+   * WARNING all side effects to canvas state (nodes/edges) are done in this method!
+   * Updates nodes, edges then draws new canvas frame
+   * @type {Method}
+   * @return {Object}  canvas instance
+   */
+  function next() {
+    var idealNumNodes = arguments.length <= 0 || arguments[0] === undefined ? this.idealNumNodes : arguments[0];
+    var relWidth = arguments.length <= 1 || arguments[1] === undefined ? this.relWidth : arguments[1];
+
+    var _this = this;
+
+    var relHeight = arguments.length <= 2 || arguments[2] === undefined ? this.relHeight : arguments[2];
+    var BORDER_FADE = arguments.length <= 3 || arguments[3] === undefined ? this.BORDER_FADE : arguments[3];
+
+
+    // fade out nodes near the borders of the space or exceeding the target number of nodes
+    var isNodeFadingOut = function isNodeFadingOut(_ref) {
+      var posX = _ref.posX;
+      var posY = _ref.posY;
+
+      return posX < BORDER_FADE || relWidth - posX < BORDER_FADE || posY < BORDER_FADE || relHeight - posY < BORDER_FADE;
+    };
+
+    /*
+    * important to only update existing node objects here
+    * and ensure that node instances are preserved
+    * which edges must to refer to via `updateEdges`.
+    */
+
+    // update current nodes' opacity
+    this.nodes.map(function (node, index) {
+      var isFadingIn = !(index >= idealNumNodes || isNodeFadingOut(node));
+      node.opacity = _this._getOpacity(isFadingIn, node);
+      return node;
+    });
+
+    this.nodes = this.updateNodes(); // create new nodes and drop old
+
+    /*
+     * update nodes' trajectory
+     */
+    var deltas = this.getNodeDeltas();
+
+    // apply "push" to nodes
+    this.nodes.map(function (node, i) {
+      node.posX += deltas[i * 2 + 0];
+      node.posY += deltas[i * 2 + 1];
+      return node;
+    });
+
+    /*
+     * update edges' trajectory and opacity
+     */
+    this.edges = this.updateEdges(); // create new edges, update/drop existing
+
+    /*
+     * draw state to canvas
+     */
+    this.redrawCanvas();
+
+    return this; // allow chaining
   }
 
   var networkStyleKey = {
@@ -655,7 +719,8 @@
         getNodeDeltas: getNodeDeltas,
         redrawCanvas: redrawCanvas,
         _getOpacity: getOpacity,
-        initialize: initialize
+        initialize: initialize,
+        next: next
       };
 
       var canvas = Object.create(prototype, {
@@ -749,53 +814,9 @@
        */
       canvas.edges = [];
 
-      /**
-       * WARNING all side effects on `nodes` & `edges` are done in this method!
-       * Updates nodes, edges then draws new canvas frame
-       * @type Method
-       * @return Object     canvas instance
-       */
-      canvas.stepFrame = function stepFrame() {
-        var _this = this;
-
-        var idealNumNodes = this.idealNumNodes;
-        var relWidth = this.relWidth;
-        var relHeight = this.relHeight;
-        var BORDER_FADE = this.BORDER_FADE;
-
-        // Fade out nodes near the borders of the space or exceeding the target number of nodes
-
-        var isNodeFadingOut = function isNodeFadingOut(node, index) {
-          return index >= idealNumNodes || node.posX < BORDER_FADE || relWidth - node.posX < BORDER_FADE || node.posY < BORDER_FADE || relHeight - node.posY < BORDER_FADE;
-        };
-
-        // update current node opacity
-        this.nodes.map(function (node, index) {
-          var isFadingIn = !isNodeFadingOut(node, index);
-          node.opacity = _this._getOpacity(isFadingIn, node);
-          return node;
-        });
-
-        this.nodes = this.updateNodes();
-
-        var deltas = this.getNodeDeltas();
-
-        // Apply "push" to nodes
-        this.nodes.map(function (node, i) {
-          node.posX += deltas[i * 2 + 0];
-          node.posY += deltas[i * 2 + 1];
-          return node;
-        });
-
-        this.edges = this.updateEdges();
-        this.redrawCanvas();
-
-        return this;
-      };
-
-      // Periodically execute stepFrame() to create animation
+      // periodically execute stepFrame() to create animation
       setInterval(function () {
-        return canvas.stepFrame();
+        return canvas.next();
       }, config.FRAME_INTERVAL);
 
       // chart instance

@@ -4,6 +4,7 @@ import getNodeDeltas from './get-node-deltas/index';
 import redrawCanvas from './redraw-canvas/index';
 import _getOpacity from './get-opacity';
 import initialize from './initialize';
+import next from './next';
 
 const networkStyleKey = {
   mesh: 0,
@@ -36,7 +37,8 @@ const nayukiCanvas = {
       getNodeDeltas,
       redrawCanvas,
       _getOpacity,
-      initialize
+      initialize,
+      next
     };
 
     const canvas = Object.create(prototype, {
@@ -121,51 +123,8 @@ const nayukiCanvas = {
      */
     canvas.edges = [];
 
-    /**
-     * WARNING all side effects on `nodes` & `edges` are done in this method!
-     * Updates nodes, edges then draws new canvas frame
-     * @type Method
-     * @return Object     canvas instance
-     */
-    canvas.stepFrame = function stepFrame () {
-      const {
-        idealNumNodes,
-        relWidth,
-        relHeight,
-        BORDER_FADE
-      } = this;
-
-      // Fade out nodes near the borders of the space or exceeding the target number of nodes
-      const isNodeFadingOut = (node, index) => {
-        return index >= idealNumNodes || node.posX < BORDER_FADE || relWidth - node.posX < BORDER_FADE || node.posY < BORDER_FADE || relHeight - node.posY < BORDER_FADE;
-      };
-
-      // update current node opacity
-      this.nodes.map((node, index) => {
-        const isFadingIn = !isNodeFadingOut(node, index);
-        node.opacity = this._getOpacity(isFadingIn, node);
-        return node;
-      });
-
-      this.nodes = this.updateNodes();
-
-      const deltas = this.getNodeDeltas();
-
-      // Apply "push" to nodes
-      this.nodes.map(function (node, i) {
-        node.posX += deltas[i * 2 + 0];
-        node.posY += deltas[i * 2 + 1];
-        return node;
-      });
-
-      this.edges = this.updateEdges();
-      this.redrawCanvas();
-
-      return this;
-    };
-
-    // Periodically execute stepFrame() to create animation
-    setInterval(() => canvas.stepFrame(), config.FRAME_INTERVAL);
+    // periodically execute stepFrame() to create animation
+    setInterval(() => canvas.next(), config.FRAME_INTERVAL);
 
     // chart instance
     return canvas;
