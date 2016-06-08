@@ -30,7 +30,7 @@ const prototype = {
 
 /**
  * The union-find data structure.
- * A lite version of https://www.nayuki.io/page/disjoint-set-data-structure .
+ * A lite version of https://www.nayuki.io/page/disjoint-set-data-structure
  * @param  {Number} size
  * @return {Object}
  */

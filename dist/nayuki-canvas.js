@@ -116,7 +116,7 @@
 
   /**
    * The union-find data structure.
-   * A lite version of https://www.nayuki.io/page/disjoint-set-data-structure .
+   * A lite version of https://www.nayuki.io/page/disjoint-set-data-structure
    * @param  {Number} size
    * @return {Object}
    */
@@ -285,10 +285,10 @@
 
   /**
    * Determines edge opacity based on if it's fading in
-   * @param  Boolean isFadingIn
-   * @param  Object  edge
-   * @type Function
-   * @return Number
+   * @param {Boolean} isFadingIn
+   * @param {Object}  edge
+   * @type {Function}
+   * @return {Number}
    */
   function getEdgeOpacity(isFadingIn, edge, FADE_IN_RATE, FADE_OUT_RATE) {
     if (isFadingIn) {
@@ -300,21 +300,21 @@
 
   /**
    * Determines if an edge is active based on opacity of itself and connected nodes
-   * @param  Object  edge
-   * @type Function
-   * @return Boolean
+   * @param {Object}  edge
+   * @type {Function}
+   * @return {Boolean}
    */
   function isEdgeActive(edge) {
     return edge.opacity > 0 && edge.nodeA.opacity > 0 && edge.nodeB.opacity > 0;
   }
 
   /**
-   * Higher order function that compares a target's array length to another
-   * @param  Array  target
-   * @param  Array  goal
-   * @param  Number  addLength
-   * @type Function
-   * @return Boolean
+   * Compares a target's array length to another array length
+   * @param {Array}   target
+   * @param {Array}   goal
+   * @param {Number}  addLength
+   * @type {Function}
+   * @return {Boolean}
    */
   function isTargetSmaller(target, goal) {
     var addLength = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
@@ -328,11 +328,10 @@
   * Returns a new array of edges by reading the given array of nodes and by updating/adding/removing edges
   * based on the other given array. Although both argument arrays and nodes are unmodified,
   * the edge objects themselves are modified. No other side effects.
-  * @type Method
-  * @return Array
+  * @type {Method}
+  * @return {Array}
   */
   function updateEdges() {
-    var i = 0;
     var nodes = this.nodes;
     var edges = this.edges;
     var maxExtraEdges = this.maxExtraEdges;
@@ -343,13 +342,13 @@
 
     var newEdges = [];
 
-    // Calculate array of spanning tree edges
-    // then add some extra low-weight edges
+    // calculate array of spanning tree edges
     var allEdges = calcAllEdgeWeights(nodes, radiiWeightPower);
     var idealEdges = calcSpanningTree(allEdges, nodes);
-
     var idealEdgesLimitReached = isTargetSmaller(idealEdges, nodes, maxExtraEdges);
-    for (i = 0; i < allEdges.length && idealEdgesLimitReached(); i++) {
+
+    // add some extra low-weight edges to `idealEdges`
+    for (var i = 0; i < allEdges.length && idealEdgesLimitReached(); i++) {
       var edge = {
         nodeA: nodes[allEdges[i][1]],
         nodeB: nodes[allEdges[i][2]]
@@ -360,9 +359,7 @@
       }
     }
 
-    // Classify each current edge
-    // Checking whether it is in the ideal set
-    // Prune faded edges
+    // update existing egdge opacity and prune faded edges
     edges.map(function (edge) {
       var e = Object.assign({}, edge);
 
@@ -373,15 +370,15 @@
       }
     });
 
-    // Add necessary new edges,
-    // Add some missing spanning tree edges (higher priority), then extra edges
     var newEdgesLimitReached = isTargetSmaller(newEdges, nodes, maxExtraEdges);
-    for (i = 0; i < idealEdges.length && newEdgesLimitReached(); i++) {
-      var _edge = idealEdges[i];
+
+    // add new, missing spanning tree edges (high priority), and extra edges
+    for (var j = 0; j < idealEdges.length && newEdgesLimitReached(); j++) {
+      var _edge = idealEdges[j];
 
       if (!containsEdge(newEdges, _edge)) {
-        _edge.opacity = 0; // Add missing property
-        newEdges.push(_edge); // Add rendered edges
+        _edge.opacity = 0; // add missing property
+        newEdges.push(_edge); // add rendered edges
       }
     }
 
