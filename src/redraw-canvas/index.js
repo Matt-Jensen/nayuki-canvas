@@ -2,8 +2,8 @@ import canvasFrame from './canvas-frame';
 
 /**
  * Creates a new frame and renders it to the canvas
- * @type Method
- * @return Frame (generated frame instance)
+ * @type {Method}
+ * @return {Frame} (generated frame instance)
  */
 export default function redrawCanvas () {
   const { canvasElem, graphics, nodes, edges } = this;

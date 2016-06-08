@@ -61,26 +61,6 @@ test('should create instance with properties: `width`, `height`, and `size`', as
   assert.end();
 });
 
-test('should create instance that instantiates a Frame Background with `data`', assert => {
-  const msg = 'should have been created with data';
-  const expected = 'test';
-  const frameBackground = {
-    create (actual) {
-      assert.equal(actual, expected, msg);
-      assert.end();
-
-      // mock frameBackground instance
-      return { radialGradient () {} };
-    }
-  };
-
-  const instance = canvasFrame.create({ canvasElem });
-
-  // Overwrite instance properties
-  Object.assign(instance, { frameBackground, data: expected });
-  instance.background; // eslint-disable-line
-});
-
 test('should create instance that resolves `nodes` array without updating config.nodes', assert => {
   const msg = 'should not have changed';
 

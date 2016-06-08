@@ -1,4 +1,4 @@
-import frameBackground from './frame-background';
+import canvasBackground from './canvas-background';
 
 function isEdgeVisible (edge, mag) {
   // Do edge's nodes overlap
@@ -24,10 +24,10 @@ export default {
       size: Math.max(config.canvasElem.width, config.canvasElem.height)
     }, config);
 
-    return Object.create({ data, frameBackground, isEdgeVisible }, {
+    return Object.create({ data, isEdgeVisible }, {
       background: {
         get () {
-          return this.frameBackground.create(this.data).radialGradient; // TODO make gradient type configurable
+          return canvasBackground(this.data).gradient; // TODO make gradient type configurable
         }
       },
 

@@ -427,44 +427,36 @@
   }
 
   /**
-   * Factory that generates a Frame Background instance
-   * @type Object
+   * Factory that generates a Canvas Background instance
+   * @type {Function}
+   * @return {Object} (Canvas Background)
    */
-  var frameBackground = {
+  function canvasBackground(config) {
+    var data = Object.assign({
+      startColor: '#575E85', // TODO make gradient start color configurable
+      stopColor: '#2E3145' // TODO make gradient end color configurable
+      //, background: '' // TODO allow single color backgrounds
+    }, config);
 
-    /**
-     * Generates a Frame Background instance
-     * @type Method
-     * @return Object (Frame Background)
-     */
+    return Object.create({ data: data }, {
+      gradient: {
+        get: function get() {
+          var _data = this.data;
+          var width = _data.width;
+          var height = _data.height;
+          var size = _data.size;
+          var graphics = _data.graphics;
+          var startColor = _data.startColor;
+          var stopColor = _data.stopColor;
 
-    create: function create(config) {
-      var data = Object.assign({
-        startColor: '#575E85', // TODO make gradient start color configurable
-        stopColor: '#2E3145' // TODO make gradient end color configurable
-        //, background: '' // TODO allow single color backgrounds
-      }, config);
-
-      return Object.create({ data: data }, {
-        radialGradient: {
-          get: function get() {
-            var _data = this.data;
-            var width = _data.width;
-            var height = _data.height;
-            var size = _data.size;
-            var graphics = _data.graphics;
-            var startColor = _data.startColor;
-            var stopColor = _data.stopColor;
-
-            var gradient = graphics.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, size / 2);
-            gradient.addColorStop(0.0, startColor);
-            gradient.addColorStop(1.0, stopColor);
-            return gradient;
-          }
+          var gradient = graphics.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, size / 2);
+          gradient.addColorStop(0, startColor);
+          gradient.addColorStop(1, stopColor);
+          return gradient;
         }
-      });
-    }
-  };
+      }
+    });
+  }
 
   function isEdgeVisible(edge, mag) {
     // Do edge's nodes overlap
@@ -491,10 +483,10 @@
         size: Math.max(config.canvasElem.width, config.canvasElem.height)
       }, config);
 
-      return Object.create({ data: data, frameBackground: frameBackground, isEdgeVisible: isEdgeVisible }, {
+      return Object.create({ data: data, isEdgeVisible: isEdgeVisible }, {
         background: {
           get: function get() {
-            return this.frameBackground.create(this.data).radialGradient; // TODO make gradient type configurable
+            return canvasBackground(this.data).gradient; // TODO make gradient type configurable
           }
         },
 
@@ -557,8 +549,8 @@
 
   /**
    * Creates a new frame and renders it to the canvas
-   * @type Method
-   * @return Frame (generated frame instance)
+   * @type {Method}
+   * @return {Frame} (generated frame instance)
    */
   function redrawCanvas() {
     var canvasElem = this.canvasElem;
