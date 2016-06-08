@@ -1,7 +1,15 @@
 const test = require('tape');
 const disjointSet = require('../tmp/disjoint-set');
 
-test('`DisjointSet` should create parents proportional to size', assert => {
+test('should exist', assert => {
+  const msg = 'did not export a module';
+  const actual = !!disjointSet;
+  const expected = true;
+  assert.equal(actual, expected, msg);
+  assert.end();
+});
+
+test('should create parents proportional to size', assert => {
   const msg = 'should be proportional';
 
   const actual = disjointSet.create(3).parents;
@@ -11,7 +19,7 @@ test('`DisjointSet` should create parents proportional to size', assert => {
   assert.end();
 });
 
-test('`DisjointSet` should create ranks proportional to size', assert => {
+test('should create ranks proportional to size', assert => {
   const msg = 'should be proportional';
 
   const actual = disjointSet.create(3).ranks;
@@ -21,7 +29,7 @@ test('`DisjointSet` should create ranks proportional to size', assert => {
   assert.end();
 });
 
-test('`DisjointSet.getRepr` should return the parent value at given index', assert => {
+test('should return the parent value at given index with `getRepr`', assert => {
   const msg = 'should be proportional';
 
   const ds = disjointSet.create(3);
@@ -32,7 +40,7 @@ test('`DisjointSet.getRepr` should return the parent value at given index', asse
   assert.end();
 });
 
-test('`DisjointSet.mergeSets` should return false if `getRepr` returns same value', assert => {
+test('should return false from `mergeSets` if `getRepr` returns same value', assert => {
   const msg = 'should return false for same value';
   const reprStub = () => 0;
 
@@ -48,7 +56,7 @@ test('`DisjointSet.mergeSets` should return false if `getRepr` returns same valu
   assert.end();
 });
 
-test('`DisjointSet.mergeSets` should increment rank with a zero rank index', assert => {
+test('should increment rank via `mergeSets` with a zero rank index', assert => {
   const msg = 'should have incremented';
   const calls = [0, 1]; // will yield 0 - 0 from rank positions 0 & 1
   const reprStub = () => {
@@ -68,7 +76,7 @@ test('`DisjointSet.mergeSets` should increment rank with a zero rank index', ass
   assert.end();
 });
 
-test('`DisjointSet.mergeSets` should set correct parent w/ inverse rank index', assert => {
+test('should set correct parent with `mergeSets` via inverse rank index', assert => {
   const msg = 'should have updated correctly';
   const calls = [0, 1]; // will yield 1 - 0 from rank positions 0 & 1
   const ranks = [1, 1];
@@ -90,7 +98,7 @@ test('`DisjointSet.mergeSets` should set correct parent w/ inverse rank index', 
   assert.end();
 });
 
-test('`DisjointSet.mergeSets` should set correct parent index w/ normal rank index', assert => {
+test('should set correct parent index with `mergeSets` when normal rank index', assert => {
   const msg = 'should have updated parents correctly';
   const calls = [0, 1]; // will yield 1 - 0 from rank positions 0 & 1
   const ranks = [0, 1];
