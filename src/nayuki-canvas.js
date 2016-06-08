@@ -75,6 +75,22 @@ const nayukiCanvas = {
           this.repulsion = parseFloat(value);
           return this.repulsion;
         }
+      },
+
+      // at least one of relWidth or relHeight is exactly 1
+      // the aspect ratio relWidth:relHeight is equal to w:h
+      relWidth: {
+        get () {
+          const { width, height } = this.canvasElem;
+          return width / Math.max(width, height);
+        }
+      },
+
+      relHeight: {
+        get () {
+          const { width, height } = this.canvasElem;
+          return height / Math.max(width, height);
+        }
       }
     });
 
@@ -112,6 +128,25 @@ const nayukiCanvas = {
      * @return Object     canvas instance
      */
     canvas.stepFrame = function stepFrame () {
+      const {
+        idealNumNodes,
+        relWidth,
+        relHeight,
+        BORDER_FADE
+      } = this;
+
+      // Fade out nodes near the borders of the space or exceeding the target number of nodes
+      const isNodeFadingOut = (node, index) => {
+        return index >= idealNumNodes || node.posX < BORDER_FADE || relWidth - node.posX < BORDER_FADE || node.posY < BORDER_FADE || relHeight - node.posY < BORDER_FADE;
+      };
+
+      // update current node opacity
+      this.nodes.map((node, index) => {
+        const isFadingIn = !isNodeFadingOut(node, index);
+        node.opacity = this._getOpacity(isFadingIn, node);
+        return node;
+      });
+
       this.nodes = this.updateNodes();
 
       const deltas = this.getNodeDeltas();

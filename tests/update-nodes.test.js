@@ -6,6 +6,8 @@ const _getOpacity = require('../tmp/get-opacity');
 const settings = {
   idealNumNodes: 2,
   BORDER_FADE: -0.02,
+  relWidth: 100,
+  relHeight: 100,
   canvasElem: {
     width: 100,
     height: 100
@@ -23,19 +25,18 @@ test('should exist', assert => {
   assert.end();
 });
 
-// TODO renable when updating node opacity is moved to `stepFrame`
-// test('should be a pure function', assert => {
-//   const msg = 'has not changed';
-//   const nodes = createNodes(1);
-//
-//   const actual = createInstance({ nodes });
-//   const expected = JSON.parse(JSON.stringify(actual)); // clone
-//
-//   actual.updateNodes();
-//
-//   assert.deepEqual(actual, expected, msg);
-//   assert.end();
-// });
+test('should be a pure function', assert => {
+  const msg = 'has not changed';
+  const nodes = createNodes(1);
+
+  const actual = createInstance({ nodes });
+  const expected = JSON.parse(JSON.stringify(actual)); // clone
+
+  actual.updateNodes();
+
+  assert.deepEqual(actual, expected, msg);
+  assert.end();
+});
 
 test('should create an updated array of nodes', assert => {
   const msg = 'should not have updated nodes';
@@ -70,6 +71,19 @@ test('should return more nodes when `idealNumNodes` is higher', assert => {
   const { length: moreNodes } = createInstance({ nodes: createNodes(99), idealNumNodes: 100 }).updateNodes();
 
   assert.ok(lessNodes < moreNodes, msg);
+  assert.end();
+});
+
+test('should not return old invisible nodes', assert => {
+  const msg = 'resolved only visible nodes';
+
+  const [visibleNode] = createNodes(1, { opacity: 0.5 });
+  const [invisibleNode] = createNodes(1, { opacity: 0 });
+  const expected = 2;
+  const result = createInstance({ nodes: [invisibleNode, visibleNode], idealNumNodes: expected }).updateNodes();
+  const { length: actual } = result.filter(n => n !== invisibleNode);
+
+  assert.equal(actual, expected, msg);
   assert.end();
 });
 

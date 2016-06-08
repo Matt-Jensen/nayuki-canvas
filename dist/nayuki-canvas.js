@@ -8,35 +8,17 @@
   * @return {Array} Nodes
   */
   function updateNodes() {
-    var _this = this;
-
-    var _canvasElem = this.canvasElem;
-    var width = _canvasElem.width;
-    var height = _canvasElem.height;
     var nodes = this.nodes;
     var idealNumNodes = this.idealNumNodes;
-    var BORDER_FADE = this.BORDER_FADE;
-
-    // At least one of relWidth or relHeight is exactly 1. The aspect ratio relWidth:relHeight is equal to w:h.
-
-    var relWidth = width / Math.max(width, height);
-    var relHeight = height / Math.max(width, height);
+    var relWidth = this.relWidth;
+    var relHeight = this.relHeight;
 
     // nodes to render
+
     var newNodes = [];
 
-    // Fade out nodes near the borders of the space or exceeding the target number of nodes
-    var isNodeFadingOut = function isNodeFadingOut(node, index) {
-      return index >= idealNumNodes || node.posX < BORDER_FADE || relWidth - node.posX < BORDER_FADE || node.posY < BORDER_FADE || relHeight - node.posY < BORDER_FADE;
-    };
-
-    // Update position, velocity, opacity; prune faded nodes
-    nodes.map(function (node, index) {
-      // update node opacity
-      var isFadingIn = !isNodeFadingOut(node, index);
-      node.opacity = _this._getOpacity(isFadingIn, node);
-
-      // Only keep visible nodes
+    // Only keep visible nodes
+    nodes.map(function (node) {
       if (node.opacity > 0) {
         newNodes.push(node);
       }
@@ -48,9 +30,9 @@
         posX: Math.random() * relWidth,
         posY: Math.random() * relHeight,
         radius: (Math.pow(Math.random(), 5) + 0.35) * 0.015, // Skew toward smaller values
-        velX: 0.0,
-        velY: 0.0,
-        opacity: 0.0
+        velX: 0,
+        velY: 0,
+        opacity: 0
       });
     }
 
@@ -715,6 +697,28 @@
             this.repulsion = parseFloat(value);
             return this.repulsion;
           }
+        },
+
+        // at least one of relWidth or relHeight is exactly 1
+        // the aspect ratio relWidth:relHeight is equal to w:h
+        relWidth: {
+          get: function get() {
+            var _canvasElem = this.canvasElem;
+            var width = _canvasElem.width;
+            var height = _canvasElem.height;
+
+            return width / Math.max(width, height);
+          }
+        },
+
+        relHeight: {
+          get: function get() {
+            var _canvasElem2 = this.canvasElem;
+            var width = _canvasElem2.width;
+            var height = _canvasElem2.height;
+
+            return height / Math.max(width, height);
+          }
         }
       });
 
@@ -752,6 +756,26 @@
        * @return Object     canvas instance
        */
       canvas.stepFrame = function stepFrame() {
+        var _this = this;
+
+        var idealNumNodes = this.idealNumNodes;
+        var relWidth = this.relWidth;
+        var relHeight = this.relHeight;
+        var BORDER_FADE = this.BORDER_FADE;
+
+        // Fade out nodes near the borders of the space or exceeding the target number of nodes
+
+        var isNodeFadingOut = function isNodeFadingOut(node, index) {
+          return index >= idealNumNodes || node.posX < BORDER_FADE || relWidth - node.posX < BORDER_FADE || node.posY < BORDER_FADE || relHeight - node.posY < BORDER_FADE;
+        };
+
+        // update current node opacity
+        this.nodes.map(function (node, index) {
+          var isFadingIn = !isNodeFadingOut(node, index);
+          node.opacity = _this._getOpacity(isFadingIn, node);
+          return node;
+        });
+
         this.nodes = this.updateNodes();
 
         var deltas = this.getNodeDeltas();
