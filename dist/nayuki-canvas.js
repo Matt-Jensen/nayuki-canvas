@@ -1,6 +1,12 @@
 (function () {
   'use strict';
 
+  /**
+   * Creates a new trajectory object from a given node and drift speed
+   * @param  {Object} node
+   * @param  {Number} driftSpeed
+   * @return {Object} trajectory
+   */
   function getNodeTrajectory(_ref, driftSpeed) {
     var posX = _ref.posX;
     var posY = _ref.posY;
@@ -27,9 +33,11 @@
     }
   }
 
-  /*
-  * Returns a new array of nodes by updating/adding/removing nodes based on the given array. Although the
-  * argument array is not modified, the node objects themselves are modified. No other side effects.
+  /**
+  * Returns an array of updated nodes
+  * Updates/adds/removes current nodes based on the given array
+  * @type {Method}
+  * @return {Array} Nodes
   */
   function updateNodes() {
     var _canvasElem = this.canvasElem;

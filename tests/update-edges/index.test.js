@@ -27,7 +27,7 @@ test('should be a pure function', assert => {
   const msg = 'should not change';
 
   const actual = createInstance({ nodes: createNodes(), edges: createEdges() });
-  const expected = createInstance({ nodes: createNodes(), edges: createEdges() });
+  const expected = JSON.parse(JSON.stringify(actual)); // clone
 
   actual.updateEdges();
 

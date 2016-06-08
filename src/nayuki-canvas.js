@@ -1,4 +1,4 @@
-import updateNodes from './update-nodes';
+import updateNodes from './update-nodes/index';
 import updateEdges from './update-edges/index';
 import getNodeDeltas from './get-node-deltas/index';
 import redrawCanvas from './redraw-canvas/index';

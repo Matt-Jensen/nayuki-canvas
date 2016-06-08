@@ -1,26 +1,11 @@
-export function getNodeTrajectory ({ posX, posY, velX, velY }, driftSpeed) {
-  return {
-    // Move based on velocity
-    posX: posX + (velX * driftSpeed),
-    posY: posY + (velY * driftSpeed),
+import getNodeTrajectory from './get-node-trajectory';
+import getNodeOpacity from './get-node-opacity';
 
-    // Randomly perturb velocity, with damping
-    velX: velX * 0.99 + (Math.random() - 0.5) * 0.3,
-    velY: velY * 0.99 + (Math.random() - 0.5) * 0.3
-  };
-}
-
-export function getNodeOpacity (isFadingOut, opacity, FADE_IN_RATE, FADE_OUT_RATE) {
-  if (isFadingOut) {
-    return Math.max(opacity - FADE_OUT_RATE, 0);
-  } else { // Fade in ones otherwise
-    return Math.min(opacity + FADE_IN_RATE, 1);
-  }
-}
-
-/*
-* Returns a new array of nodes by updating/adding/removing nodes based on the given array. Although the
-* argument array is not modified, the node objects themselves are modified. No other side effects.
+/**
+* Returns an array of updated nodes
+* Updates/adds/removes current nodes based on the given array
+* @type {Method}
+* @return {Array} Nodes
 */
 export default function updateNodes () {
   const { width, height } = this.canvasElem;
