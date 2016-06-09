@@ -75,7 +75,7 @@ export function calcAllEdgeWeights (nodes, radiiWeightPower) {
 }
 
 /**
- * Create a deep copy of a given collection
+ * Create a deep (JSON compliant) copy of a given collection
  * @param {Array|Object} c
  * @type {Function}
  * @return {Array|Object}
@@ -83,3 +83,17 @@ export function calcAllEdgeWeights (nodes, radiiWeightPower) {
  export function deepCopy (c) {
    return JSON.parse(JSON.stringify(c));
  }
+
+/**
+ * Determines if Nayuki Canvas is supported in the current environment
+ * @type {Function}
+ * @return {Boolean}
+ */
+export function isSupported () {
+  const elem = (
+    typeof document === 'object' &&
+    document.createElement &&
+    document.createElement('canvas')
+  );
+  return !!(elem && elem.getContext && elem.getContext('2d'));
+}

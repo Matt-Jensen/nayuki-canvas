@@ -1,11 +1,11 @@
 const test = require('tape');
 const utils = require('../tmp/utils');
-const { containsEdge, calcSpanningTree, calcAllEdgeWeights } = utils;
+const { containsEdge, calcSpanningTree, calcAllEdgeWeights, isSupported } = utils;
 const { createNodes, createEdges } = require('./helpers/create');
 
 test('all utils should exist', assert => {
   const msg = 'exports 3 modules';
-  const actual = !!(containsEdge && calcSpanningTree && calcAllEdgeWeights);
+  const actual = !!(containsEdge && calcSpanningTree && calcAllEdgeWeights && isSupported);
   const expected = true;
   assert.equal(actual, expected, msg);
   assert.end();
@@ -198,5 +198,63 @@ test('`calcAllEdgeWeights` should sort edges weight', assert => {
   const expected = true;
 
   assert.deepEqual(actual, expected, msg);
+  assert.end();
+});
+
+test('`isSupported` should be false without global `document`', assert => {
+  const msg = 'is based on `document` existance';
+
+  const originalDocument = (typeof document === 'object' ? document : undefined);
+  document = false;
+
+  const actual = isSupported();
+  const expected = false;
+  assert.equal(actual, expected, msg);
+
+  document = originalDocument;
+  assert.end();
+});
+
+test('`isSupported` should be `false` when canvas cannot create a 2D context', assert => {
+  const msg = 'false indicates 2D context is unsupported';
+
+  const originalDocument = (typeof document === 'object' ? document : undefined);
+  document = {
+    createElement () {
+      return {
+        getContext: false
+      };
+    }
+  };
+
+  const actual = isSupported();
+  const expected = false;
+
+  assert.equal(actual, expected, msg);
+
+  document = originalDocument;
+  assert.end();
+});
+
+test('`isSupported` should be `true` when canvas creates a 2D context', assert => {
+  const msg = 'true indicates 2D context is supported';
+
+  const originalDocument = (typeof document === 'object' ? document : undefined);
+  document = {
+    createElement () {
+      return {
+        getContext () {
+          return true;
+        }
+      };
+    }
+  };
+
+  const actual = isSupported();
+  const expected = true;
+
+  assert.equal(actual, expected, msg);
+
+  document = originalDocument;
   assert.end();
 });
