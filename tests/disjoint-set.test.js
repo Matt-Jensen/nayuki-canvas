@@ -9,6 +9,29 @@ test('should exist', assert => {
   assert.end();
 });
 
+test('should be idempotent', assert => {
+  const msg = 'disjoint sets are the same';
+
+  const size = 2;
+  const actual = disjointSet(size);
+  const expected = disjointSet(size);
+
+  assert.deepEqual(actual, expected, msg);
+  assert.end();
+});
+
+test('should have idempotent methods', assert => {
+  const msg = 'method results are the same';
+
+  const size = 2;
+  const actual = disjointSet(size);
+  const expected = disjointSet(size);
+
+  assert.equal(actual.getRepr(0), expected.getRepr(0), msg);
+  assert.equal(actual.mergeSets(0, 1), expected.mergeSets(0, 1), msg);
+  assert.end();
+});
+
 test('should create parents proportional to size', assert => {
   const msg = 'should be proportional';
 

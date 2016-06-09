@@ -25,6 +25,20 @@ test('should return a pure function', assert => {
   assert.end();
 });
 
+test('should return an idempotent function', assert => {
+  const msg = 'result is the same';
+  const arrOne = [1];
+  const arrTwo = [1];
+
+  const actual = isTargetSmaller(arrOne, arrTwo);
+  const expected = isTargetSmaller(arrOne, arrTwo);
+
+  arrTwo.push(1);
+
+  assert.equal(actual(), expected(), msg);
+  assert.end();
+});
+
 test('should return false when target is greater than goal length', assert => {
   const msg = 'should be false';
 

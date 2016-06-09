@@ -13,6 +13,29 @@ test('should exist', assert => {
   assert.end();
 });
 
+test('should be idempotent', assert => {
+  const msg = 'canvas frames are the same';
+
+  const config = { nodes: createNodes(2), edges: createEdges(2), canvasElem };
+  const actual = canvasFrame.create(config);
+  const expected = canvasFrame.create(config);
+
+  assert.deepEqual(actual, expected, msg);
+  assert.end();
+});
+
+test('should have idempotent methods', assert => {
+  const msg = 'canvas frames methods produce same result';
+
+  const config = { nodes: createNodes(2), edges: createEdges(2), canvasElem };
+  const actual = canvasFrame.create(config);
+  const expected = canvasFrame.create(config);
+
+  assert.deepEqual(actual.nodes, expected.nodes, msg);
+  assert.deepEqual(actual.edges, expected.edges, msg);
+  assert.end();
+});
+
 test('should provide only pure functions', assert => {
   const msg = '`nodes` were updated';
   const actual = { nodes: createNodes(2), edges: createEdges(2), canvasElem };
@@ -65,7 +88,7 @@ test('should create instance that resolves `nodes` array without updating config
   const msg = 'should not have changed';
 
   const actual = createNodes(2);
-  const expected = createNodes(2);
+  const expected = JSON.parse(JSON.stringify(actual)); // clone
   const instance = canvasFrame.create({ canvasElem, nodes: actual });
 
   instance.nodes; // eslint-disable-line
@@ -78,6 +101,7 @@ test('should create instance that resolves `nodes` proportional to config.nodes'
   const msg = 'should have a length of `2`';
 
   const nodes = createNodes(2);
+  console.log(Object.keys(canvasFrame.create({ canvasElem, nodes })));
   const actual = canvasFrame.create({ canvasElem, nodes }).nodes.length;
   const expected = nodes.length;
 

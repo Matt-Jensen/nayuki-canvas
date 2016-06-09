@@ -26,6 +26,16 @@ test('`containsEdge` should be a pure function', assert => {
   assert.end();
 });
 
+test('`containsEdge` should be idempotent', assert => {
+  const msg = 'results should be the same';
+
+  const actual = containsEdge([], {});
+  const expected = containsEdge([], {});
+
+  assert.same(actual, expected, msg);
+  assert.end();
+});
+
 test('`containsEdge` should return false if edge not found', assert => {
   const msg = 'should return `false` for not found';
 
@@ -47,15 +57,27 @@ test('`containsEdge` should return true if edge found', assert => {
   assert.end();
 });
 
+test('`calcSpanningTree` should be idempotent', assert => {
+  const msg = 'results should be the same';
+
+  const edges = [ ['', 0, 1] ];
+  const nodes = [{ x: 1 }, { y: 2 }];
+  const actual = calcSpanningTree(edges, nodes);
+  const expected = calcSpanningTree(edges, nodes);
+
+  assert.same(actual, expected, msg);
+  assert.end();
+});
+
 test('`calcSpanningTree` should be a pure function', assert => {
   const msg = 'did not updated arguments';
   const actual = {
-    edges: createEdges(1),
-    nodes: createNodes(2)
+    edges: [ ['', 0, 1] ],
+    nodes: [{ x: 1 }, { y: 2 }]
   };
   const expected = JSON.parse(JSON.stringify(actual)); // clone
 
-  containsEdge(actual.edges, actual.nodes);
+  calcSpanningTree(actual.edges, actual.nodes);
 
   assert.deepEqual(actual, expected, msg);
   assert.end();
@@ -114,6 +136,16 @@ test('`calcAllEdgeWeights` should be a pure function', assert => {
   calcAllEdgeWeights(actual.nodes, actual.radiiWeightPower);
 
   assert.deepEqual(actual, expected, msg);
+  assert.end();
+});
+
+test('`calcAllEdgeWeights` should be idempotent', assert => {
+  const msg = 'results should be the same';
+
+  const actual = calcAllEdgeWeights([], 1);
+  const expected = calcAllEdgeWeights([], 1);
+
+  assert.same(actual, expected, msg);
   assert.end();
 });
 

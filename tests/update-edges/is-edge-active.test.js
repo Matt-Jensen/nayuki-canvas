@@ -22,6 +22,16 @@ test('should be a pure function', assert => {
   assert.end();
 });
 
+test('should be idempotent', assert => {
+  const msg = 'result is the same';
+
+  const actual = isEdgeActive(createEdges());
+  const expected = isEdgeActive(createEdges());
+
+  assert.equal(actual, expected, msg);
+  assert.end();
+});
+
 test('should return false if any edge opacities are not positive', assert => {
   const msg = 'should be false';
 

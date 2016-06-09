@@ -21,6 +21,18 @@ test('should be a pure function', assert => {
   assert.end();
 });
 
+test('should be idempotent', assert => {
+  const msg = 'deltas are the same';
+
+  const nodes = [].concat(createNodes(1), createNodes(1, { posX: 2, posY: 2}));
+  const repulsionForce = 0.0001;
+  const actual = getNodeDeltas(nodes, repulsionForce);
+  const expected = getNodeDeltas(nodes, repulsionForce);
+
+  assert.deepEqual(actual, expected, msg);
+  assert.end();
+});
+
 test('should return an array of deltas', assert => {
   const msg = 'did not provide correct array of deltas';
   const nodes = [].concat(createNodes(1), createNodes(1, { posX: 2, posY: 2 }));

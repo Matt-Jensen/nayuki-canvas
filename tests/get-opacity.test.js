@@ -26,6 +26,17 @@ test('should be a pure function', assert => {
   assert.end();
 });
 
+test('should be idempotent', assert => {
+  const msg = 'opacities are the same';
+  const i = { opacity: 0.5 };
+  const fIn = 0.05;
+  const fOut = 0.05;
+
+  assert.equal(getOpacity(true, i, fIn, fOut), getOpacity(true, i, fIn, fOut), msg);
+  assert.equal(getOpacity(false, i, fIn, fOut), getOpacity(false, i, fIn, fOut), msg);
+  assert.end();
+});
+
 test('should resolve instance `FADE_IN_RATE` if none given', assert => {
   const msg = 'resolved instance `FADE_IN_RATE`';
   const instance = { FADE_IN_RATE: 0.1 };

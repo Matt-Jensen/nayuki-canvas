@@ -34,6 +34,17 @@ test('should be a pure function', assert => {
   assert.end();
 });
 
+test('should be idempotent', assert => {
+  const msg = 'updated edges should be the same';
+
+  const config = { nodes: createNodes(2), edges: createEdges() };
+  const actual = createInstance(config).updateEdges();
+  const expected = createInstance(config).updateEdges();
+
+  assert.deepEqual(actual, expected, msg);
+  assert.end();
+});
+
 test('should return an array of new edge objects', assert => {
   const msg = 'return new edge object';
 

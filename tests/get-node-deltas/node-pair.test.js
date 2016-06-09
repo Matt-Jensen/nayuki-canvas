@@ -10,7 +10,7 @@ test('should exist', assert => {
   assert.end();
 });
 
-test('should provide only pure functions', assert => {
+test('should be and provide pure functions', assert => {
   const msg = '`nodes` were updated';
   const actual = createNodes(2);
   const expected = JSON.parse(JSON.stringify(actual)); // clone
@@ -21,6 +21,36 @@ test('should provide only pure functions', assert => {
   Object.keys(np).forEach(k => np[k]);
 
   assert.deepEqual(actual, expected, msg);
+  assert.end();
+});
+
+test('should be idempotent', assert => {
+  const msg = 'node pairs are the same';
+
+  const nodes = [].concat(createNodes(1), createNodes(1, { posX: 2, posY: 2}));
+  const actual = nodePair(...nodes, 0.0001);
+  const expected = nodePair(...nodes, 0.0001);
+
+  assert.deepEqual(actual, expected, msg);
+  assert.end();
+});
+
+test('should provide idempotent methods', assert => {
+  const msg = 'node pairs methods produce same';
+
+  const nodes = [].concat(createNodes(1), createNodes(1, { posX: 2, posY: 2}));
+  const actual = nodePair(...nodes, 0.0001);
+  const expected = nodePair(...nodes, 0.0001);
+
+  assert.equal(actual.nodeA, expected.nodeA, msg);
+  assert.equal(actual.nodeB, expected.nodeB, msg);
+  assert.equal(actual.x, expected.y, msg);
+  assert.equal(actual.y, expected.y, msg);
+  assert.equal(actual.repulsionForce, expected.repulsionForce, msg);
+  assert.equal(actual.distSqr, expected.distSqr, msg);
+  assert.equal(actual.factory, expected.factory, msg);
+  assert.deepEqual(actual.deltas, expected.deltas, msg);
+
   assert.end();
 });
 
