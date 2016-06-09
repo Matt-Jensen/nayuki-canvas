@@ -797,10 +797,36 @@
      */
     canvas.edges = [];
 
-    // periodically execute stepFrame() to create animation
-    setInterval(function () {
-      return canvas.next();
-    }, config.FRAME_INTERVAL);
+    /**
+     * setup start and stop methods for canvas
+     */
+    ;(function () {
+      var t = void 0;
+
+      /**
+       * Begin reoccuring calls to `canvas.next`
+       * @type {Method}
+       * @return {Object} canvas
+       */
+      canvas.start = function start() {
+        var _this = this;
+
+        t = setInterval(function () {
+          return _this.next();
+        }, this.FRAME_INTERVAL);
+        return this;
+      };
+
+      /**
+       * Stops calls to `canvas.next`
+       * @type {Method}
+       * @return {Object} canvas
+       */
+      canvas.stop = function () {
+        clearInterval(t);
+        return this;
+      };
+    })();
 
     // chart instance
     return canvas;
