@@ -17,8 +17,8 @@ test('should be idempotent', assert => {
   const msg = 'canvas frames are the same';
 
   const config = { nodes: createNodes(2), edges: createEdges(2), canvasElem };
-  const actual = canvasFrame.create(config);
-  const expected = canvasFrame.create(config);
+  const actual = canvasFrame(config);
+  const expected = canvasFrame(config);
 
   assert.deepEqual(actual, expected, msg);
   assert.end();
@@ -28,8 +28,8 @@ test('should have idempotent methods', assert => {
   const msg = 'canvas frames methods produce same result';
 
   const config = { nodes: createNodes(2), edges: createEdges(2), canvasElem };
-  const actual = canvasFrame.create(config);
-  const expected = canvasFrame.create(config);
+  const actual = canvasFrame(config);
+  const expected = canvasFrame(config);
 
   assert.deepEqual(actual.nodes, expected.nodes, msg);
   assert.deepEqual(actual.edges, expected.edges, msg);
@@ -41,7 +41,7 @@ test('should provide only pure functions', assert => {
   const actual = { nodes: createNodes(2), edges: createEdges(2), canvasElem };
   const expected = JSON.parse(JSON.stringify(actual)); // clone
 
-  const cf = canvasFrame.create(actual);
+  const cf = canvasFrame(actual);
 
   // invoke all enumerables
   Object.keys(cf).forEach(k => cf[k]);
@@ -53,7 +53,7 @@ test('should provide only pure functions', assert => {
 test('should `create()` new Canvas Frame instances', assert => {
   const msg = 'should be an object';
 
-  const actual = isObject(canvasFrame.create({ canvasElem }));
+  const actual = isObject(canvasFrame({ canvasElem }));
   const expected = true;
 
   assert.equal(actual, expected, msg);
@@ -66,7 +66,7 @@ test('should provide a pure function: `create()`', assert => {
   const actual = { canvasElem };
   const expected = { canvasElem };
 
-  canvasFrame.create({ canvasElem });
+  canvasFrame({ canvasElem });
 
   assert.deepEqual(actual, expected, msg);
   assert.end();
@@ -74,7 +74,7 @@ test('should provide a pure function: `create()`', assert => {
 
 test('should create instance with properties: `width`, `height`, and `size`', assert => {
   const msg = 'should be defined';
-  const actual = canvasFrame.create({ canvasElem });
+  const actual = canvasFrame({ canvasElem });
   const expected = false;
 
   assert.equal(isUndefined(actual.data.width), expected, msg);
@@ -89,7 +89,7 @@ test('should create instance that resolves `nodes` array without updating config
 
   const actual = createNodes(2);
   const expected = JSON.parse(JSON.stringify(actual)); // clone
-  const instance = canvasFrame.create({ canvasElem, nodes: actual });
+  const instance = canvasFrame({ canvasElem, nodes: actual });
 
   instance.nodes; // eslint-disable-line
 
@@ -101,8 +101,8 @@ test('should create instance that resolves `nodes` proportional to config.nodes'
   const msg = 'should have a length of `2`';
 
   const nodes = createNodes(2);
-  console.log(Object.keys(canvasFrame.create({ canvasElem, nodes })));
-  const actual = canvasFrame.create({ canvasElem, nodes }).nodes.length;
+  console.log(Object.keys(canvasFrame({ canvasElem, nodes })));
+  const actual = canvasFrame({ canvasElem, nodes }).nodes.length;
   const expected = nodes.length;
 
   assert.deepEqual(actual, expected, msg);
@@ -112,7 +112,7 @@ test('should create instance that resolves `nodes` proportional to config.nodes'
 test('should create instance that resolves `nodes` with arcs that are multiples of instance `size`', assert => {
   const msg = 'should be a multiple';
 
-  const instance = canvasFrame.create({ canvasElem, nodes: createNodes(1) });
+  const instance = canvasFrame({ canvasElem, nodes: createNodes(1) });
   const size = instance.data.size;
   const node = instance.nodes[0];
 
@@ -128,7 +128,7 @@ test('should create instance that resolves `edges` array without updating config
 
   const actual = createEdges(2);
   const expected = createEdges(2);
-  const instance = canvasFrame.create({ canvasElem, edges: actual });
+  const instance = canvasFrame({ canvasElem, edges: actual });
 
   instance.edges; // eslint-disable-line
 
@@ -141,7 +141,7 @@ test('should create instance that resolves `edges` array of only visible edges',
 
   const edges = createEdges(2);
   edges[0].doNotInclude = true;
-  const instance = canvasFrame.create({ canvasElem, edges });
+  const instance = canvasFrame({ canvasElem, edges });
 
   // Stub `isEdgeVisible` to remove first
   instance.isEdgeVisible = e => isUndefined(e.doNotInclude);
@@ -156,7 +156,7 @@ test('should create instance that resolves `edges` array of only visible edges',
 test('should create instance that resolves `edges` array item properties: `style`, `start`, `end`', assert => {
   const msg = 'should resolve only one edge';
 
-  const instance = canvasFrame.create({ canvasElem, edges: createEdges(1) });
+  const instance = canvasFrame({ canvasElem, edges: createEdges(1) });
 
   // Stub `isEdgeVisible` to include all
   instance.isEdgeVisible = () => true;

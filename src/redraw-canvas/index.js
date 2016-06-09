@@ -7,7 +7,7 @@ import canvasFrame from './canvas-frame';
  */
 export default function redrawCanvas () {
   const { canvasElem, graphics, nodes, edges } = this;
-  const frame = canvasFrame.create({ canvasElem, graphics, nodes, edges });
+  const frame = canvasFrame({ canvasElem, graphics, nodes, edges });
 
   // Set background first (render below nodes & edges)
   graphics.fillStyle = frame.background;

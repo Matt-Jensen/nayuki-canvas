@@ -463,89 +463,81 @@
   }
 
   /**
-   * Factory that generates Frame instances
-   * @type {Object}
+   * Generates a Canvas Frame instances
+   * @type {Function}
+   * @return {Object} (Canvas Frame)
    */
-  var canvasFrame = {
+  function canvasFrame(config) {
+    var defaults = {
+      // get frame dimensions
+      width: config.canvasElem.width,
+      height: config.canvasElem.height,
+      size: Math.max(config.canvasElem.width, config.canvasElem.height)
+    };
 
-    /**
-     * Generates a Canvas Frame instances
-     * @type {Function}
-     * @return {Object} (Canvas Frame)
-     */
-
-    create: function create(config) {
-      var defaults = {
-        // get frame dimensions
-        width: config.canvasElem.width,
-        height: config.canvasElem.height,
-        size: Math.max(config.canvasElem.width, config.canvasElem.height)
-      };
-
-      var instance = Object.create({ isEdgeVisible: isEdgeVisible }, {
-        background: {
-          get: function get() {
-            return canvasBackground(this.data).gradient; // TODO make gradient type configurable
-          }
-        },
-
-        nodes: {
-          get: function get() {
-            var size = this.data.size;
-
-            var color = '129,139,197'; // TODO make node color configurable
-
-            return this.data.nodes.map(function (node) {
-              return {
-                fill: 'rgba(' + color + ',' + node.opacity.toFixed(3) + ')',
-                arc: [node.posX * size, node.posY * size, node.radius * size, 0, Math.PI * 2]
-              };
-            });
-          }
-        },
-
-        edges: {
-          get: function get() {
-            var _this = this;
-
-            var size = this.data.size;
-
-            var color = '129,139,197'; // TODO make edge color configurable
-
-            return this.data.edges.map(function (edge) {
-              var nodeA = edge.nodeA;
-              var nodeB = edge.nodeB;
-
-
-              var dx = nodeA.posX - nodeB.posX;
-              var dy = nodeA.posY - nodeB.posY;
-
-              var opacity = Math.min(Math.min(nodeA.opacity, nodeB.opacity), edge.opacity);
-              var mag = Math.hypot(dx, dy);
-
-              dx /= mag; // make dx a unit vector, pointing from B to A
-              dy /= mag; // make dy a unit vector, pointing from B to A
-
-              if (_this.isEdgeVisible(edge, mag) === false) {
-                return false; // don't render
-              }
-
-              return {
-                style: 'rgba(' + color + ',' + opacity.toFixed(3) + ')',
-
-                // Shorten edge so it only touches the circumference of node
-                start: [(nodeA.posX - dx * nodeA.radius) * size, (nodeA.posY - dy * nodeA.radius) * size],
-                end: [(nodeB.posX + dx * nodeB.radius) * size, (nodeB.posY + dy * nodeB.radius) * size]
-              };
-            }).filter(function (e) {
-              return e;
-            }); // remove invisible edges
-          }
+    var instance = Object.create({ isEdgeVisible: isEdgeVisible }, {
+      background: {
+        get: function get() {
+          return canvasBackground(this.data).gradient; // TODO make gradient type configurable
         }
-      });
+      },
 
-      return Object.assign(instance, { data: Object.assign(defaults, config) });
-    }
+      nodes: {
+        get: function get() {
+          var size = this.data.size;
+
+          var color = '129,139,197'; // TODO make node color configurable
+
+          return this.data.nodes.map(function (node) {
+            return {
+              fill: 'rgba(' + color + ',' + node.opacity.toFixed(3) + ')',
+              arc: [node.posX * size, node.posY * size, node.radius * size, 0, Math.PI * 2]
+            };
+          });
+        }
+      },
+
+      edges: {
+        get: function get() {
+          var _this = this;
+
+          var size = this.data.size;
+
+          var color = '129,139,197'; // TODO make edge color configurable
+
+          return this.data.edges.map(function (edge) {
+            var nodeA = edge.nodeA;
+            var nodeB = edge.nodeB;
+
+
+            var dx = nodeA.posX - nodeB.posX;
+            var dy = nodeA.posY - nodeB.posY;
+
+            var opacity = Math.min(Math.min(nodeA.opacity, nodeB.opacity), edge.opacity);
+            var mag = Math.hypot(dx, dy);
+
+            dx /= mag; // make dx a unit vector, pointing from B to A
+            dy /= mag; // make dy a unit vector, pointing from B to A
+
+            if (_this.isEdgeVisible(edge, mag) === false) {
+              return false; // don't render
+            }
+
+            return {
+              style: 'rgba(' + color + ',' + opacity.toFixed(3) + ')',
+
+              // Shorten edge so it only touches the circumference of node
+              start: [(nodeA.posX - dx * nodeA.radius) * size, (nodeA.posY - dy * nodeA.radius) * size],
+              end: [(nodeB.posX + dx * nodeB.radius) * size, (nodeB.posY + dy * nodeB.radius) * size]
+            };
+          }).filter(function (e) {
+            return e;
+          }); // remove invisible edges
+        }
+      }
+    });
+
+    return Object.assign(instance, { data: Object.assign(defaults, config) });
   };
 
   /**
@@ -559,7 +551,7 @@
     var nodes = this.nodes;
     var edges = this.edges;
 
-    var frame = canvasFrame.create({ canvasElem: canvasElem, graphics: graphics, nodes: nodes, edges: edges });
+    var frame = canvasFrame({ canvasElem: canvasElem, graphics: graphics, nodes: nodes, edges: edges });
 
     // Set background first (render below nodes & edges)
     graphics.fillStyle = frame.background;
