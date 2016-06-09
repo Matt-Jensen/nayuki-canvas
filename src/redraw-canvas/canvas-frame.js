@@ -1,5 +1,11 @@
 import canvasBackground from './canvas-background';
 
+/**
+ * Determines if an edge is visible
+ * @param  {Object}  edge
+ * @param  {Number}  mag
+ * @return {Boolean}
+ */
 function isEdgeVisible (edge, mag) {
   // Do edge's nodes overlap
   return mag > edge.nodeA.radius + edge.nodeB.radius;
@@ -7,8 +13,9 @@ function isEdgeVisible (edge, mag) {
 
 /**
  * Generates a Canvas Frame instances
+ * @param {Object}    config
  * @type {Function}
- * @return {Object} (Canvas Frame)
+ * @return {Object}   Canvas Frame instance
  */
 export default function canvasFrame (config) {
   const defaults = {

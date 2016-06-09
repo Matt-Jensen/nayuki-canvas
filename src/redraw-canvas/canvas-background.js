@@ -1,7 +1,8 @@
 /**
  * Factory that generates a Canvas Background instance
+ * @param {Object}   config
  * @type {Function}
- * @return {Object} (Canvas Background)
+ * @return {Object}  Canvas Background instance
  */
 export default function canvasBackground (config) {
   const defaults = {

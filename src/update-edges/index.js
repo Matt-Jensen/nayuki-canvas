@@ -6,17 +6,15 @@ import isTargetSmaller from './is-target-smaller';
 * Returns a new array of edges by reading the given array of nodes and by updating/adding/removing edges
 * based on the other given array. Although both argument arrays and nodes are unmodified,
 * the edge objects themselves are modified. No other side effects.
+* @param {Array}    nodes
+* @param {Array}    edges
+* @param {Number}   maxExtraEdges
+* @param {Number}   radiiWeightPower
 * @type {Method}
+* @private
 * @return {Array}
 */
-export default function updateEdges () {
-  const {
-    nodes,
-    edges,
-    maxExtraEdges,
-    radiiWeightPower
-  } = this;
-
+export default function updateEdges (nodes = this.nodes, edges = this.edges, maxExtraEdges = this.maxExtraEdges, radiiWeightPower = this.radiiWeightPower) {
   const newEdges = [];
 
   // calculate array of spanning tree edges

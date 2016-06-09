@@ -1,8 +1,12 @@
 /**
  * WARNING all side effects to canvas state (nodes/edges) are done in this method!
  * Updates nodes, edges then draws new canvas frame
+ * @param {Number}   idealNumNodes
+ * @param {Number}   relWidth
+ * @param {Number}   relHeight
+ * @param {Number}   BORDER_FADE
  * @type {Method}
- * @return {Object}  canvas instance
+ * @return {Object}  Canvas instance
  */
 export default function next (idealNumNodes = this.idealNumNodes, relWidth = this.relWidth, relHeight = this.relHeight, BORDER_FADE = this.BORDER_FADE) {
 

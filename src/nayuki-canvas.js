@@ -12,6 +12,12 @@ const networkStyleKey = {
   hubAndSpoke: 1
 };
 
+/**
+ * Generates new Nayuki Canvas
+ * @param  {Object} canvasElem DOM Canvas Element
+ * @param  {Object} options    User configuration
+ * @return {Object}            Nayuki Canvas
+ */
 function createCanvas (canvasElem, options) {
   if (canvasElem instanceof HTMLElement === false || canvasElem.nodeName !== 'CANVAS') {
     throw new Error('Nayuki Canvas requires a canvas element for the first argument');
@@ -124,7 +130,7 @@ function createCanvas (canvasElem, options) {
   /**
    * setup start and stop methods for canvas
    */
-  ;(function () {
+  (function () {
     let t;
 
     /**
@@ -146,7 +152,7 @@ function createCanvas (canvasElem, options) {
       clearInterval(t);
       return this;
     };
-  })();
+  }());
 
   // canvas instance
   return canvas;

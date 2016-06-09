@@ -4,18 +4,21 @@
   /**
   * Returns an array of updated nodes
   * Updates/adds/removes current nodes based on the given array
+  * @param {Array}    nodes
+  * @param {Number}   idealNumNodes
+  * @param {Number}   relWidth
+  * @param {Number}   relHeight
   * @type {Method}
-  * @return {Array} Nodes
+  * @private
+  * @return {Array}  Nodes
   */
   function updateNodes() {
-    var nodes = this.nodes;
-    var idealNumNodes = this.idealNumNodes;
-    var relWidth = this.relWidth;
-    var relHeight = this.relHeight;
+    var nodes = arguments.length <= 0 || arguments[0] === undefined ? this.nodes : arguments[0];
+    var idealNumNodes = arguments.length <= 1 || arguments[1] === undefined ? this.idealNumNodes : arguments[1];
+    var relWidth = arguments.length <= 2 || arguments[2] === undefined ? this.relWidth : arguments[2];
+    var relHeight = arguments.length <= 3 || arguments[3] === undefined ? this.relHeight : arguments[3];
 
-    // nodes to render
-
-    var newNodes = [];
+    var newNodes = []; // nodes to render
 
     // Only keep visible nodes
     nodes.map(function (node) {
@@ -72,6 +75,7 @@
    * The union-find data structure.
    * A lite version of https://www.nayuki.io/page/disjoint-set-data-structure
    * @param  {Number} size
+   * @type   {Function}
    * @return {Object}
    */
   function disjointSet(size) {
@@ -145,13 +149,14 @@
   /**
    * Tests whether the given array of edge objects contains an edge with
    * the given endpoints (undirected). Pure function, no side effects.
-   *
-   * @type Function
-   * @return Boolean
+   * @param {Array}    allEdges
+   * @param {Object}   edge
+   * @type {Function}
+   * @return {Boolean}
    */
-  function containsEdge(array, edge) {
-    for (var i = 0; i < array.length; i++) {
-      var elem = array[i];
+  function containsEdge(allEdges, edge) {
+    for (var i = 0; i < allEdges.length; i++) {
+      var elem = allEdges[i];
       var sameEdge = elem.nodeA === edge.nodeA && elem.nodeB === edge.nodeB;
       var symetricalEdge = elem.nodeA === edge.nodeB && elem.nodeB === edge.nodeA;
 
@@ -166,9 +171,10 @@
    * Returns a new array of edge objects that is a minimal spanning tree on the given set
    * of nodes, with edges in ascending order of weight. Note that the returned edge objects
    * are missing the opacity property. Pure function, no side effects.
-   *
-   * @type Function
-   * @return Array
+   * @param {Array}    allEdges
+   * @param {Array}    nodes
+   * @type {Function}
+   * @return {Array}
    */
   function calcSpanningTree(allEdges, nodes) {
 
@@ -195,9 +201,9 @@
 
   /**
    * Returns a sorted array of edges with weights, for all unique edge pairs. Pure function, no side effects.
-   *
-   * @type Function
-   * @return Array
+   * @param {Array}   nodes
+   * @type {Function}
+   * @return {Array}  [[weight, index1, index2]]
    */
   function calcAllEdgeWeights(nodes, radiiWeightPower) {
 
@@ -231,7 +237,9 @@
 
   /**
    * Create a deep copy of a given collection
-   * @type Function
+   * @param {Array|Object} c
+   * @type {Function}
+   * @return {Array|Object}
    */
   function deepCopy(c) {
     return JSON.parse(JSON.stringify(c));
@@ -267,17 +275,22 @@
   * Returns a new array of edges by reading the given array of nodes and by updating/adding/removing edges
   * based on the other given array. Although both argument arrays and nodes are unmodified,
   * the edge objects themselves are modified. No other side effects.
+  * @param {Array}    nodes
+  * @param {Array}    edges
+  * @param {Number}   maxExtraEdges
+  * @param {Number}   radiiWeightPower
   * @type {Method}
+  * @private
   * @return {Array}
   */
   function updateEdges() {
+    var nodes = arguments.length <= 0 || arguments[0] === undefined ? this.nodes : arguments[0];
+    var edges = arguments.length <= 1 || arguments[1] === undefined ? this.edges : arguments[1];
+
     var _this = this;
 
-    var nodes = this.nodes;
-    var edges = this.edges;
-    var maxExtraEdges = this.maxExtraEdges;
-    var radiiWeightPower = this.radiiWeightPower;
-
+    var maxExtraEdges = arguments.length <= 2 || arguments[2] === undefined ? this.maxExtraEdges : arguments[2];
+    var radiiWeightPower = arguments.length <= 3 || arguments[3] === undefined ? this.radiiWeightPower : arguments[3];
 
     var newEdges = [];
 
@@ -327,7 +340,11 @@
 
   /**
    * Factory that produces grouping of caclulations based on a pair of nodes
+   * @param {Object}    node1
+   * @param {Object}    node2
+   * @param {Number}    rf
    * @type {Function}
+   * @return {Object}   Node Pair instance
    */
   function nodePair(node1, node2, rf) {
     return Object.create(null, {
@@ -395,6 +412,8 @@
    * Create array of deltas based on list of nodes
    * @param  {Array} nodes
    * @param  {Number} repulsionForce
+   * @type   {Method}
+   * @private
    * @return {Array}
    */
   function getNodeDeltas() {
@@ -428,8 +447,9 @@
 
   /**
    * Factory that generates a Canvas Background instance
+   * @param {Object}   config
    * @type {Function}
-   * @return {Object} (Canvas Background)
+   * @return {Object}  Canvas Background instance
    */
   function canvasBackground(config) {
     var defaults = {
@@ -457,6 +477,12 @@
     }), defaults, config);
   }
 
+  /**
+   * Determines if an edge is visible
+   * @param  {Object}  edge
+   * @param  {Number}  mag
+   * @return {Boolean}
+   */
   function isEdgeVisible(edge, mag) {
     // Do edge's nodes overlap
     return mag > edge.nodeA.radius + edge.nodeB.radius;
@@ -464,8 +490,9 @@
 
   /**
    * Generates a Canvas Frame instances
+   * @param {Object}    config
    * @type {Function}
-   * @return {Object} (Canvas Frame)
+   * @return {Object}   Canvas Frame instance
    */
   function canvasFrame(config) {
     var defaults = {
@@ -542,14 +569,19 @@
 
   /**
    * Creates a new frame and renders it to the canvas
+   * @param {Array}    nodes
+   * @param {Array}    edges
+   * @param {Object}   graphics
+   * @param {Object}   canvasElem
    * @type {Method}
-   * @return {Frame} (generated frame instance)
+   * @private
+   * @return {Object}  Canvas Frame instance
    */
   function redrawCanvas() {
-    var canvasElem = this.canvasElem;
-    var graphics = this.graphics;
-    var nodes = this.nodes;
-    var edges = this.edges;
+    var nodes = arguments.length <= 0 || arguments[0] === undefined ? this.nodes : arguments[0];
+    var edges = arguments.length <= 1 || arguments[1] === undefined ? this.edges : arguments[1];
+    var graphics = arguments.length <= 2 || arguments[2] === undefined ? this.graphics : arguments[2];
+    var canvasElem = arguments.length <= 3 || arguments[3] === undefined ? this.canvasElem : arguments[3];
 
     var frame = canvasFrame({ canvasElem: canvasElem, graphics: graphics, nodes: nodes, edges: edges });
 
@@ -588,6 +620,7 @@
    * @param {Number} FADE_IN_RATE
    * @param {Number} FADE_OUT_RATE
    * @type {Method}
+   * @private
    * @return {Number}
    */
   function getOpacity(isFadingIn, input) {
@@ -601,19 +634,30 @@
     }
   }
 
+  /**
+   * Dispurse nodes/edges instead of fade in
+   * @type {Method}
+   * @return {Object}  Canvas instance
+   */
   function initialize() {
 
     // Spread out nodes to avoid ugly clumping
     for (var i = 0; i < 70; i++) {
       this.next();
     }
+
+    return this; // allow chaining
   }
 
   /**
    * WARNING all side effects to canvas state (nodes/edges) are done in this method!
    * Updates nodes, edges then draws new canvas frame
+   * @param {Number}   idealNumNodes
+   * @param {Number}   relWidth
+   * @param {Number}   relHeight
+   * @param {Number}   BORDER_FADE
    * @type {Method}
-   * @return {Object}  canvas instance
+   * @return {Object}  Canvas instance
    */
   function next() {
     var idealNumNodes = arguments.length <= 0 || arguments[0] === undefined ? this.idealNumNodes : arguments[0];
@@ -679,6 +723,12 @@
     hubAndSpoke: 1
   };
 
+  /**
+   * Generates new Nayuki Canvas
+   * @param  {Object} canvasElem DOM Canvas Element
+   * @param  {Object} options    User configuration
+   * @return {Object}            Nayuki Canvas
+   */
   function createCanvas(canvasElem, options) {
     if (canvasElem instanceof HTMLElement === false || canvasElem.nodeName !== 'CANVAS') {
       throw new Error('Nayuki Canvas requires a canvas element for the first argument');
@@ -775,7 +825,7 @@
 
     canvas.canvasElem = canvasElem;
 
-    // Initialize canvas and inputs
+    // initialize canvas context
     canvas.graphics = canvasElem.getContext('2d');
 
     /**
@@ -800,7 +850,7 @@
     /**
      * setup start and stop methods for canvas
      */
-    ;(function () {
+    (function () {
       var t = void 0;
 
       /**
@@ -828,7 +878,7 @@
       };
     })();
 
-    // chart instance
+    // canvas instance
     return canvas;
   }
 

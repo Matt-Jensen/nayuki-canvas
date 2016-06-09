@@ -5,6 +5,7 @@
  * @param {Number} FADE_IN_RATE
  * @param {Number} FADE_OUT_RATE
  * @type {Method}
+ * @private
  * @return {Number}
  */
 export default function getOpacity (isFadingIn, input, FADE_IN_RATE = this.FADE_IN_RATE, FADE_OUT_RATE = this.FADE_OUT_RATE) {

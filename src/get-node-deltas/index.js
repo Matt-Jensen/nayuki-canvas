@@ -5,6 +5,8 @@ import { deepCopy } from '../utils';
  * Create array of deltas based on list of nodes
  * @param  {Array} nodes
  * @param  {Number} repulsionForce
+ * @type   {Method}
+ * @private
  * @return {Array}
  */
 export default function getNodeDeltas (nodes = this.nodes, repulsionForce = this.repulsionForce) {

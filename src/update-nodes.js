@@ -1,19 +1,16 @@
 /**
 * Returns an array of updated nodes
 * Updates/adds/removes current nodes based on the given array
+* @param {Array}    nodes
+* @param {Number}   idealNumNodes
+* @param {Number}   relWidth
+* @param {Number}   relHeight
 * @type {Method}
-* @return {Array} Nodes
+* @private
+* @return {Array}  Nodes
 */
-export default function updateNodes () {
-  const {
-    nodes,
-    idealNumNodes,
-    relWidth,
-    relHeight
-  } = this;
-
-  // nodes to render
-  const newNodes = [];
+export default function updateNodes (nodes = this.nodes, idealNumNodes = this.idealNumNodes, relWidth = this.relWidth, relHeight = this.relHeight) {
+  const newNodes = []; // nodes to render
 
   // Only keep visible nodes
   nodes.map(node => {

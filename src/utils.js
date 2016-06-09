@@ -3,13 +3,14 @@ import disjointSet from './disjoint-set';
 /**
  * Tests whether the given array of edge objects contains an edge with
  * the given endpoints (undirected). Pure function, no side effects.
- *
- * @type Function
- * @return Boolean
+ * @param {Array}    allEdges
+ * @param {Object}   edge
+ * @type {Function}
+ * @return {Boolean}
  */
-export function containsEdge (array, edge) {
-  for (let i = 0; i < array.length; i++) {
-    const elem = array[i];
+export function containsEdge (allEdges, edge) {
+  for (let i = 0; i < allEdges.length; i++) {
+    const elem = allEdges[i];
     const sameEdge = elem.nodeA === edge.nodeA && elem.nodeB === edge.nodeB;
     const symetricalEdge = elem.nodeA === edge.nodeB && elem.nodeB === edge.nodeA;
 
@@ -24,9 +25,10 @@ export function containsEdge (array, edge) {
  * Returns a new array of edge objects that is a minimal spanning tree on the given set
  * of nodes, with edges in ascending order of weight. Note that the returned edge objects
  * are missing the opacity property. Pure function, no side effects.
- *
- * @type Function
- * @return Array
+ * @param {Array}    allEdges
+ * @param {Array}    nodes
+ * @type {Function}
+ * @return {Array}
  */
 export function calcSpanningTree (allEdges, nodes) {
 
@@ -48,9 +50,9 @@ export function calcSpanningTree (allEdges, nodes) {
 
 /**
  * Returns a sorted array of edges with weights, for all unique edge pairs. Pure function, no side effects.
- *
- * @type Function
- * @return Array
+ * @param {Array}   nodes
+ * @type {Function}
+ * @return {Array}  [[weight, index1, index2]]
  */
 export function calcAllEdgeWeights (nodes, radiiWeightPower) {
 
@@ -74,7 +76,9 @@ export function calcAllEdgeWeights (nodes, radiiWeightPower) {
 
 /**
  * Create a deep copy of a given collection
- * @type Function
+ * @param {Array|Object} c
+ * @type {Function}
+ * @return {Array|Object}
  */
  export function deepCopy (c) {
    return JSON.parse(JSON.stringify(c));

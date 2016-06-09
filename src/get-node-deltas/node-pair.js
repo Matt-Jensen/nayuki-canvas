@@ -1,6 +1,10 @@
 /**
  * Factory that produces grouping of caclulations based on a pair of nodes
+ * @param {Object}    node1
+ * @param {Object}    node2
+ * @param {Number}    rf
  * @type {Function}
+ * @return {Object}   Node Pair instance
  */
 export default function nodePair (node1, node2, rf) {
   return Object.create(null, {
