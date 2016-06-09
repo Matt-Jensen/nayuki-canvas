@@ -1,11 +1,11 @@
 const test = require('tape');
 const utils = require('../tmp/utils');
-const { containsEdge, calcSpanningTree, calcAllEdgeWeights, isSupported } = utils;
+const { containsEdge, calcSpanningTree, calcAllEdgeWeights, isSupported, getCanvasElement } = utils;
 const { createNodes, createEdges } = require('./helpers/create');
 
 test('all utils should exist', assert => {
   const msg = 'exports 3 modules';
-  const actual = !!(containsEdge && calcSpanningTree && calcAllEdgeWeights && isSupported);
+  const actual = !!(containsEdge && calcSpanningTree && calcAllEdgeWeights && isSupported && getCanvasElement);
   const expected = true;
   assert.equal(actual, expected, msg);
   assert.end();
@@ -256,5 +256,108 @@ test('`isSupported` should be `true` when canvas creates a 2D context', assert =
   assert.equal(actual, expected, msg);
 
   document = originalDocument;
+  assert.end();
+});
+
+test('`getCanvasElement` should result in `error` when `HTMLElement` is not supported', assert => {
+  const msg = 'results in error';
+
+  const originalHTMLElement = (typeof HTMLElement === 'function' ? HTMLElement : undefined);
+  const actual = getCanvasElement();
+  const expected = actual instanceof Error;
+
+  assert.ok(expected, msg);
+
+  HTMLElement = originalHTMLElement;
+  assert.end();
+});
+
+test('`getCanvasElement` should create specific `error` when `HTMLElement` is not supported', assert => {
+  const msg = 'results in error';
+
+  const originalHTMLElement = (typeof HTMLElement === 'function' ? HTMLElement : undefined);
+  HTMLElement = undefined;
+  const actual = getCanvasElement();
+  const expected = actual instanceof Error;
+
+  assert.ok(expected, msg);
+  assert.equal(actual.message, 'HTMLElements not supported', msg);
+
+  HTMLElement = originalHTMLElement;
+  assert.end();
+});
+
+test('`getCanvasElement` should create correct `error` when given incorrect instance', assert => {
+  const msg = 'results in error';
+
+  const originalHTMLElement = (typeof HTMLElement === 'function' ? HTMLElement : undefined);
+  HTMLElement = function TestConstructor () {};
+  function IncorrectConstructor () {};
+
+  const actual = getCanvasElement(new IncorrectConstructor());
+  const expected = actual instanceof Error;
+
+  assert.ok(expected, msg);
+  assert.equal(actual.message, 'is not a canvas', msg);
+
+  HTMLElement = originalHTMLElement;
+  assert.end();
+});
+
+test('`getCanvasElement` should create correct `error` when element.nodeName incorrect', assert => {
+  const msg = 'results in error';
+
+  const originalHTMLElement = (typeof HTMLElement === 'function' ? HTMLElement : undefined);
+  HTMLElement = function NotCanvasElement () {
+    this.nodeName = 'NOTCANVAS';
+  };
+
+  const actual = getCanvasElement(new HTMLElement());
+  const expected = actual instanceof Error;
+
+  assert.ok(expected, msg);
+  assert.equal(actual.message, 'is not a canvas', msg);
+
+  HTMLElement = originalHTMLElement;
+  assert.end();
+});
+
+test('`getCanvasElement` should successfully resolve an instance of a canvas element', assert => {
+  const msg = 'resolves canvas element';
+
+  const originalHTMLElement = (typeof HTMLElement === 'function' ? HTMLElement : undefined);
+  HTMLElement = function CanvasElement () {
+    this.nodeName = 'CANVAS';
+  };
+
+  const actual = new HTMLElement();
+  const expected = getCanvasElement(actual);
+
+  assert.equal(actual, expected, msg);
+
+  HTMLElement = originalHTMLElement;
+  assert.end();
+});
+
+test('`getCanvasElement` should successfully unpack a jQuery object wrapping a canvas', assert => {
+  const msg = 'resolves canvas element';
+
+  const originaljQuery = (typeof jQuery === 'function' ? jQuery : undefined);
+  const originalHTMLElement = (typeof HTMLElement === 'function' ? HTMLElement : undefined);
+  HTMLElement = function CanvasElement () {
+    this.nodeName = 'CANVAS';
+  };
+
+  jQuery = function jQ (element) {
+    this.get = () => element;
+  };
+
+  const actual = new HTMLElement();
+  const expected = getCanvasElement(new jQuery(actual));
+
+  assert.equal(actual, expected, msg);
+
+  jQuery = originaljQuery;
+  HTMLElement = originalHTMLElement;
   assert.end();
 });

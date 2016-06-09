@@ -97,3 +97,34 @@ export function isSupported () {
   );
   return !!(elem && elem.getContext && elem.getContext('2d'));
 }
+
+/**
+ * Resolve the given value if a Canvas DOM element
+ * otherwise resolve relevant error if not
+ * @param  {Object} element DOM HTMLElment instance
+ * @type   {Function}
+ * @return {Object|Boolean}
+ */
+export function getCanvasElement (element = {}) {
+  const toLowerCase = (s) => String.prototype.toLowerCase.call(s);
+
+  try {
+    if ((element instanceof jQuery || element instanceof $) && typeof element.get === 'function') {
+
+      // resolve first DOM Element from jQuery object
+      element = element.get(0);
+    }
+  } catch (e) {}
+
+  try {
+    if (element instanceof HTMLElement === true && toLowerCase(element.nodeName) === 'canvas') {
+      return element;
+    } else {
+      return new Error('is not a canvas');
+    }
+  } catch (e) {
+    return new Error('HTMLElements not supported');
+  }
+
+  return element;
+}
