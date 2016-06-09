@@ -10,7 +10,7 @@ function isEdgeVisible (edge, mag) {
  * @type {Function}
  * @return {Object} (Canvas Frame)
  */
-export default function canvasFrame(config) {
+export default function canvasFrame (config) {
   const defaults = {
     // get frame dimensions
     width: config.canvasElem.width,
@@ -78,4 +78,4 @@ export default function canvasFrame(config) {
   });
 
   return Object.assign(instance, { data: Object.assign(defaults, config) });
-};
+}

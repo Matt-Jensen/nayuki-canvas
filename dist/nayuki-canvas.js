@@ -538,7 +538,7 @@
     });
 
     return Object.assign(instance, { data: Object.assign(defaults, config) });
-  };
+  }
 
   /**
    * Creates a new frame and renders it to the canvas
@@ -679,135 +679,136 @@
     hubAndSpoke: 1
   };
 
-  var nayukiCanvas = {
-    create: function create(canvasElem, options) {
-
-      if (canvasElem instanceof HTMLElement === false || canvasElem.nodeName !== 'CANVAS') {
-        throw new Error('Nayuki Canvas requires a canvas element for the first argument');
-      }
-
-      // overwrite config with user options
-      var config = Object.assign({
-        extraEdges: 20,
-        numNodes: 70,
-        networkStyle: 'balanced',
-        repulsion: 1,
-        BORDER_FADE: -0.02,
-        FADE_IN_RATE: 0.06, // In the range (0.0, 1.0]
-        FADE_OUT_RATE: 0.03, // In the range (0.0, 1.0]
-        FRAME_INTERVAL: 20 // In milliseconds
-      }, options);
-
-      var prototype = {
-        updateNodes: updateNodes,
-        updateEdges: updateEdges,
-        getNodeDeltas: getNodeDeltas,
-        redrawCanvas: redrawCanvas,
-        _getOpacity: getOpacity,
-        initialize: initialize,
-        next: next
-      };
-
-      var canvas = Object.create(prototype, {
-        idealNumNodes: {
-          get: function get() {
-            return parseInt(this.numNodes, 10);
-          }
-        },
-
-        maxExtraEdges: {
-          get: function get() {
-            var extraEdges = this.extraEdges;
-            var numNodes = this.numNodes;
-
-            return Math.round(parseFloat(extraEdges) / 100 * numNodes);
-          }
-        },
-
-        radiiWeightPower: {
-          get: function get() {
-            var networkStyle = this.networkStyle;
-
-            var radiiWeightPower = networkStyleKey[networkStyle];
-            return parseFloat(radiiWeightPower);
-          }
-        },
-
-        repulsionForce: {
-          get: function get() {
-            var repulsion = this.repulsion;
-
-            if (!isNaN(repulsion)) {
-              return repulsion * 0.000001;
-            } else {
-              return repulsion;
-            }
-          },
-          set: function set(value) {
-            this.repulsion = parseFloat(value);
-            return this.repulsion;
-          }
-        },
-
-        // at least one of relWidth or relHeight is exactly 1
-        // the aspect ratio relWidth:relHeight is equal to w:h
-        relWidth: {
-          get: function get() {
-            var _canvasElem = this.canvasElem;
-            var width = _canvasElem.width;
-            var height = _canvasElem.height;
-
-            return width / Math.max(width, height);
-          }
-        },
-
-        relHeight: {
-          get: function get() {
-            var _canvasElem2 = this.canvasElem;
-            var width = _canvasElem2.width;
-            var height = _canvasElem2.height;
-
-            return height / Math.max(width, height);
-          }
-        }
-      });
-
-      // apply configuration to canvas
-      Object.assign(canvas, config);
-
-      canvas.canvasElem = canvasElem;
-
-      // Initialize canvas and inputs
-      canvas.graphics = canvasElem.getContext('2d');
-
-      /**
-       * Node properties
-       * - posX: Horizontal position in relative coordinates, typically in the range [0.0, relWidth], where relWidth <= 1.0
-       * - posY: Vertical position in relative coordinates, typically in the range [0.0, relHeight], where relHeight <= 1.0
-       * - velX: Horizontal velocity in relative units (not pixels)
-       * - velY: Vertical velocity in relative units (not pixels)
-       * - radius: Radius of the node, a positive real number
-       * - opacity: A number in the range [0.0, 1.0] representing the strength of the node
-       */
-      canvas.nodes = [];
-
-      /**
-       * Edge Properties
-       * - nodeA: A reference to the node object representing one side of the undirected edge
-       * - nodeB: A reference to the node object representing another side of the undirected edge (must be distinct from NodeA)
-       * - opacity: A number in the range [0.0, 1.0] representing the strength of the edge
-       */
-      canvas.edges = [];
-
-      // periodically execute stepFrame() to create animation
-      setInterval(function () {
-        return canvas.next();
-      }, config.FRAME_INTERVAL);
-
-      // chart instance
-      return canvas;
+  function createCanvas(canvasElem, options) {
+    if (canvasElem instanceof HTMLElement === false || canvasElem.nodeName !== 'CANVAS') {
+      throw new Error('Nayuki Canvas requires a canvas element for the first argument');
     }
-  };
+
+    // overwrite config with user options
+    var config = Object.assign({
+      extraEdges: 20,
+      numNodes: 70,
+      networkStyle: 'balanced',
+      repulsion: 1,
+      BORDER_FADE: -0.02,
+      FADE_IN_RATE: 0.06, // In the range (0.0, 1.0]
+      FADE_OUT_RATE: 0.03, // In the range (0.0, 1.0]
+      FRAME_INTERVAL: 20 // In milliseconds
+    }, options);
+
+    var prototype = {
+      updateNodes: updateNodes,
+      updateEdges: updateEdges,
+      getNodeDeltas: getNodeDeltas,
+      redrawCanvas: redrawCanvas,
+      _getOpacity: getOpacity,
+      initialize: initialize,
+      next: next
+    };
+
+    var canvas = Object.create(prototype, {
+      idealNumNodes: {
+        get: function get() {
+          return parseInt(this.numNodes, 10);
+        }
+      },
+
+      maxExtraEdges: {
+        get: function get() {
+          var extraEdges = this.extraEdges;
+          var numNodes = this.numNodes;
+
+          return Math.round(parseFloat(extraEdges) / 100 * numNodes);
+        }
+      },
+
+      radiiWeightPower: {
+        get: function get() {
+          var networkStyle = this.networkStyle;
+
+          var radiiWeightPower = networkStyleKey[networkStyle];
+          return parseFloat(radiiWeightPower);
+        }
+      },
+
+      repulsionForce: {
+        get: function get() {
+          var repulsion = this.repulsion;
+
+          if (!isNaN(repulsion)) {
+            return repulsion * 0.000001;
+          } else {
+            return repulsion;
+          }
+        },
+        set: function set(value) {
+          this.repulsion = parseFloat(value);
+          return this.repulsion;
+        }
+      },
+
+      // at least one of relWidth or relHeight is exactly 1
+      // the aspect ratio relWidth:relHeight is equal to w:h
+      relWidth: {
+        get: function get() {
+          var _canvasElem = this.canvasElem;
+          var width = _canvasElem.width;
+          var height = _canvasElem.height;
+
+          return width / Math.max(width, height);
+        }
+      },
+
+      relHeight: {
+        get: function get() {
+          var _canvasElem2 = this.canvasElem;
+          var width = _canvasElem2.width;
+          var height = _canvasElem2.height;
+
+          return height / Math.max(width, height);
+        }
+      }
+    });
+
+    // apply configuration to canvas
+    Object.assign(canvas, config);
+
+    canvas.canvasElem = canvasElem;
+
+    // Initialize canvas and inputs
+    canvas.graphics = canvasElem.getContext('2d');
+
+    /**
+     * Node properties
+     * - posX: Horizontal position in relative coordinates, typically in the range [0.0, relWidth], where relWidth <= 1.0
+     * - posY: Vertical position in relative coordinates, typically in the range [0.0, relHeight], where relHeight <= 1.0
+     * - velX: Horizontal velocity in relative units (not pixels)
+     * - velY: Vertical velocity in relative units (not pixels)
+     * - radius: Radius of the node, a positive real number
+     * - opacity: A number in the range [0.0, 1.0] representing the strength of the node
+     */
+    canvas.nodes = [];
+
+    /**
+     * Edge Properties
+     * - nodeA: A reference to the node object representing one side of the undirected edge
+     * - nodeB: A reference to the node object representing another side of the undirected edge (must be distinct from NodeA)
+     * - opacity: A number in the range [0.0, 1.0] representing the strength of the edge
+     */
+    canvas.edges = [];
+
+    // periodically execute stepFrame() to create animation
+    setInterval(function () {
+      return canvas.next();
+    }, config.FRAME_INTERVAL);
+
+    // chart instance
+    return canvas;
+  }
+
+  function nayukiCanvas (canvasElem, options) {
+    return createCanvas(canvasElem, options);
+  }
 
   if ((typeof exports === 'undefined' ? 'undefined' : _typeof(exports)) === 'object') {
     module.exports = nayukiCanvas;
