@@ -286,11 +286,12 @@
   function updateEdges() {
     var nodes = arguments.length <= 0 || arguments[0] === undefined ? this.nodes : arguments[0];
     var edges = arguments.length <= 1 || arguments[1] === undefined ? this.edges : arguments[1];
+    var maxExtraEdges = arguments.length <= 2 || arguments[2] === undefined ? this.maxExtraEdges : arguments[2];
 
     var _this = this;
 
-    var maxExtraEdges = arguments.length <= 2 || arguments[2] === undefined ? this.maxExtraEdges : arguments[2];
     var radiiWeightPower = arguments.length <= 3 || arguments[3] === undefined ? this.radiiWeightPower : arguments[3];
+    var getOpacity = arguments.length <= 4 || arguments[4] === undefined ? this._getOpacity : arguments[4];
 
     var newEdges = [];
 
@@ -316,7 +317,7 @@
       var e = Object.assign({}, edge);
       var isFadingIn = containsEdge(idealEdges, e);
 
-      e.opacity = _this._getOpacity(isFadingIn, e);
+      e.opacity = getOpacity.apply(_this, [isFadingIn, e]);
 
       if (isEdgeActive(e)) {
         newEdges.push(e);

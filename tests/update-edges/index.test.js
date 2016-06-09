@@ -1,18 +1,10 @@
 const test = require('tape');
 const { isArray } = require('util');
 const { createNodes, createEdges } = require('../helpers/create');
-const _getOpacity = require('../../tmp/get-opacity');
 const updateEdges = require('../../tmp/update-edges/index');
 
-const settings = {
-  nodes: [],
-  edges: [],
-  maxExtraEdges: 20,
-  radiiWeightPower: 0.5
-};
-
-const createInstance = (conf = {}) =>
-  Object.assign(Object.create({ updateEdges, _getOpacity }), settings, conf);
+// mock that returns opacity given
+const getOpacity = (i, e) => e.opacity;
 
 test('should exist', assert => {
   const msg = 'exports a module';
@@ -25,10 +17,10 @@ test('should exist', assert => {
 test('should be a pure function', assert => {
   const msg = 'should not change';
 
-  const actual = createInstance({ nodes: createNodes(), edges: createEdges() });
+  const actual = [createNodes(), createEdges(), 20, 0.5];
   const expected = JSON.parse(JSON.stringify(actual)); // clone
 
-  actual.updateEdges();
+  updateEdges(...actual, getOpacity);
 
   assert.deepEqual(actual, expected, msg);
   assert.end();
@@ -37,9 +29,9 @@ test('should be a pure function', assert => {
 test('should be idempotent', assert => {
   const msg = 'updated edges should be the same';
 
-  const config = { nodes: createNodes(2), edges: createEdges() };
-  const actual = createInstance(config).updateEdges();
-  const expected = createInstance(config).updateEdges();
+  const args = [createNodes(2), createEdges(), 20, 0.5];
+  const actual = updateEdges(...args, getOpacity);
+  const expected = updateEdges(...args, getOpacity);
 
   assert.deepEqual(actual, expected, msg);
   assert.end();
@@ -49,19 +41,18 @@ test('should return an array of new edge objects', assert => {
   const msg = 'return new edge object';
 
   const expected = createEdges();
-  const instance = createInstance({ nodes: createNodes(2), edges: expected });
-  const actual = instance.updateEdges();
+  const actual = updateEdges(createNodes(2), expected, 20, 0.5, getOpacity);
 
   assert.ok(isArray(actual), 'did not return array');
-  assert.notEqual(actual[0], instance.edges[0], msg);
+  assert.notEqual(actual[0], expected[0], msg);
   assert.end();
 });
 
 test('should return more edges when more nodes present', assert => {
   const msg = '`moreEdges` is greater than `lessEdges`';
 
-  const { length: lessEdges } = createInstance({ nodes: createNodes(2) }).updateEdges();
-  const { length: moreEdges } = createInstance({ nodes: createNodes(4) }).updateEdges();
+  const { length: lessEdges } = updateEdges(createNodes(2), [], 20, 0.5, getOpacity);
+  const { length: moreEdges } = updateEdges(createNodes(4), [], 20, 0.5, getOpacity);
 
   assert.ok(lessEdges < moreEdges, msg);
   assert.end();
@@ -70,8 +61,8 @@ test('should return more edges when more nodes present', assert => {
 test('should return more edges when `maxExtraEdges` is higher', assert => {
   const msg = '`moreEdges` is greater than `lessEdges`';
 
-  const { length: lessEdges } = createInstance({ nodes: createNodes(100), maxExtraEdges: 0 }).updateEdges();
-  const { length: moreEdges } = createInstance({ nodes: createNodes(100), maxExtraEdges: 100 }).updateEdges();
+  const { length: lessEdges } = updateEdges(createNodes(100), [], 0, 0.5, getOpacity); // 0 = maxExtraEdges
+  const { length: moreEdges } = updateEdges(createNodes(100), [], 100, 0.5, getOpacity); // 100 = maxExtraEdges
 
   assert.ok(lessEdges < moreEdges, msg);
   assert.end();

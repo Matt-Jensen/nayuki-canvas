@@ -2,16 +2,6 @@ const test = require('tape');
 const { createNodes } = require('./helpers/create');
 const updateNodes = require('../tmp/update-nodes');
 
-const settings = {
-  idealNumNodes: 2,
-  BORDER_FADE: -0.02,
-  relWidth: 100,
-  relHeight: 100
-};
-
-const createInstance = (...conf) =>
-  Object.assign(Object.create({ updateNodes }), settings, ...conf);
-
 test('should exist', assert => {
   const msg = 'exports a module';
   const actual = !!updateNodes;
@@ -22,12 +12,11 @@ test('should exist', assert => {
 
 test('should be a pure function', assert => {
   const msg = 'has not changed';
-  const nodes = createNodes(1);
 
-  const actual = createInstance({ nodes });
+  const actual = [createNodes(1), 2, 100, 100];
   const expected = JSON.parse(JSON.stringify(actual)); // clone
 
-  actual.updateNodes();
+  updateNodes(...actual);
 
   assert.deepEqual(actual, expected, msg);
   assert.end();
@@ -36,9 +25,8 @@ test('should be a pure function', assert => {
 test('should create an updated array of nodes', assert => {
   const msg = 'should not have updated nodes';
   const nodes = createNodes(1);
-  const instance = createInstance({ nodes });
 
-  const actual = instance.updateNodes();
+  const actual = updateNodes(nodes, 2, 100, 100);
   const notExpected = nodes;
 
   assert.notDeepEqual(actual, notExpected, msg);
@@ -47,13 +35,10 @@ test('should create an updated array of nodes', assert => {
 
 test('should create new nodes when below `idealNumNodes`', assert => {
   const msg = 'has new nodes';
-  const nodes = createNodes(2);
-  const instance = createInstance({ nodes });
+  const idealNumNodes = 3;
 
-  instance.idealNumNodes = 3;
-
-  const actual = instance.updateNodes().length;
-  const expected = instance.idealNumNodes;
+  const actual = updateNodes(createNodes(2), idealNumNodes, 100, 100).length;
+  const expected = idealNumNodes;
 
   assert.equal(actual, expected, msg);
   assert.end();
@@ -62,8 +47,8 @@ test('should create new nodes when below `idealNumNodes`', assert => {
 test('should return more nodes when `idealNumNodes` is higher', assert => {
   const msg = '`moreNodes` is greater than `lessNodes`';
 
-  const { length: lessNodes } = createInstance({ nodes: createNodes(99), idealNumNodes: 10 }).updateNodes();
-  const { length: moreNodes } = createInstance({ nodes: createNodes(99), idealNumNodes: 100 }).updateNodes();
+  const { length: lessNodes } = updateNodes(createNodes(99), 10, 100, 100); // 10 = idealNumNodes
+  const { length: moreNodes } = updateNodes(createNodes(99), 100, 100, 100); // 100 = idealNumNodes
 
   assert.ok(lessNodes < moreNodes, msg);
   assert.end();
@@ -75,8 +60,8 @@ test('should not return old invisible nodes', assert => {
   const [visibleNode] = createNodes(1, { opacity: 0.5 });
   const [invisibleNode] = createNodes(1, { opacity: 0 });
   const expected = 2;
-  const result = createInstance({ nodes: [invisibleNode, visibleNode], idealNumNodes: expected }).updateNodes();
-  const { length: actual } = result.filter(n => n !== invisibleNode);
+  const result = updateNodes([invisibleNode, visibleNode], expected, 100, 100);
+  const { length: actual } = result.filter(n => n !== invisibleNode); // keep nodes !== invisibleNode
 
   assert.equal(actual, expected, msg);
   assert.end();
@@ -84,13 +69,9 @@ test('should not return old invisible nodes', assert => {
 
 test('should create new nodes with 0 velocity and opacity', assert => {
   const msg = 'should be blank node';
-  const nodes = [];
-  const instance = createInstance({ nodes });
 
-  instance.idealNumNodes = 1;
-  const newNode = instance.updateNodes()[0];
-
-  const { velX, velY, opacity } = newNode;
+  const actual = updateNodes([], 1, 100, 100)[0]; // no current nodes, idealNumNodes = 1
+  const { velX, velY, opacity } = actual;
 
   assert.same(velX, 0, msg);
   assert.same(velY, 0, msg);
