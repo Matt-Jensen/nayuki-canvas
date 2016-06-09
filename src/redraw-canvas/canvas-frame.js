@@ -7,24 +7,24 @@ function isEdgeVisible (edge, mag) {
 
 /**
  * Factory that generates Frame instances
- * @type Object
+ * @type {Object}
  */
 export default {
 
   /**
    * Generates a Canvas Frame instances
-   * @type Method
-   * @return Object (Canvas Frame)
+   * @type {Function}
+   * @return {Object} (Canvas Frame)
    */
   create (config) {
-    const data = Object.assign({
-      // Get frame dimensions
+    const defaults = {
+      // get frame dimensions
       width: config.canvasElem.width,
       height: config.canvasElem.height,
       size: Math.max(config.canvasElem.width, config.canvasElem.height)
-    }, config);
+    };
 
-    return Object.create({ data, isEdgeVisible }, {
+    const instance = Object.create({ isEdgeVisible }, {
       background: {
         get () {
           return canvasBackground(this.data).gradient; // TODO make gradient type configurable
@@ -57,8 +57,8 @@ export default {
             const opacity = Math.min(Math.min(nodeA.opacity, nodeB.opacity), edge.opacity);
             const mag = Math.hypot(dx, dy);
 
-            dx /= mag; // Make dx a unit vector, pointing from B to A
-            dy /= mag; // Make dy a unit vector, pointing from B to A
+            dx /= mag; // make dx a unit vector, pointing from B to A
+            dy /= mag; // make dy a unit vector, pointing from B to A
 
             if (this.isEdgeVisible(edge, mag) === false) {
               return false; // don't render
@@ -78,9 +78,11 @@ export default {
               ]
             };
           })
-          .filter(e => e); // remove non-interesting edges
+          .filter(e => e); // remove invisible edges
         }
       }
     });
+
+    return Object.assign(instance, { data: Object.assign(defaults, config) });
   }
 };

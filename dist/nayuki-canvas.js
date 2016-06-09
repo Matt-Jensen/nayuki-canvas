@@ -432,22 +432,21 @@
    * @return {Object} (Canvas Background)
    */
   function canvasBackground(config) {
-    var data = Object.assign({
+    var defaults = {
       startColor: '#575E85', // TODO make gradient start color configurable
       stopColor: '#2E3145' // TODO make gradient end color configurable
       //, background: '' // TODO allow single color backgrounds
-    }, config);
+    };
 
-    return Object.create({ data: data }, {
+    return Object.assign(Object.create(null, {
       gradient: {
         get: function get() {
-          var _data = this.data;
-          var width = _data.width;
-          var height = _data.height;
-          var size = _data.size;
-          var graphics = _data.graphics;
-          var startColor = _data.startColor;
-          var stopColor = _data.stopColor;
+          var width = this.width;
+          var height = this.height;
+          var size = this.size;
+          var graphics = this.graphics;
+          var startColor = this.startColor;
+          var stopColor = this.stopColor;
 
           var gradient = graphics.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, size / 2);
           gradient.addColorStop(0, startColor);
@@ -455,7 +454,7 @@
           return gradient;
         }
       }
-    });
+    }), defaults, config);
   }
 
   function isEdgeVisible(edge, mag) {
@@ -465,25 +464,25 @@
 
   /**
    * Factory that generates Frame instances
-   * @type Object
+   * @type {Object}
    */
   var canvasFrame = {
 
     /**
      * Generates a Canvas Frame instances
-     * @type Method
-     * @return Object (Canvas Frame)
+     * @type {Function}
+     * @return {Object} (Canvas Frame)
      */
 
     create: function create(config) {
-      var data = Object.assign({
-        // Get frame dimensions
+      var defaults = {
+        // get frame dimensions
         width: config.canvasElem.width,
         height: config.canvasElem.height,
         size: Math.max(config.canvasElem.width, config.canvasElem.height)
-      }, config);
+      };
 
-      return Object.create({ data: data, isEdgeVisible: isEdgeVisible }, {
+      var instance = Object.create({ isEdgeVisible: isEdgeVisible }, {
         background: {
           get: function get() {
             return canvasBackground(this.data).gradient; // TODO make gradient type configurable
@@ -524,8 +523,8 @@
               var opacity = Math.min(Math.min(nodeA.opacity, nodeB.opacity), edge.opacity);
               var mag = Math.hypot(dx, dy);
 
-              dx /= mag; // Make dx a unit vector, pointing from B to A
-              dy /= mag; // Make dy a unit vector, pointing from B to A
+              dx /= mag; // make dx a unit vector, pointing from B to A
+              dy /= mag; // make dy a unit vector, pointing from B to A
 
               if (_this.isEdgeVisible(edge, mag) === false) {
                 return false; // don't render
@@ -540,10 +539,12 @@
               };
             }).filter(function (e) {
               return e;
-            }); // remove non-interesting edges
+            }); // remove invisible edges
           }
         }
       });
+
+      return Object.assign(instance, { data: Object.assign(defaults, config) });
     }
   };
 
