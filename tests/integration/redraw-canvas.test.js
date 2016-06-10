@@ -70,20 +70,20 @@ test('should draw nodes with idempotence', assert => {
   assert.end();
 });
 
-test('should draw each node in canvas `nodes`', assert => {
-  const msg = 'recieved same `arc` arguments';
+test('should draw each node in Canvas Frame `nodes`', assert => {
+  const msg = 'has same number of nodes';
 
   const actual = [];
-  const expected = 2;
   const graphics = mockGraphics({
     arc () {
-      actual.push(1);
+      actual.push(1); // invoked for each node
     }
   });
 
-  redrawCanvas(createNodes(2), createEdges(), mockCanvas(), graphics);
+  // get Canvas Frame object
+  const expected = redrawCanvas(createNodes(2), createEdges(), mockCanvas(), graphics);
 
-  assert.equal(actual.length, expected, msg);
+  assert.equal(actual.length, expected.nodes.length, msg);
   assert.end();
 });
 
@@ -119,5 +119,29 @@ test('should draw lines with idempotence', assert => {
   redrawCanvas(nodes, edges, mockCanvas(), graphics);
 
   assert.deepEqual(actual, expected, msg);
+  assert.end();
+});
+
+test('should draw each edge in Canvas Frame `edges`', assert => {
+  const msg = 'has same number of edges';
+
+  const actual = [];
+  const graphics = mockGraphics({
+    moveTo () {
+      actual.push(1); // invoked for each edge
+    }
+  });
+
+  // create 2 nodes far away
+  const nodes = createNodes(1, { posX: 100, posY: 100 }).concat(createNodes(1));
+
+  // create 1 valid edge that connects nodes
+  const edges = createEdges(1, { nodeA: nodes[0], nodeB: nodes[1] }).concat(createEdges());
+
+
+  // get Canvas Frame object
+  const expected = redrawCanvas(nodes, edges, mockCanvas(), graphics);
+
+  assert.equal(actual.length, expected.edges.length, msg);
   assert.end();
 });
