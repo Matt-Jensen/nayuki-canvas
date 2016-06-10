@@ -77,9 +77,9 @@ test('should create instance with properties: `width`, `height`, and `size`', as
   const actual = canvasFrame({ canvasElem });
   const expected = false;
 
-  assert.equal(isUndefined(actual.data.width), expected, msg);
-  assert.equal(isUndefined(actual.data.height), expected, msg);
-  assert.equal(isUndefined(actual.data.size), expected, msg);
+  assert.equal(isUndefined(actual._data.width), expected, msg);
+  assert.equal(isUndefined(actual._data.height), expected, msg);
+  assert.equal(isUndefined(actual._data.size), expected, msg);
 
   assert.end();
 });
@@ -113,7 +113,7 @@ test('should create instance that resolves `nodes` with arcs that are multiples 
   const msg = 'should be a multiple';
 
   const instance = canvasFrame({ canvasElem, nodes: createNodes(1) });
-  const size = instance.data.size;
+  const size = instance._data.size;
   const node = instance.nodes[0];
 
   const actual = (node.arc[0] % size + node.arc[1] % size + node.arc[2] % size) === 0;

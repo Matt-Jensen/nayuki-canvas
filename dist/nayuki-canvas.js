@@ -553,27 +553,27 @@
    * @return {Object}   Canvas Frame instance
    */
   function canvasFrame(config) {
-    var defaults = {
+    var data = Object.assign({
       // get frame dimensions
       width: config.canvasElem.width,
       height: config.canvasElem.height,
       size: Math.max(config.canvasElem.width, config.canvasElem.height)
-    };
+    }, config);
 
     var instance = Object.create({ isEdgeVisible: isEdgeVisible }, {
       background: {
         get: function get() {
-          return canvasBackground(this.data).gradient; // TODO make gradient type configurable
+          return canvasBackground(this._data).gradient; // TODO make gradient type configurable
         }
       },
 
       nodes: {
         get: function get() {
-          var size = this.data.size;
+          var size = this._data.size;
 
           var color = '129,139,197'; // TODO make node color configurable
 
-          return this.data.nodes.map(function (node) {
+          return this._data.nodes.map(function (node) {
             return {
               fill: 'rgba(' + color + ',' + node.opacity.toFixed(3) + ')',
               arc: [node.posX * size, node.posY * size, node.radius * size, 0, Math.PI * 2]
@@ -586,11 +586,11 @@
         get: function get() {
           var _this = this;
 
-          var size = this.data.size;
+          var size = this._data.size;
 
           var color = '129,139,197'; // TODO make edge color configurable
 
-          return this.data.edges.map(function (edge) {
+          return this._data.edges.map(function (edge) {
             var nodeA = edge.nodeA;
             var nodeB = edge.nodeB;
 
@@ -622,7 +622,7 @@
       }
     });
 
-    return Object.assign(instance, { data: Object.assign(defaults, config) });
+    return Object.assign(instance, { _data: data });
   }
 
   /**
@@ -645,7 +645,7 @@
 
     // Set background first (render below nodes & edges)
     graphics.fillStyle = frame.background;
-    graphics.fillRect(0, 0, frame.data.width, frame.data.height);
+    graphics.fillRect(0, 0, frame._data.width, frame._data.height);
 
     // Draw nodes (render below edges)
     frame.nodes.forEach(function (node) {
@@ -655,7 +655,7 @@
       graphics.fill();
     });
 
-    graphics.lineWidth = frame.data.size / 800; // TODO make edge width configurable
+    graphics.lineWidth = frame._data.size / 800; // TODO make edge width configurable
 
     // Draw edges (render on top)
     frame.edges.forEach(function (e) {

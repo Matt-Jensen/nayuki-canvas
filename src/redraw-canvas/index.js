@@ -15,7 +15,7 @@ export default function redrawCanvas (nodes = this._nodes, edges = this._edges, 
 
   // Set background first (render below nodes & edges)
   graphics.fillStyle = frame.background;
-  graphics.fillRect(0, 0, frame.data.width, frame.data.height);
+  graphics.fillRect(0, 0, frame._data.width, frame._data.height);
 
   // Draw nodes (render below edges)
   frame.nodes
@@ -26,7 +26,7 @@ export default function redrawCanvas (nodes = this._nodes, edges = this._edges, 
     graphics.fill();
   });
 
-  graphics.lineWidth = (frame.data.size / 800); // TODO make edge width configurable
+  graphics.lineWidth = (frame._data.size / 800); // TODO make edge width configurable
 
   // Draw edges (render on top)
   frame.edges

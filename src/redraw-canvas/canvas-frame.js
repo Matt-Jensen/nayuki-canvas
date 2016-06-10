@@ -18,26 +18,26 @@ function isEdgeVisible (edge, mag) {
  * @return {Object}   Canvas Frame instance
  */
 export default function canvasFrame (config) {
-  const defaults = {
+  const data = Object.assign({
     // get frame dimensions
     width: config.canvasElem.width,
     height: config.canvasElem.height,
     size: Math.max(config.canvasElem.width, config.canvasElem.height)
-  };
+  }, config);
 
   const instance = Object.create({ isEdgeVisible }, {
     background: {
       get () {
-        return canvasBackground(this.data).gradient; // TODO make gradient type configurable
+        return canvasBackground(this._data).gradient; // TODO make gradient type configurable
       }
     },
 
     nodes: {
       get () {
-        const { size } = this.data;
+        const { size } = this._data;
         const color = '129,139,197'; // TODO make node color configurable
 
-        return this.data.nodes.map(node => ({
+        return this._data.nodes.map(node => ({
           fill: `rgba(${color},${node.opacity.toFixed(3)})`,
           arc: [node.posX * size, node.posY * size, node.radius * size, 0, Math.PI * 2]
         }));
@@ -46,10 +46,10 @@ export default function canvasFrame (config) {
 
     edges: {
       get () {
-        const { size } = this.data;
+        const { size } = this._data;
         const color = '129,139,197'; // TODO make edge color configurable
 
-        return this.data.edges.map(edge => {
+        return this._data.edges.map(edge => {
           const { nodeA, nodeB } = edge;
 
           let dx = nodeA.posX - nodeB.posX;
@@ -84,5 +84,5 @@ export default function canvasFrame (config) {
     }
   });
 
-  return Object.assign(instance, { data: Object.assign(defaults, config) });
+  return Object.assign(instance, { _data: data });
 }
