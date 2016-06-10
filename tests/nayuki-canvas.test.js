@@ -9,23 +9,40 @@ test('should exist', assert => {
   assert.end();
 });
 
-// TODO make nayukiCanvas factory node friendly
-// test('should have a pure `create` function', assert => {
-//   const msg = 'property were updated';
-//   const actual = {
-//     extraEdges: 21,
-//     numNodes: 71,
-//     networkStyle: 'mesh',
-//     repulsion: 10,
-//     BORDER_FADE: -0.04,
-//     FADE_IN_RATE: 0.16,  // In the range (0.0, 1.0]
-//     FADE_OUT_RATE: 0.13,  // In the range (0.0, 1.0]
-//     FRAME_INTERVAL: 25  // In milliseconds
-//   };
-//   const expected = JSON.parse(JSON.stringify(actual)); // clone
-//
-//   nayukiCanvas.create({}, actual);
-//
-//   assert.deepEqual(actual, expected, msg);
-//   assert.end();
-// });
+test('should be a pure function', assert => {
+  const msg = 'property were updated';
+
+  const actual = {
+    extraEdges: 21,
+    numNodes: 71,
+    networkStyle: 'mesh',
+    repulsion: 10,
+    BORDER_FADE: -0.04,
+    FADE_IN_RATE: 0.16,
+    FADE_OUT_RATE: 0.13,
+    FRAME_INTERVAL: 25
+  };
+  const expected = JSON.parse(JSON.stringify(actual)); // clone
+
+  nayukiCanvas({}, actual);
+
+  assert.deepEqual(actual, expected, msg);
+  assert.end();
+});
+
+test('should be idempotent', assert => {
+  const msg = 'results are the same';
+
+  const config = { extraEdges: 40 };
+  const actual = nayukiCanvas({}, config);
+  const expected = nayukiCanvas({}, config);
+
+  // are different
+  delete actual.start;
+  delete expected.start;
+  delete actual.stop;
+  delete expected.stop;
+
+  assert.deepEqual(actual, expected, msg);
+  assert.end();
+});

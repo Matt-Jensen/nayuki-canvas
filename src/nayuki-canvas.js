@@ -6,44 +6,55 @@ import _getOpacity from './get-opacity';
 import initialize from './initialize';
 import next from './next';
 
-const networkStyleKey = {
-  mesh: 0,
-  balanced: 0.5,
-  hubAndSpoke: 1
+import { getCanvasElement, isSupported } from './utils';
+
+const prototype = {
+  updateNodes,
+  updateEdges,
+  getNodeDeltas,
+  redrawCanvas,
+  _getOpacity,
+  initialize,
+  next,
+  isSupported
 };
+
+const defaults = {
+  extraEdges: 20,
+  numNodes: 70,
+  networkStyle: 'balanced',
+  repulsion: 1,
+  BORDER_FADE: -0.02,
+  FADE_IN_RATE: 0.06,  // In the range (0.0, 1.0]
+  FADE_OUT_RATE: 0.03,  // In the range (0.0, 1.0]
+  FRAME_INTERVAL: 20  // In milliseconds
+};
+
+const isNodeEnv = (typeof window === 'undefined' && typeof global === 'object');
 
 /**
  * Generates new Nayuki Canvas
  * @param  {Object} canvasElem DOM Canvas Element
  * @param  {Object} options    User configuration
+ * @type   {Function}
  * @return {Object}            Nayuki Canvas
  */
-function createCanvas (canvasElem, options) {
-  if (canvasElem instanceof HTMLElement === false || canvasElem.nodeName !== 'CANVAS') {
-    throw new Error('Nayuki Canvas requires a canvas element for the first argument');
+function createCanvas (canvasElem = {}, options = {}) {
+  canvasElem = getCanvasElement(canvasElem);
+
+  if (isNodeEnv === true) {
+    canvasElem = {}; // ignore error
   }
 
-  // overwrite config with user options
-  const config = Object.assign({
-    extraEdges: 20,
-    numNodes: 70,
-    networkStyle: 'balanced',
-    repulsion: 1,
-    BORDER_FADE: -0.02,
-    FADE_IN_RATE: 0.06,  // In the range (0.0, 1.0]
-    FADE_OUT_RATE: 0.03,  // In the range (0.0, 1.0]
-    FRAME_INTERVAL: 20  // In milliseconds
-  }, options);
+  if (canvasElem instanceof Error) {
 
-  const prototype = {
-    updateNodes,
-    updateEdges,
-    getNodeDeltas,
-    redrawCanvas,
-    _getOpacity,
-    initialize,
-    next
-  };
+    // failed to resolve canvas element
+    canvasElem.message = `Nayuki Canvas: ${canvasElem.message}`;
+    throw canvasElem;
+  }
+
+  // overwrite config with user preferences
+  const config = Object.assign({}, defaults, options);
 
   const canvas = Object.create(prototype, {
     idealNumNodes: {
@@ -62,7 +73,15 @@ function createCanvas (canvasElem, options) {
     radiiWeightPower: {
       get () {
         const { networkStyle } = this;
-        const radiiWeightPower = networkStyleKey[networkStyle];
+
+        let radiiWeightPower = 0.5; // balanced
+
+        if (networkStyle === 'mesh') {
+          radiiWeightPower = 0;
+        } else if (networkStyle === 'hubAndSpoke') {
+          radiiWeightPower = 1;
+        }
+
         return parseFloat(radiiWeightPower);
       }
     },
@@ -103,10 +122,19 @@ function createCanvas (canvasElem, options) {
   // apply configuration to canvas
   Object.assign(canvas, config);
 
-  canvas.canvasElem = canvasElem;
+  if (isSupported()) {
 
-  // initialize canvas context
-  canvas.graphics = canvasElem.getContext('2d');
+    // initialize canvas context
+    canvas.graphics = canvasElem.getContext('2d');
+  } else {
+    canvas.graphics = {};
+  }
+
+  /**
+   * Validated canvas element
+   * @type {Object}
+   */
+  canvas.canvasElem = canvasElem;
 
   /**
    * Node properties
@@ -135,7 +163,7 @@ function createCanvas (canvasElem, options) {
 
     /**
      * Begin reoccuring calls to `canvas.next`
-     * @type {Method}
+     * @type   {Method}
      * @return {Object} canvas
      */
     canvas.start = function start () {
@@ -145,10 +173,10 @@ function createCanvas (canvasElem, options) {
 
     /**
      * Stops calls to `canvas.next`
-     * @type {Method}
+     * @type   {Method}
      * @return {Object} canvas
      */
-    canvas.stop = function () {
+    canvas.stop = function stop () {
       clearInterval(t);
       return this;
     };

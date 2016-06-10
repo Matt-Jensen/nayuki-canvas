@@ -42,7 +42,7 @@
     return newNodes;
   }
 
-  var prototype = {
+  var prototype$1 = {
     getRepr: function getRepr(i) {
       if (this.parents[i] !== i) {
         this.parents[i] = this.getRepr(this.parents[i]);
@@ -89,7 +89,7 @@
       instance.ranks.value.push(0);
     }
 
-    return Object.create(prototype, instance);
+    return Object.create(prototype$1, instance);
   }
 
   var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
@@ -236,13 +236,58 @@
   }
 
   /**
-   * Create a deep copy of a given collection
+   * Create a deep (JSON compliant) copy of a given collection
    * @param {Array|Object} c
    * @type {Function}
    * @return {Array|Object}
    */
   function deepCopy(c) {
     return JSON.parse(JSON.stringify(c));
+  }
+
+  /**
+   * Determines if Nayuki Canvas is supported in the current environment
+   * @type {Function}
+   * @return {Boolean}
+   */
+  function isSupported() {
+    var elem = (typeof document === 'undefined' ? 'undefined' : _typeof(document)) === 'object' && document.createElement && document.createElement('canvas');
+    return !!(elem && elem.getContext && elem.getContext('2d'));
+  }
+
+  /**
+   * Resolve the given value if a Canvas DOM element
+   * otherwise resolve relevant error if not
+   * @param  {Object} element DOM HTMLElment instance
+   * @type   {Function}
+   * @return {Object|Boolean}
+   */
+  function getCanvasElement() {
+    var element = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+    var toLowerCase = function toLowerCase(s) {
+      return String.prototype.toLowerCase.call(s);
+    };
+
+    try {
+      if ((element instanceof jQuery || element instanceof $) && typeof element.get === 'function') {
+
+        // resolve first DOM Element from jQuery object
+        element = element.get(0);
+      }
+    } catch (e) {}
+
+    try {
+      if (element instanceof HTMLElement === true && toLowerCase(element.nodeName) === 'canvas') {
+        return element;
+      } else {
+        return new Error('is not a canvas');
+      }
+    } catch (e) {
+      return new Error('HTMLElements not supported');
+    }
+
+    return element;
   }
 
   /**
@@ -718,44 +763,56 @@
     return this; // allow chaining
   }
 
-  var networkStyleKey = {
-    mesh: 0,
-    balanced: 0.5,
-    hubAndSpoke: 1
+  var prototype = {
+    updateNodes: updateNodes,
+    updateEdges: updateEdges,
+    getNodeDeltas: getNodeDeltas,
+    redrawCanvas: redrawCanvas,
+    _getOpacity: getOpacity,
+    initialize: initialize,
+    next: next,
+    isSupported: isSupported
   };
+
+  var defaults = {
+    extraEdges: 20,
+    numNodes: 70,
+    networkStyle: 'balanced',
+    repulsion: 1,
+    BORDER_FADE: -0.02,
+    FADE_IN_RATE: 0.06, // In the range (0.0, 1.0]
+    FADE_OUT_RATE: 0.03, // In the range (0.0, 1.0]
+    FRAME_INTERVAL: 20 // In milliseconds
+  };
+
+  var isNodeEnv = typeof window === 'undefined' && (typeof global === 'undefined' ? 'undefined' : _typeof(global)) === 'object';
 
   /**
    * Generates new Nayuki Canvas
    * @param  {Object} canvasElem DOM Canvas Element
    * @param  {Object} options    User configuration
+   * @type   {Function}
    * @return {Object}            Nayuki Canvas
    */
-  function createCanvas(canvasElem, options) {
-    if (canvasElem instanceof HTMLElement === false || canvasElem.nodeName !== 'CANVAS') {
-      throw new Error('Nayuki Canvas requires a canvas element for the first argument');
+  function createCanvas() {
+    var canvasElem = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+    canvasElem = getCanvasElement(canvasElem);
+
+    if (isNodeEnv === true) {
+      canvasElem = {}; // ignore error
     }
 
-    // overwrite config with user options
-    var config = Object.assign({
-      extraEdges: 20,
-      numNodes: 70,
-      networkStyle: 'balanced',
-      repulsion: 1,
-      BORDER_FADE: -0.02,
-      FADE_IN_RATE: 0.06, // In the range (0.0, 1.0]
-      FADE_OUT_RATE: 0.03, // In the range (0.0, 1.0]
-      FRAME_INTERVAL: 20 // In milliseconds
-    }, options);
+    if (canvasElem instanceof Error) {
 
-    var prototype = {
-      updateNodes: updateNodes,
-      updateEdges: updateEdges,
-      getNodeDeltas: getNodeDeltas,
-      redrawCanvas: redrawCanvas,
-      _getOpacity: getOpacity,
-      initialize: initialize,
-      next: next
-    };
+      // failed to resolve canvas element
+      canvasElem.message = 'Nayuki Canvas: ' + canvasElem.message;
+      throw canvasElem;
+    }
+
+    // overwrite config with user preferences
+    var config = Object.assign({}, defaults, options);
 
     var canvas = Object.create(prototype, {
       idealNumNodes: {
@@ -777,7 +834,15 @@
         get: function get() {
           var networkStyle = this.networkStyle;
 
-          var radiiWeightPower = networkStyleKey[networkStyle];
+
+          var radiiWeightPower = 0.5; // balanced
+
+          if (networkStyle === 'mesh') {
+            radiiWeightPower = 0;
+          } else if (networkStyle === 'hubAndSpoke') {
+            radiiWeightPower = 1;
+          }
+
           return parseFloat(radiiWeightPower);
         }
       },
@@ -824,10 +889,19 @@
     // apply configuration to canvas
     Object.assign(canvas, config);
 
-    canvas.canvasElem = canvasElem;
+    if (isSupported()) {
 
-    // initialize canvas context
-    canvas.graphics = canvasElem.getContext('2d');
+      // initialize canvas context
+      canvas.graphics = canvasElem.getContext('2d');
+    } else {
+      canvas.graphics = {};
+    }
+
+    /**
+     * Validated canvas element
+     * @type {Object}
+     */
+    canvas.canvasElem = canvasElem;
 
     /**
      * Node properties
@@ -856,7 +930,7 @@
 
       /**
        * Begin reoccuring calls to `canvas.next`
-       * @type {Method}
+       * @type   {Method}
        * @return {Object} canvas
        */
       canvas.start = function start() {
@@ -870,10 +944,10 @@
 
       /**
        * Stops calls to `canvas.next`
-       * @type {Method}
+       * @type   {Method}
        * @return {Object} canvas
        */
-      canvas.stop = function () {
+      canvas.stop = function stop() {
         clearInterval(t);
         return this;
       };
