@@ -102,7 +102,7 @@ export default {
      * @return {Number}
      */
     get () {
-      const { width, height } = this.canvasElem;
+      const { width, height } = this._canvasElem;
       return width / Math.max(width, height);
     }
   },
@@ -117,7 +117,7 @@ export default {
      * @return {Number}
      */
     get () {
-      const { width, height } = this.canvasElem;
+      const { width, height } = this._canvasElem;
       return height / Math.max(width, height);
     }
   },

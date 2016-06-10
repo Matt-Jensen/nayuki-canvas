@@ -638,7 +638,7 @@
   function redrawCanvas() {
     var nodes = arguments.length <= 0 || arguments[0] === undefined ? this._nodes : arguments[0];
     var edges = arguments.length <= 1 || arguments[1] === undefined ? this._edges : arguments[1];
-    var canvasElem = arguments.length <= 2 || arguments[2] === undefined ? this.canvasElem : arguments[2];
+    var canvasElem = arguments.length <= 2 || arguments[2] === undefined ? this._canvasElem : arguments[2];
     var graphics = arguments.length <= 3 || arguments[3] === undefined ? this.graphics : arguments[3];
 
     var frame = canvasFrame({ canvasElem: canvasElem, graphics: graphics, nodes: nodes, edges: edges });
@@ -887,7 +887,7 @@
        */
 
       get: function get() {
-        var _canvasElem = this.canvasElem;
+        var _canvasElem = this._canvasElem;
         var width = _canvasElem.width;
         var height = _canvasElem.height;
 
@@ -906,7 +906,7 @@
        */
 
       get: function get() {
-        var _canvasElem2 = this.canvasElem;
+        var _canvasElem2 = this._canvasElem;
         var width = _canvasElem2.width;
         var height = _canvasElem2.height;
 
@@ -971,7 +971,7 @@
      * Validated canvas element
      * @type {Object}
      */
-    canvas.canvasElem = canvasElem;
+    canvas._canvasElem = canvasElem;
 
     /**
      * Node properties

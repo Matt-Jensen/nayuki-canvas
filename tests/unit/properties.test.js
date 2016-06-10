@@ -1,7 +1,7 @@
 const test = require('tape');
 const properties = require('../../tmp/properties');
 const defaults = require('../../tmp/defaults');
-const canvasElem = { width: 100, height: 100 };
+const _canvasElem = { width: 100, height: 100 };
 
 test('should exist', assert => {
   const msg = 'exports a module';
@@ -14,7 +14,7 @@ test('should exist', assert => {
 test('should consist of pure accessor property function', assert => {
   const msg = 'is not changed';
 
-  const actual = Object.assign({}, { canvasElem }, defaults);
+  const actual = Object.assign({}, { _canvasElem }, defaults);
   const expected = JSON.parse(JSON.stringify(actual));
 
   Object.keys(properties).forEach(function (property) {
@@ -32,13 +32,13 @@ test('should consist of idempotent accessor property functions', assert => {
   const actual = {};
   const expected = {};
 
-  instance = Object.assign({}, { canvasElem }, defaults);
+  instance = Object.assign({}, { _canvasElem }, defaults);
 
   Object.keys(properties).forEach(function (property) {
     actual[property] = properties[property].get.call(instance);
   });
 
-  instance = Object.assign({}, { canvasElem }, defaults);
+  instance = Object.assign({}, { _canvasElem }, defaults);
 
   Object.keys(properties).forEach(function (property) {
     expected[property] = properties[property].get.call(instance);
@@ -150,8 +150,8 @@ test('should return a `_relWidth` between `0` and `1`', assert => {
   const wide = { width: 100, height: 1 };
   const tall = { width: 1, height: 100 };
 
-  assert.ok(properties._relWidth.get.call({ canvasElem: tall }) > 0, msg);
-  assert.ok(properties._relWidth.get.call({ canvasElem: wide }) <= 1, msg);
+  assert.ok(properties._relWidth.get.call({ _canvasElem: tall }) > 0, msg);
+  assert.ok(properties._relWidth.get.call({ _canvasElem: wide }) <= 1, msg);
   assert.end();
 });
 
@@ -161,7 +161,7 @@ test('should return a `_relHeight` between `0` and `1`', assert => {
   const wide = { width: 100, height: 1 };
   const tall = { width: 1, height: 100 };
 
-  assert.ok(properties._relHeight.get.call({ canvasElem: tall }) <= 1, msg);
-  assert.ok(properties._relHeight.get.call({ canvasElem: wide }) > 0, msg);
+  assert.ok(properties._relHeight.get.call({ _canvasElem: tall }) <= 1, msg);
+  assert.ok(properties._relHeight.get.call({ _canvasElem: wide }) > 0, msg);
   assert.end();
 });

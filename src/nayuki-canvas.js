@@ -64,7 +64,7 @@ function createCanvas (canvasElem = {}, options = {}) {
    * Validated canvas element
    * @type {Object}
    */
-  canvas.canvasElem = canvasElem;
+  canvas._canvasElem = canvasElem;
 
   /**
    * Node properties
