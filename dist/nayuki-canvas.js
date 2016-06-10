@@ -25,9 +25,9 @@
   */
   function updateNodes() {
     var nodes = arguments.length <= 0 || arguments[0] === undefined ? this.nodes : arguments[0];
-    var idealNumNodes = arguments.length <= 1 || arguments[1] === undefined ? this.idealNumNodes : arguments[1];
-    var relWidth = arguments.length <= 2 || arguments[2] === undefined ? this.relWidth : arguments[2];
-    var relHeight = arguments.length <= 3 || arguments[3] === undefined ? this.relHeight : arguments[3];
+    var idealNumNodes = arguments.length <= 1 || arguments[1] === undefined ? this._idealNumNodes : arguments[1];
+    var relWidth = arguments.length <= 2 || arguments[2] === undefined ? this._relWidth : arguments[2];
+    var relHeight = arguments.length <= 3 || arguments[3] === undefined ? this._relHeight : arguments[3];
 
     var newNodes = []; // nodes to render
 
@@ -343,11 +343,11 @@
   function updateEdges() {
     var nodes = arguments.length <= 0 || arguments[0] === undefined ? this.nodes : arguments[0];
     var edges = arguments.length <= 1 || arguments[1] === undefined ? this.edges : arguments[1];
-    var maxExtraEdges = arguments.length <= 2 || arguments[2] === undefined ? this.maxExtraEdges : arguments[2];
+    var maxExtraEdges = arguments.length <= 2 || arguments[2] === undefined ? this._maxExtraEdges : arguments[2];
 
     var _this = this;
 
-    var radiiWeightPower = arguments.length <= 3 || arguments[3] === undefined ? this.radiiWeightPower : arguments[3];
+    var radiiWeightPower = arguments.length <= 3 || arguments[3] === undefined ? this._radiiWeightPower : arguments[3];
     var getOpacity = arguments.length <= 4 || arguments[4] === undefined ? this._getOpacity : arguments[4];
 
     var newEdges = [];
@@ -476,7 +476,7 @@
    */
   function getNodeDeltas() {
     var nodes = arguments.length <= 0 || arguments[0] === undefined ? this.nodes : arguments[0];
-    var repulsionForce = arguments.length <= 1 || arguments[1] === undefined ? this.repulsionForce : arguments[1];
+    var repulsionForce = arguments.length <= 1 || arguments[1] === undefined ? this._repulsionForce : arguments[1];
 
     var deltas = [];
     var nodesCp = deepCopy(nodes);
@@ -718,12 +718,12 @@
    * @return {Object}  Canvas instance
    */
   function next() {
-    var idealNumNodes = arguments.length <= 0 || arguments[0] === undefined ? this.idealNumNodes : arguments[0];
-    var relWidth = arguments.length <= 1 || arguments[1] === undefined ? this.relWidth : arguments[1];
+    var idealNumNodes = arguments.length <= 0 || arguments[0] === undefined ? this._idealNumNodes : arguments[0];
+    var relWidth = arguments.length <= 1 || arguments[1] === undefined ? this._relWidth : arguments[1];
 
     var _this = this;
 
-    var relHeight = arguments.length <= 2 || arguments[2] === undefined ? this.relHeight : arguments[2];
+    var relHeight = arguments.length <= 2 || arguments[2] === undefined ? this._relHeight : arguments[2];
     var BORDER_FADE = arguments.length <= 3 || arguments[3] === undefined ? this.BORDER_FADE : arguments[3];
 
 
@@ -781,7 +781,7 @@
     /**
      * Calculates the desired number of nodes to render
      */
-    idealNumNodes: {
+    _idealNumNodes: {
 
       /**
        * Ensure usable `numNodes` is numeric
@@ -802,10 +802,10 @@
     /**
      * Calculates suggested max number of edges
      */
-    maxExtraEdges: {
+    _maxExtraEdges: {
 
       /**
-       * Calculate usable `maxExtraEdges`
+       * Calculate usable `extraEdges`
        * @return {Number}
        */
 
@@ -828,7 +828,7 @@
     /**
      * Determine how edges connect to nodes
      */
-    radiiWeightPower: {
+    _radiiWeightPower: {
 
       /**
        * Calculate usable `networkStyle`
@@ -857,7 +857,7 @@
     /**
      * Determines the speed at which nodes move
      */
-    repulsionForce: {
+    _repulsionForce: {
 
       /**
        * Calculate usable `repulsion`
@@ -878,7 +878,7 @@
     /**
      * Determine the relative width of canvas
      */
-    relWidth: {
+    _relWidth: {
 
       /**
        * At least one of relWidth or relHeight is exactly 1
@@ -897,7 +897,7 @@
     /**
      * Determine the relative height of canvas
      */
-    relHeight: {
+    _relHeight: {
 
       /**
        * The aspect ratio `relWidth`:`relHeight` is equal to w:h

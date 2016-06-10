@@ -8,7 +8,7 @@
  * @type {Method}
  * @return {Object}  Canvas instance
  */
-export default function next (idealNumNodes = this.idealNumNodes, relWidth = this.relWidth, relHeight = this.relHeight, BORDER_FADE = this.BORDER_FADE) {
+export default function next (idealNumNodes = this._idealNumNodes, relWidth = this._relWidth, relHeight = this._relHeight, BORDER_FADE = this.BORDER_FADE) {
 
   // fade out nodes near the borders of the space or exceeding the target number of nodes
   // TODO make private prototype method

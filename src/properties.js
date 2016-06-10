@@ -3,7 +3,7 @@ export default {
   /**
    * Calculates the desired number of nodes to render
    */
-  idealNumNodes: {
+  _idealNumNodes: {
 
     /**
      * Ensure usable `numNodes` is numeric
@@ -23,10 +23,10 @@ export default {
   /**
    * Calculates suggested max number of edges
    */
-  maxExtraEdges: {
+  _maxExtraEdges: {
 
     /**
-     * Calculate usable `maxExtraEdges`
+     * Calculate usable `extraEdges`
      * @return {Number}
      */
     get () {
@@ -48,7 +48,7 @@ export default {
   /**
    * Determine how edges connect to nodes
    */
-  radiiWeightPower: {
+  _radiiWeightPower: {
 
     /**
      * Calculate usable `networkStyle`
@@ -75,7 +75,7 @@ export default {
   /**
    * Determines the speed at which nodes move
    */
-  repulsionForce: {
+  _repulsionForce: {
 
     /**
      * Calculate usable `repulsion`
@@ -95,7 +95,7 @@ export default {
   /**
    * Determine the relative width of canvas
    */
-  relWidth: {
+  _relWidth: {
 
     /**
      * At least one of relWidth or relHeight is exactly 1
@@ -110,7 +110,7 @@ export default {
   /**
    * Determine the relative height of canvas
    */
-  relHeight: {
+  _relHeight: {
 
     /**
      * The aspect ratio `relWidth`:`relHeight` is equal to w:h

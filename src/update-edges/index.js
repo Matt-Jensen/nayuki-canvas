@@ -14,7 +14,7 @@ import isTargetSmaller from './is-target-smaller';
 * @private
 * @return {Array}
 */
-export default function updateEdges (nodes = this.nodes, edges = this.edges, maxExtraEdges = this.maxExtraEdges, radiiWeightPower = this.radiiWeightPower, getOpacity = this._getOpacity) {
+export default function updateEdges (nodes = this.nodes, edges = this.edges, maxExtraEdges = this._maxExtraEdges, radiiWeightPower = this._radiiWeightPower, getOpacity = this._getOpacity) {
   const newEdges = [];
 
   // calculate array of spanning tree edges

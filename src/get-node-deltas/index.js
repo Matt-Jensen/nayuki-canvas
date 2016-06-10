@@ -9,7 +9,7 @@ import { deepCopy } from '../utils';
  * @private
  * @return {Array}
  */
-function getNodeDeltas (nodes = this.nodes, repulsionForce = this.repulsionForce) {
+function getNodeDeltas (nodes = this.nodes, repulsionForce = this._repulsionForce) {
   const deltas = [];
   const nodesCp = deepCopy(nodes);
 

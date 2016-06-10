@@ -14,12 +14,12 @@
     if (nayukiCanvas.isSupported()) {
       var myCanvas = nayukiCanvas(document.getElementById('canvas')).start();
 
-      console.log('idealNumNodes', myCanvas.idealNumNodes);
-      console.log('maxExtraEdges', myCanvas.maxExtraEdges);
-      console.log('radiiWeighPower', myCanvas.radiiWeightPower);
-      console.log('repulsionForce', myCanvas.repulsionForce);
-      console.log('relWidth', myCanvas.relWidth);
-      console.log('relHeight', myCanvas.relHeight);
+      console.log('idealNumNodes', myCanvas._idealNumNodes);
+      console.log('maxExtraEdges', myCanvas._maxExtraEdges);
+      console.log('radiiWeighPower', myCanvas._radiiWeightPower);
+      console.log('repulsionForce', myCanvas._repulsionForce);
+      console.log('relWidth', myCanvas._relWidth);
+      console.log('relHeight', myCanvas._relHeight);
       console.log('BORDER_FADE', myCanvas.BORDER_FADE);
       console.log('FADE_IN_RATE', myCanvas.FADE_IN_RATE);
       console.log('FADE_OUT_RATE', myCanvas.FADE_OUT_RATE);
