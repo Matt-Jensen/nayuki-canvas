@@ -1,6 +1,6 @@
 import defaults from './defaults';
 
-import updateNodes from './update-nodes';
+import _updateNodes from './update-nodes';
 import updateEdges from './update-edges/index';
 import getNodeDeltas from './get-node-deltas/index';
 import redrawCanvas from './redraw-canvas/index';
@@ -13,7 +13,7 @@ import properties from './properties';
 import { getCanvasElement, isSupported } from './utils';
 
 const prototype = {
-  updateNodes,
+  _updateNodes,
   updateEdges,
   getNodeDeltas,
   redrawCanvas,
@@ -91,9 +91,9 @@ function createCanvas (canvasElem = {}, options = {}) {
   (function () {
     let t;
 
-    // allow stubbing
-    canvas.setInterval = setInterval;
-    canvas.clearInterval = clearInterval;
+    // allow stubbing (bind window to prevent illegal invokation in browser)
+    canvas.setInterval = setInterval.bind(isNodeEnv ? global : window);
+    canvas.clearInterval = clearInterval.bind(isNodeEnv ? global : window);
 
     /**
      * Begin reoccuring calls to `canvas.next`

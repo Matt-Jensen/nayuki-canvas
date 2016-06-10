@@ -29,7 +29,7 @@ export default function next (idealNumNodes = this.idealNumNodes, relWidth = thi
     return node;
   });
 
-  this.nodes = this.updateNodes(); // create new nodes and drop old
+  this.nodes = this._updateNodes(); // create new nodes and drop old
 
   /*
    * update nodes' trajectory

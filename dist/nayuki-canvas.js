@@ -749,7 +749,7 @@
       return node;
     });
 
-    this.nodes = this.updateNodes(); // create new nodes and drop old
+    this.nodes = this._updateNodes(); // create new nodes and drop old
 
     /*
      * update nodes' trajectory
@@ -916,7 +916,7 @@
   };
 
   var prototype = {
-    updateNodes: updateNodes,
+    _updateNodes: updateNodes,
     updateEdges: updateEdges,
     getNodeDeltas: getNodeDeltas,
     redrawCanvas: redrawCanvas,
@@ -997,9 +997,9 @@
     (function () {
       var t = void 0;
 
-      // allow stubbing
-      canvas.setInterval = setInterval;
-      canvas.clearInterval = clearInterval;
+      // allow stubbing (bind window to prevent illegal invokation in browser)
+      canvas.setInterval = setInterval.bind(isNodeEnv ? global : window);
+      canvas.clearInterval = clearInterval.bind(isNodeEnv ? global : window);
 
       /**
        * Begin reoccuring calls to `canvas.next`
