@@ -627,8 +627,8 @@
   function redrawCanvas() {
     var nodes = arguments.length <= 0 || arguments[0] === undefined ? this.nodes : arguments[0];
     var edges = arguments.length <= 1 || arguments[1] === undefined ? this.edges : arguments[1];
-    var graphics = arguments.length <= 2 || arguments[2] === undefined ? this.graphics : arguments[2];
-    var canvasElem = arguments.length <= 3 || arguments[3] === undefined ? this.canvasElem : arguments[3];
+    var canvasElem = arguments.length <= 2 || arguments[2] === undefined ? this.canvasElem : arguments[2];
+    var graphics = arguments.length <= 3 || arguments[3] === undefined ? this.graphics : arguments[3];
 
     var frame = canvasFrame({ canvasElem: canvasElem, graphics: graphics, nodes: nodes, edges: edges });
 
