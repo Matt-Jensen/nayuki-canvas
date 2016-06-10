@@ -639,7 +639,7 @@
     var nodes = arguments.length <= 0 || arguments[0] === undefined ? this._nodes : arguments[0];
     var edges = arguments.length <= 1 || arguments[1] === undefined ? this._edges : arguments[1];
     var canvasElem = arguments.length <= 2 || arguments[2] === undefined ? this._canvasElem : arguments[2];
-    var graphics = arguments.length <= 3 || arguments[3] === undefined ? this.graphics : arguments[3];
+    var graphics = arguments.length <= 3 || arguments[3] === undefined ? this._graphics : arguments[3];
 
     var frame = canvasFrame({ canvasElem: canvasElem, graphics: graphics, nodes: nodes, edges: edges });
 
@@ -962,9 +962,9 @@
     Object.assign(canvas, config);
 
     if (isSupported()) {
-      canvas.graphics = canvasElem.getContext('2d'); // initialize canvas context
+      canvas._graphics = canvasElem.getContext('2d'); // initialize canvas context
     } else {
-        canvas.graphics = {}; // allow error free node testing
+        canvas._graphics = {}; // allow error free node testing
       }
 
     /**

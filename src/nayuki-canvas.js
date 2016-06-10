@@ -55,9 +55,9 @@ function createCanvas (canvasElem = {}, options = {}) {
   Object.assign(canvas, config);
 
   if (isSupported()) {
-    canvas.graphics = canvasElem.getContext('2d'); // initialize canvas context
+    canvas._graphics = canvasElem.getContext('2d'); // initialize canvas context
   } else {
-    canvas.graphics = {}; // allow error free node testing
+    canvas._graphics = {}; // allow error free node testing
   }
 
   /**
