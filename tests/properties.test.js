@@ -17,7 +17,7 @@ test('should consist of pure accessor property function', assert => {
   const actual = Object.assign({}, { canvasElem }, defaults);
   const expected = JSON.parse(JSON.stringify(actual));
 
-  Object.keys(properties).forEach(function(property) {
+  Object.keys(properties).forEach(function (property) {
     properties[property].get.call(actual);
   });
 
@@ -25,7 +25,7 @@ test('should consist of pure accessor property function', assert => {
   assert.end();
 });
 
-test ('should consist of idempotent accessor property functions', assert => {
+test('should consist of idempotent accessor property functions', assert => {
   const msg = 'are the same';
 
   let instance;
@@ -34,13 +34,13 @@ test ('should consist of idempotent accessor property functions', assert => {
 
   instance = Object.assign({}, { canvasElem }, defaults);
 
-  Object.keys(properties).forEach(function(property) {
+  Object.keys(properties).forEach(function (property) {
     actual[property] = properties[property].get.call(instance);
   });
 
   instance = Object.assign({}, { canvasElem }, defaults);
 
-  Object.keys(properties).forEach(function(property) {
+  Object.keys(properties).forEach(function (property) {
     expected[property] = properties[property].get.call(instance);
   });
 

@@ -11,22 +11,25 @@
   <canvas id="canvas" style="display:block; margin: 0 auto; background-color: gray;" width="800" height="500"></canvas>
   <script src='../dist/nayuki-canvas.js'></script>
   <script>
-    var myCanvas = nayukiCanvas(document.getElementById('canvas')).start();
-    console.log(
-      'idealNumNodes', myCanvas.idealNumNodes,
-      'maxExtraEdges', myCanvas.maxExtraEdges,
-      'radiiWeighPower', myCanvas.radiiWeightPower,
-      'driftSpeed', myCanvas.driftSpeed,
-      'repulsionForce', myCanvas.repulsionForce,
-      'BORDER_FADE', myCanvas.BORDER_FADE,
-      'FADE_IN_RATE', myCanvas.FADE_IN_RATE,
-      'FADE_OUT_RATE', myCanvas.FADE_OUT_RATE,
-      'FRAME_INTERVAL', myCanvas.FRAME_INTERVAL
-    );
-    var hash = document.location.hash.replace('#', '');
-    hash = parseInt(hash, 10);
-    hash = isNaN(hash) ? 0 : hash;
-    document.location.hash = hash + 1 + '';
+    if (nayukiCanvas.isSupported()) {
+      var myCanvas = nayukiCanvas(document.getElementById('canvas')).start();
+
+      console.log('idealNumNodes', myCanvas.idealNumNodes);
+      console.log('maxExtraEdges', myCanvas.maxExtraEdges);
+      console.log('radiiWeighPower', myCanvas.radiiWeightPower);
+      console.log('repulsionForce', myCanvas.repulsionForce);
+      console.log('relWidth', myCanvas.relWidth);
+      console.log('relHeight', myCanvas.relHeight);
+      console.log('BORDER_FADE', myCanvas.BORDER_FADE);
+      console.log('FADE_IN_RATE', myCanvas.FADE_IN_RATE);
+      console.log('FADE_OUT_RATE', myCanvas.FADE_OUT_RATE);
+      console.log('FRAME_INTERVAL', myCanvas.FRAME_INTERVAL);
+
+      var hash = document.location.hash.replace('#', '');
+      hash = parseInt(hash, 10);
+      hash = isNaN(hash) ? 0 : hash;
+      document.location.hash = hash + 1 + '';
+    }
   </script>
 </body>
 </html>

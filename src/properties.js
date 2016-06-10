@@ -34,11 +34,11 @@ export default {
       const numNodes = parseInt(this.numNodes, 10);
 
       if (isNaN(extraEdges)) {
-        throw new Error('Nayuki Canvas: `extraEdges` must be a number')
+        throw new Error('Nayuki Canvas: `extraEdges` must be a number');
       }
 
       if (isNaN(numNodes)) {
-        throw new Error('Nayuki Canvas: `numNodes` must be a number')
+        throw new Error('Nayuki Canvas: `numNodes` must be a number');
       }
 
       return Math.round(extraEdges / 100 * numNodes);

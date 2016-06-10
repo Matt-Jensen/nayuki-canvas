@@ -47,12 +47,11 @@ test('should be idempotent', assert => {
   assert.end();
 });
 
-test('should have `isSupported` method in its prototype', assert => {
-  const msg = '`isSupported` in prototype';
+test('should have `isSupported` method in `nayukiCanvas` namespace', assert => {
+  const msg = '`isSupported` is a method in namespace';
 
-  const prototype = Object.getPrototypeOf(nayukiCanvas({}));
-  const actual = typeof prototype.isSupported === 'function';
-  const expected = true;
+  const actual = typeof nayukiCanvas.isSupported;
+  const expected = 'function';
 
   assert.equal(actual, expected, msg);
   assert.end();

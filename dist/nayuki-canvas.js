@@ -2,14 +2,14 @@
   'use strict';
 
   var defaults = {
-    "extraEdges": 20,
-    "numNodes": 70,
-    "networkStyle": "balanced",
-    "repulsion": 1,
-    "BORDER_FADE": -0.02,
-    "FADE_IN_RATE": 0.06,
-    "FADE_OUT_RATE": 0.03,
-    "FRAME_INTERVAL": 20
+    'extraEdges': 20,
+    'numNodes': 70,
+    'networkStyle': 'balanced',
+    'repulsion': 1,
+    'BORDER_FADE': -0.02,
+    'FADE_IN_RATE': 0.06,
+    'FADE_OUT_RATE': 0.03,
+    'FRAME_INTERVAL': 20
   };
 
   /**
@@ -788,7 +788,13 @@
        */
 
       get: function get() {
-        return parseInt(this.numNodes, 10);
+        var result = parseInt(this.numNodes, 10);
+
+        if (isNaN(result)) {
+          throw new Error('Nayuki Canvas: `numNodes` must be a number');
+        }
+
+        return result;
       }
     },
 
@@ -803,10 +809,18 @@
        */
 
       get: function get() {
-        var extraEdges = this.extraEdges;
-        var numNodes = this.numNodes;
+        var extraEdges = parseInt(this.extraEdges, 10);
+        var numNodes = parseInt(this.numNodes, 10);
 
-        return Math.round(parseFloat(extraEdges) / 100 * numNodes);
+        if (isNaN(extraEdges)) {
+          throw new Error('Nayuki Canvas: `extraEdges` must be a number');
+        }
+
+        if (isNaN(numNodes)) {
+          throw new Error('Nayuki Canvas: `numNodes` must be a number');
+        }
+
+        return Math.round(extraEdges / 100 * numNodes);
       }
     },
 
@@ -823,16 +837,19 @@
       get: function get() {
         var networkStyle = this.networkStyle;
 
+        // ensure lowercase string
+
+        var style = typeof networkStyle === 'string' ? networkStyle.toLowerCase() : networkStyle;
 
         var radiiWeightPower = 0.5; // balanced
 
-        if (networkStyle === 'mesh') {
+        if (style === 'mesh') {
           radiiWeightPower = 0;
-        } else if (networkStyle === 'hubAndSpoke') {
+        } else if (style === 'wheel') {
           radiiWeightPower = 1;
         }
 
-        return parseFloat(radiiWeightPower);
+        return radiiWeightPower;
       }
     },
 
@@ -847,16 +864,13 @@
        */
 
       get: function get() {
-        var repulsion = this.repulsion;
+        var repulsion = parseFloat(this.repulsion);
 
-
-        repulsion = parseFloat(repulsion);
-
-        if (isNaN(repulsion) === false) {
-          return repulsion * 0.000001;
-        } else {
-          return 0.000001; // default value
+        if (isNaN(repulsion)) {
+          throw new Error('Nayuki Canvas: `replusion` must be a number');
         }
+
+        return repulsion * 0.000001;
       }
     },
 
@@ -907,7 +921,6 @@
     redrawCanvas: redrawCanvas,
     _getOpacity: getOpacity,
     initialize: initialize,
-    isSupported: isSupported,
     next: next
   };
 
@@ -1012,18 +1025,19 @@
     return canvas;
   }
 
-  function nayukiCanvas (canvasElem, options) {
-    return createCanvas(canvasElem, options);
-  }
+  /**
+   * Add `nayukiCanvas` namespace properties
+   */
+  createCanvas.isSupported = isSupported;
 
   if ((typeof exports === 'undefined' ? 'undefined' : _typeof(exports)) === 'object') {
-    module.exports = nayukiCanvas;
+    module.exports = createCanvas;
   } else if (typeof define === 'function' && typeof define.amd !== 'undefined') {
     define(function () {
-      return nayukiCanvas;
+      return createCanvas;
     });
   } else if (window && !window.nayukiCanvas) {
-    window.nayukiCanvas = nayukiCanvas;
+    window.nayukiCanvas = createCanvas;
   }
 
 }());

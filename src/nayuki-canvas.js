@@ -19,7 +19,6 @@ const prototype = {
   redrawCanvas,
   _getOpacity,
   initialize,
-  isSupported,
   next
 };
 
@@ -117,6 +116,9 @@ function createCanvas (canvasElem = {}, options = {}) {
   return canvas;
 }
 
-export default function (canvasElem, options) {
-  return createCanvas(canvasElem, options);
-}
+/**
+ * Add `nayukiCanvas` namespace properties
+ */
+createCanvas.isSupported = isSupported;
+
+export default createCanvas;
