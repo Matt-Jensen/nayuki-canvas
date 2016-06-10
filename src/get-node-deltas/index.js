@@ -9,7 +9,7 @@ import { deepCopy } from '../utils';
  * @private
  * @return {Array}
  */
-export default function getNodeDeltas (nodes = this.nodes, repulsionForce = this.repulsionForce) {
+function getNodeDeltas (nodes = this.nodes, repulsionForce = this.repulsionForce) {
   const deltas = [];
   const nodesCp = deepCopy(nodes);
 
@@ -17,8 +17,8 @@ export default function getNodeDeltas (nodes = this.nodes, repulsionForce = this
     deltas.push(0);
   }
 
-  // For simplicitly, we perturb positions directly, instead of velocities
-  nodesCp.forEach(function (nodeA, k) {
+  // for simplicitly, we perturb positions directly, instead of velocities
+  nodesCp.forEach((nodeA, k) => {
     for (let j = 0; j < k; j++) {
       const np = nodePair(nodeA, nodesCp[j], repulsionForce);
       const { dx, dy } = np.deltas;
@@ -31,3 +31,5 @@ export default function getNodeDeltas (nodes = this.nodes, repulsionForce = this
 
   return deltas;
 }
+
+export default getNodeDeltas;

@@ -11,6 +11,7 @@
 export default function next (idealNumNodes = this.idealNumNodes, relWidth = this.relWidth, relHeight = this.relHeight, BORDER_FADE = this.BORDER_FADE) {
 
   // fade out nodes near the borders of the space or exceeding the target number of nodes
+  // TODO make private prototype method
   const isNodeFadingOut = function ({ posX, posY }) {
     return posX < BORDER_FADE || relWidth - posX < BORDER_FADE || posY < BORDER_FADE || relHeight - posY < BORDER_FADE;
   };

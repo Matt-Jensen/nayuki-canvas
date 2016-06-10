@@ -1,4 +1,4 @@
-const nayukiCanvas = require('../tmp/nayuki-canvas');
+const nayukiCanvas = require('../../tmp/nayuki-canvas');
 const test = require('tape');
 
 test('should exist', assert => {

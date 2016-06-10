@@ -1,6 +1,6 @@
 const test = require('tape');
-const properties = require('../tmp/properties');
-const defaults = require('../tmp/defaults');
+const properties = require('../../tmp/properties');
+const defaults = require('../../tmp/defaults');
 const canvasElem = { width: 100, height: 100 };
 
 test('should exist', assert => {

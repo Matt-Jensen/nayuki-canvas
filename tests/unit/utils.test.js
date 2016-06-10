@@ -1,9 +1,9 @@
 /*eslint no-native-reassign: 0 */
 
 const test = require('tape');
-const utils = require('../tmp/utils');
+const utils = require('../../tmp/utils');
 const { containsEdge, calcSpanningTree, calcAllEdgeWeights, isSupported, getCanvasElement } = utils;
-const { createNodes, createEdges } = require('./helpers/create');
+const { createNodes, createEdges } = require('../helpers/create');
 let jQuery;
 
 test('all utils should exist', assert => {

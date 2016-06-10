@@ -1,6 +1,6 @@
 const test = require('tape');
-const { createNodes } = require('./helpers/create');
-const updateNodes = require('../tmp/update-nodes');
+const { createNodes } = require('../helpers/create');
+const updateNodes = require('../../tmp/update-nodes');
 
 test('should exist', assert => {
   const msg = 'exports a module';

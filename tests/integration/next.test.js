@@ -1,6 +1,6 @@
 const test = require('tape');
-const next = require('../tmp/next');
-const { createNodes, createEdges } = require('./helpers/create');
+const next = require('../../tmp/next');
+const { createNodes, createEdges } = require('../helpers/create');
 
 const settings = {
   idealNumNodes: 2,

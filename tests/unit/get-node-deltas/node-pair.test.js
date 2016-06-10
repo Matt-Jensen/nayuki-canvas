@@ -1,6 +1,6 @@
 const test = require('tape');
-const nodePair = require('../../tmp/get-node-deltas/node-pair');
-const { createNodes } = require('../helpers/create');
+const nodePair = require('../../../tmp/get-node-deltas/node-pair');
+const { createNodes } = require('../../helpers/create');
 
 test('should exist', assert => {
   const msg = 'exports a module';

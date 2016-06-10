@@ -485,7 +485,7 @@
       deltas.push(0);
     }
 
-    // For simplicitly, we perturb positions directly, instead of velocities
+    // for simplicitly, we perturb positions directly, instead of velocities
     nodesCp.forEach(function (nodeA, k) {
       for (var j = 0; j < k; j++) {
         var np = nodePair(nodeA, nodesCp[j], repulsionForce);
@@ -728,6 +728,7 @@
 
 
     // fade out nodes near the borders of the space or exceeding the target number of nodes
+    // TODO make private prototype method
     var isNodeFadingOut = function isNodeFadingOut(_ref) {
       var posX = _ref.posX;
       var posY = _ref.posY;

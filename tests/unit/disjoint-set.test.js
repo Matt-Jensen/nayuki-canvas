@@ -1,5 +1,5 @@
 const test = require('tape');
-const disjointSet = require('../tmp/disjoint-set');
+const disjointSet = require('../../tmp/disjoint-set');
 
 test('should exist', assert => {
   const msg = 'did not export a module';

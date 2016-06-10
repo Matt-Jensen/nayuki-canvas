@@ -1,5 +1,5 @@
 const test = require('tape');
-const isTargetSmaller = require('../../tmp/update-edges/is-target-smaller');
+const isTargetSmaller = require('../../../tmp/update-edges/is-target-smaller');
 
 test('should exist', assert => {
   const msg = 'exports a module';

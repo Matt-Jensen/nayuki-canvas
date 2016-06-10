@@ -1,6 +1,6 @@
 const test = require('tape');
-const canvasBackground = require('../../tmp/redraw-canvas/canvas-background');
-const mockGraphics = require('../helpers/mock-graphics');
+const canvasBackground = require('../../../tmp/redraw-canvas/canvas-background');
+const mockGraphics = require('../../helpers/mock-graphics');
 const mockConf = {
   width: 100,
   height: 100,

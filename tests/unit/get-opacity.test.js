@@ -1,5 +1,5 @@
 const test = require('tape');
-const getOpacity = require('../tmp/get-opacity');
+const getOpacity = require('../../tmp/get-opacity');
 
 test('should exist', assert => {
   const msg = 'exports a module';

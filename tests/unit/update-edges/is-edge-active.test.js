@@ -1,6 +1,6 @@
 const test = require('tape');
-const isEdgeActive = require('../../tmp/update-edges/is-edge-active');
-const { createEdges } = require('../helpers/create');
+const isEdgeActive = require('../../../tmp/update-edges/is-edge-active');
+const { createEdges } = require('../../helpers/create');
 
 test('should exist', assert => {
   const msg = 'exports a module';
