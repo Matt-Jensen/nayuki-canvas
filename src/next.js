@@ -34,7 +34,7 @@ export default function next (idealNumNodes = this.idealNumNodes, relWidth = thi
   /*
    * update nodes' trajectory
    */
-  const deltas = this.getNodeDeltas();
+  const deltas = this._getNodeDeltas();
 
   // apply "push" to nodes
   this.nodes.map(function (node, i) {

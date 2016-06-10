@@ -754,7 +754,7 @@
     /*
      * update nodes' trajectory
      */
-    var deltas = this.getNodeDeltas();
+    var deltas = this._getNodeDeltas();
 
     // apply "push" to nodes
     this.nodes.map(function (node, i) {
@@ -918,7 +918,7 @@
   var prototype = {
     _updateNodes: updateNodes,
     _updateEdges: updateEdges,
-    getNodeDeltas: getNodeDeltas,
+    _getNodeDeltas: getNodeDeltas,
     _redrawCanvas: redrawCanvas,
     _getOpacity: getOpacity,
     initialize: initialize,

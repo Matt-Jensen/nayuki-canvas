@@ -2,7 +2,7 @@ import defaults from './defaults';
 
 import _updateNodes from './update-nodes';
 import _updateEdges from './update-edges/index';
-import getNodeDeltas from './get-node-deltas/index';
+import _getNodeDeltas from './get-node-deltas/index';
 import _redrawCanvas from './redraw-canvas/index';
 import _getOpacity from './get-opacity';
 import initialize from './initialize';
@@ -15,7 +15,7 @@ import { getCanvasElement, isSupported } from './utils';
 const prototype = {
   _updateNodes,
   _updateEdges,
-  getNodeDeltas,
+  _getNodeDeltas,
   _redrawCanvas,
   _getOpacity,
   initialize,

@@ -19,7 +19,7 @@ const prototype = {
   _updateEdges () {
     return this.edges;
   },
-  getNodeDeltas () {
+  _getNodeDeltas () {
     return this.nodes.map(() => 0);
   },
   _redrawCanvas: () => {}
@@ -59,10 +59,10 @@ test('should update instance `nodes`', assert => {
   const msg = 'instance `nodes` were updated';
   const actual = createInstance({ nodes: createNodes(2) });
   const expected = JSON.parse(JSON.stringify(actual.nodes)); // clone
-  const originalUpdateNodes = prototype.updateNodes;
+  const originalUpdateNodes = prototype._updateNodes;
 
   // stub to perform some update to nodes
-  prototype.updateNodes = function () {
+  prototype._updateNodes = function () {
     return this.nodes.map(n => Object.assign({}, n, { posX: 2 }));
   };
 
@@ -70,7 +70,7 @@ test('should update instance `nodes`', assert => {
 
   assert.notDeepEqual(actual.nodes, expected, msg);
 
-  prototype.updateNodes = originalUpdateNodes;
+  prototype._updateNodes = originalUpdateNodes;
   assert.end();
 });
 
