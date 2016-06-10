@@ -342,7 +342,7 @@
   */
   function updateEdges() {
     var nodes = arguments.length <= 0 || arguments[0] === undefined ? this._nodes : arguments[0];
-    var edges = arguments.length <= 1 || arguments[1] === undefined ? this.edges : arguments[1];
+    var edges = arguments.length <= 1 || arguments[1] === undefined ? this._edges : arguments[1];
     var maxExtraEdges = arguments.length <= 2 || arguments[2] === undefined ? this._maxExtraEdges : arguments[2];
 
     var _this = this;
@@ -637,7 +637,7 @@
    */
   function redrawCanvas() {
     var nodes = arguments.length <= 0 || arguments[0] === undefined ? this._nodes : arguments[0];
-    var edges = arguments.length <= 1 || arguments[1] === undefined ? this.edges : arguments[1];
+    var edges = arguments.length <= 1 || arguments[1] === undefined ? this._edges : arguments[1];
     var canvasElem = arguments.length <= 2 || arguments[2] === undefined ? this.canvasElem : arguments[2];
     var graphics = arguments.length <= 3 || arguments[3] === undefined ? this.graphics : arguments[3];
 
@@ -767,7 +767,7 @@
     /*
      * update edges' trajectory and opacity
      */
-    this.edges = this._updateEdges(); // create new edges, update/drop existing
+    this._edges = this._updateEdges(); // create new edges, update/drop existing
 
     /*
      * draw state to canvas
@@ -990,7 +990,7 @@
      * - nodeB: A reference to the node object representing another side of the undirected edge (must be distinct from NodeA)
      * - opacity: A number in the range [0.0, 1.0] representing the strength of the edge
      */
-    canvas.edges = [];
+    canvas._edges = [];
 
     /**
      * setup start and stop methods for canvas

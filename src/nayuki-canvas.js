@@ -83,7 +83,7 @@ function createCanvas (canvasElem = {}, options = {}) {
    * - nodeB: A reference to the node object representing another side of the undirected edge (must be distinct from NodeA)
    * - opacity: A number in the range [0.0, 1.0] representing the strength of the edge
    */
-  canvas.edges = [];
+  canvas._edges = [];
 
   /**
    * setup start and stop methods for canvas

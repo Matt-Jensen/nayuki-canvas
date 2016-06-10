@@ -8,7 +8,7 @@ const settings = {
   _relWidth: 100,
   _relHeight: 100,
   _nodes: [],
-  edges: []
+  _edges: []
 };
 
 const prototype = {
@@ -17,7 +17,7 @@ const prototype = {
     return this._nodes;
   },
   _updateEdges () {
-    return this.edges;
+    return this._edges;
   },
   _getNodeDeltas () {
     return this._nodes.map(() => 0);
@@ -77,7 +77,7 @@ test('should update instance `nodes`', assert => {
 test('should update instance `edges`', assert => {
   const msg = 'instance `edges` were updated';
   const actual = createInstance({ _nodes: createNodes(2) });
-  const expected = JSON.parse(JSON.stringify(actual.edges)); // clone
+  const expected = JSON.parse(JSON.stringify(actual._edges)); // clone
   const originalUpdateEdges = prototype._updateEdges;
 
   // stub to perform some update to nodes
@@ -87,7 +87,7 @@ test('should update instance `edges`', assert => {
 
   next.call(actual);
 
-  assert.notDeepEqual(actual.edges, expected, msg);
+  assert.notDeepEqual(actual._edges, expected, msg);
 
   prototype._updateEdges = originalUpdateEdges;
   assert.end();
