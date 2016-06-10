@@ -91,13 +91,17 @@ function createCanvas (canvasElem = {}, options = {}) {
   (function () {
     let t;
 
+    // allow stubbing
+    canvas.setInterval = setInterval;
+    canvas.clearInterval = clearInterval;
+
     /**
      * Begin reoccuring calls to `canvas.next`
      * @type   {Method}
      * @return {Object} canvas
      */
     canvas.start = function start () {
-      t = setInterval(() => this.next(), this.FRAME_INTERVAL);
+      t = this.setInterval(() => this.next(), this.FRAME_INTERVAL);
       return this;
     };
 
@@ -107,7 +111,7 @@ function createCanvas (canvasElem = {}, options = {}) {
      * @return {Object} canvas
      */
     canvas.stop = function stop () {
-      clearInterval(t);
+      this.clearInterval(t);
       return this;
     };
   }());

@@ -997,6 +997,10 @@
     (function () {
       var t = void 0;
 
+      // allow stubbing
+      canvas.setInterval = setInterval;
+      canvas.clearInterval = clearInterval;
+
       /**
        * Begin reoccuring calls to `canvas.next`
        * @type   {Method}
@@ -1005,7 +1009,7 @@
       canvas.start = function start() {
         var _this = this;
 
-        t = setInterval(function () {
+        t = this.setInterval(function () {
           return _this.next();
         }, this.FRAME_INTERVAL);
         return this;
@@ -1017,7 +1021,7 @@
        * @return {Object} canvas
        */
       canvas.stop = function stop() {
-        clearInterval(t);
+        this.clearInterval(t);
         return this;
       };
     })();

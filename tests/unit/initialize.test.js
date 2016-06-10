@@ -15,7 +15,7 @@ test('should invoke instance `next` method', assert => {
   let actual = false;
   const expected = true;
 
-  initialize.call({ next: () => actual = true });
+  initialize.call({ next: () => { actual = true; } });
 
   assert.equal(actual, expected, msg);
   assert.end();

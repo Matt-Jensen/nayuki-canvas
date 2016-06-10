@@ -56,3 +56,81 @@ test('should have `isSupported` method in `nayukiCanvas` namespace', assert => {
   assert.equal(actual, expected, msg);
   assert.end();
 });
+
+test('should have `start` and `stop` instance methods', assert => {
+  const msg = 'method exists';
+
+  const instance = nayukiCanvas();
+  assert.equal(typeof instance.start, 'function', msg);
+  assert.equal(typeof instance.stop, 'function', msg);
+  assert.end();
+});
+
+test('should support chaining via `start`', assert => {
+  const msg = 'returns `this`';
+
+  const expected = nayukiCanvas();
+  expected.setInterval = function () {};
+
+  const actual = expected.start();
+
+  assert.equal(actual, expected, msg);
+  assert.end();
+});
+
+test('should invoke `next` via `setInterval` from `start`', assert => {
+  const msg = '`next` was invoked';
+
+  const instance = nayukiCanvas();
+  let actual = false;
+  const expected = true;
+
+  instance.setInterval = function () {
+    actual = true;
+  };
+
+  instance.start();
+
+  assert.equal(actual, expected, msg);
+  assert.end();
+});
+
+test('should pass `FRAME_INTERVAL` to `setInterval` via `start`', assert => {
+  const msg = 'passed `FRAME_INTERVAL`';
+
+  let actual;
+  const expected = 20;
+
+  const instance = nayukiCanvas({}, { FRAME_INTERVAL: expected });
+  instance.setInterval = (fn, interval) => { actual = interval; };
+
+  instance.start();
+
+  assert.equal(actual, expected, msg);
+  assert.end();
+});
+
+test('should support chaining via `stop`', assert => {
+  const msg = 'returns `this`';
+
+  const expected = nayukiCanvas();
+  const actual = expected.stop();
+
+  assert.equal(actual, expected, msg);
+  assert.end();
+});
+
+test('should invoke `clearInterval` via `stop`', assert => {
+  const msg = 'was invoked';
+
+  let actual = false;
+  const expected = true;
+
+  const instance = nayukiCanvas();
+  instance.clearInterval = () => { actual = true; };
+
+  instance.stop();
+
+  assert.equal(actual, expected, msg);
+  assert.end();
+});
