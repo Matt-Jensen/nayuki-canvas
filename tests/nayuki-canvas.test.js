@@ -46,3 +46,14 @@ test('should be idempotent', assert => {
   assert.deepEqual(actual, expected, msg);
   assert.end();
 });
+
+test('should have `isSupported` method in its prototype', assert => {
+  const msg = '`isSupported` in prototype';
+
+  const prototype = Object.getPrototypeOf(nayukiCanvas({}));
+  const actual = typeof prototype.isSupported === 'function';
+  const expected = true;
+
+  assert.equal(actual, expected, msg);
+  assert.end();
+});

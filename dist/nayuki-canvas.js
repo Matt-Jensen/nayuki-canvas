@@ -771,8 +771,8 @@
     redrawCanvas: redrawCanvas,
     _getOpacity: getOpacity,
     initialize: initialize,
-    next: next,
-    isSupported: isSupported
+    isSupported: isSupported,
+    next: next
   };
 
   var defaults = {

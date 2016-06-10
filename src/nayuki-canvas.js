@@ -15,8 +15,8 @@ const prototype = {
   redrawCanvas,
   _getOpacity,
   initialize,
-  next,
-  isSupported
+  isSupported,
+  next
 };
 
 const defaults = {
