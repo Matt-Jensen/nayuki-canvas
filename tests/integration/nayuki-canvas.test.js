@@ -1,5 +1,6 @@
 const nayukiCanvas = require('../../tmp/nayuki-canvas');
 const test = require('tape');
+const stripMethods = (o) => JSON.parse(JSON.stringify(o));
 
 test('should exist', assert => {
   const msg = 'exports a module';
@@ -34,14 +35,8 @@ test('should be idempotent', assert => {
   const msg = 'results are the same';
 
   const config = { extraEdges: 40 };
-  const actual = nayukiCanvas({}, config);
-  const expected = nayukiCanvas({}, config);
-
-  // are different
-  delete actual.start;
-  delete expected.start;
-  delete actual.stop;
-  delete expected.stop;
+  const actual = stripMethods(nayukiCanvas({}, config));
+  const expected = stripMethods(nayukiCanvas({}, config));
 
   assert.deepEqual(actual, expected, msg);
   assert.end();

@@ -13,7 +13,7 @@ const settings = {
 
 const prototype = {
   _getOpacity: (fade, o) => o.opacity,
-  updateNodes () {
+  _updateNodes () {
     return this.nodes;
   },
   updateEdges () {
