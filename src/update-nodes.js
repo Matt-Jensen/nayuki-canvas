@@ -9,7 +9,7 @@
 * @private
 * @return {Array}  Nodes
 */
-export default function updateNodes (nodes = this.nodes, idealNumNodes = this._idealNumNodes, relWidth = this._relWidth, relHeight = this._relHeight) {
+export default function updateNodes (nodes = this._nodes, idealNumNodes = this._idealNumNodes, relWidth = this._relWidth, relHeight = this._relHeight) {
   const newNodes = []; // nodes to render
 
   // Only keep visible nodes

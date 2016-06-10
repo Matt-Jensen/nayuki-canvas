@@ -91,7 +91,7 @@ test('should create instance that resolves `nodes` array without updating config
   const expected = JSON.parse(JSON.stringify(actual)); // clone
   const instance = canvasFrame({ canvasElem, nodes: actual });
 
-  instance.nodes; // eslint-disable-line
+  instance._nodes; // eslint-disable-line
 
   assert.deepEqual(actual, expected, msg);
   assert.end();

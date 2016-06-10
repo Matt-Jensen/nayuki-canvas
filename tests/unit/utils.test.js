@@ -75,7 +75,7 @@ test('`calcSpanningTree` should be idempotent', assert => {
 test('`calcSpanningTree` should be a pure function', assert => {
   const msg = 'did not updated arguments';
   const actual = {
-    edges: [ ['', 0, 1] ],
+    edges: [['', 0, 1]],
     nodes: [{ x: 1 }, { y: 2 }]
   };
   const expected = JSON.parse(JSON.stringify(actual)); // clone

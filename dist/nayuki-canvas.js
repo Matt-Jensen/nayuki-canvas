@@ -24,7 +24,7 @@
   * @return {Array}  Nodes
   */
   function updateNodes() {
-    var nodes = arguments.length <= 0 || arguments[0] === undefined ? this.nodes : arguments[0];
+    var nodes = arguments.length <= 0 || arguments[0] === undefined ? this._nodes : arguments[0];
     var idealNumNodes = arguments.length <= 1 || arguments[1] === undefined ? this._idealNumNodes : arguments[1];
     var relWidth = arguments.length <= 2 || arguments[2] === undefined ? this._relWidth : arguments[2];
     var relHeight = arguments.length <= 3 || arguments[3] === undefined ? this._relHeight : arguments[3];
@@ -341,7 +341,7 @@
   * @return {Array}
   */
   function updateEdges() {
-    var nodes = arguments.length <= 0 || arguments[0] === undefined ? this.nodes : arguments[0];
+    var nodes = arguments.length <= 0 || arguments[0] === undefined ? this._nodes : arguments[0];
     var edges = arguments.length <= 1 || arguments[1] === undefined ? this.edges : arguments[1];
     var maxExtraEdges = arguments.length <= 2 || arguments[2] === undefined ? this._maxExtraEdges : arguments[2];
 
@@ -475,7 +475,7 @@
    * @return {Array}
    */
   function getNodeDeltas() {
-    var nodes = arguments.length <= 0 || arguments[0] === undefined ? this.nodes : arguments[0];
+    var nodes = arguments.length <= 0 || arguments[0] === undefined ? this._nodes : arguments[0];
     var repulsionForce = arguments.length <= 1 || arguments[1] === undefined ? this._repulsionForce : arguments[1];
 
     var deltas = [];
@@ -636,7 +636,7 @@
    * @return {Object}  Canvas Frame instance
    */
   function redrawCanvas() {
-    var nodes = arguments.length <= 0 || arguments[0] === undefined ? this.nodes : arguments[0];
+    var nodes = arguments.length <= 0 || arguments[0] === undefined ? this._nodes : arguments[0];
     var edges = arguments.length <= 1 || arguments[1] === undefined ? this.edges : arguments[1];
     var canvasElem = arguments.length <= 2 || arguments[2] === undefined ? this.canvasElem : arguments[2];
     var graphics = arguments.length <= 3 || arguments[3] === undefined ? this.graphics : arguments[3];
@@ -743,13 +743,14 @@
     */
 
     // update current nodes' opacity
-    this.nodes.map(function (node, index) {
+    this._nodes.map(function (node, index) {
       var isFadingIn = !(index >= idealNumNodes || isNodeFadingOut(node));
       node.opacity = _this._getOpacity(isFadingIn, node);
       return node;
     });
 
-    this.nodes = this._updateNodes(); // create new nodes and drop old
+    // create new nodes and drop old
+    this._nodes = this._updateNodes();
 
     /*
      * update nodes' trajectory
@@ -757,7 +758,7 @@
     var deltas = this._getNodeDeltas();
 
     // apply "push" to nodes
-    this.nodes.map(function (node, i) {
+    this._nodes.map(function (node, i) {
       node.posX += deltas[i * 2 + 0];
       node.posY += deltas[i * 2 + 1];
       return node;
@@ -981,7 +982,7 @@
      * - radius: Radius of the node, a positive real number
      * - opacity: A number in the range [0.0, 1.0] representing the strength of the node
      */
-    canvas.nodes = [];
+    canvas._nodes = [];
 
     /**
      * Edge Properties

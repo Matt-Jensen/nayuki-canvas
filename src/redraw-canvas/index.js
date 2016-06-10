@@ -10,7 +10,7 @@ import canvasFrame from './canvas-frame';
  * @private
  * @return {Object}  Canvas Frame instance
  */
-export default function redrawCanvas (nodes = this.nodes, edges = this.edges, canvasElem = this.canvasElem, graphics = this.graphics) {
+export default function redrawCanvas (nodes = this._nodes, edges = this.edges, canvasElem = this.canvasElem, graphics = this.graphics) {
   const frame = canvasFrame({ canvasElem, graphics, nodes, edges });
 
   // Set background first (render below nodes & edges)

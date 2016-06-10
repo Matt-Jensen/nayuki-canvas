@@ -3,24 +3,24 @@ const next = require('../../tmp/next');
 const { createNodes, createEdges } = require('../helpers/create');
 
 const settings = {
-  idealNumNodes: 2,
+  _idealNumNodes: 2,
   BORDER_FADE: -0.02,
-  relWidth: 100,
-  relHeight: 100,
-  nodes: [],
+  _relWidth: 100,
+  _relHeight: 100,
+  _nodes: [],
   edges: []
 };
 
 const prototype = {
   _getOpacity: (fade, o) => o.opacity,
   _updateNodes () {
-    return this.nodes;
+    return this._nodes;
   },
   _updateEdges () {
     return this.edges;
   },
   _getNodeDeltas () {
-    return this.nodes.map(() => 0);
+    return this._nodes.map(() => 0);
   },
   _redrawCanvas: () => {}
 };
@@ -57,18 +57,18 @@ test('should not change `idealNumNodes`', assert => {
 
 test('should update instance `nodes`', assert => {
   const msg = 'instance `nodes` were updated';
-  const actual = createInstance({ nodes: createNodes(2) });
-  const expected = JSON.parse(JSON.stringify(actual.nodes)); // clone
+  const actual = createInstance({ _nodes: createNodes(2) });
+  const expected = JSON.parse(JSON.stringify(actual._nodes)); // clone
   const originalUpdateNodes = prototype._updateNodes;
 
   // stub to perform some update to nodes
   prototype._updateNodes = function () {
-    return this.nodes.map(n => Object.assign({}, n, { posX: 2 }));
+    return this._nodes.map(n => Object.assign({}, n, { posX: 2 }));
   };
 
   next.call(actual);
 
-  assert.notDeepEqual(actual.nodes, expected, msg);
+  assert.notDeepEqual(actual._nodes, expected, msg);
 
   prototype._updateNodes = originalUpdateNodes;
   assert.end();
@@ -76,13 +76,13 @@ test('should update instance `nodes`', assert => {
 
 test('should update instance `edges`', assert => {
   const msg = 'instance `edges` were updated';
-  const actual = createInstance({ nodes: createNodes(2) });
+  const actual = createInstance({ _nodes: createNodes(2) });
   const expected = JSON.parse(JSON.stringify(actual.edges)); // clone
   const originalUpdateEdges = prototype._updateEdges;
 
   // stub to perform some update to nodes
   prototype._updateEdges = function () {
-    return this.nodes.map(() => createEdges(1)[0]);
+    return this._nodes.map(() => createEdges(1)[0]);
   };
 
   next.call(actual);

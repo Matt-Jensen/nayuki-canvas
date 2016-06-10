@@ -23,13 +23,14 @@ export default function next (idealNumNodes = this._idealNumNodes, relWidth = th
   */
 
   // update current nodes' opacity
-  this.nodes.map((node, index) => {
+  this._nodes.map((node, index) => {
     const isFadingIn = !(index >= idealNumNodes || isNodeFadingOut(node));
     node.opacity = this._getOpacity(isFadingIn, node);
     return node;
   });
 
-  this.nodes = this._updateNodes(); // create new nodes and drop old
+  // create new nodes and drop old
+  this._nodes = this._updateNodes();
 
   /*
    * update nodes' trajectory
@@ -37,7 +38,7 @@ export default function next (idealNumNodes = this._idealNumNodes, relWidth = th
   const deltas = this._getNodeDeltas();
 
   // apply "push" to nodes
-  this.nodes.map(function (node, i) {
+  this._nodes.map(function (node, i) {
     node.posX += deltas[i * 2 + 0];
     node.posY += deltas[i * 2 + 1];
     return node;

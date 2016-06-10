@@ -75,7 +75,7 @@ function createCanvas (canvasElem = {}, options = {}) {
    * - radius: Radius of the node, a positive real number
    * - opacity: A number in the range [0.0, 1.0] representing the strength of the node
    */
-  canvas.nodes = [];
+  canvas._nodes = [];
 
   /**
    * Edge Properties
