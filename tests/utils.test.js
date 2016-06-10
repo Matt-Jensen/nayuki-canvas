@@ -1,7 +1,10 @@
+/*eslint no-native-reassign: 0 */
+
 const test = require('tape');
 const utils = require('../tmp/utils');
 const { containsEdge, calcSpanningTree, calcAllEdgeWeights, isSupported, getCanvasElement } = utils;
 const { createNodes, createEdges } = require('./helpers/create');
+let jQuery;
 
 test('all utils should exist', assert => {
   const msg = 'exports 3 modules';
@@ -292,7 +295,7 @@ test('`getCanvasElement` should create correct `error` when given incorrect inst
 
   const originalHTMLElement = (typeof HTMLElement === 'function' ? HTMLElement : undefined);
   HTMLElement = function TestConstructor () {};
-  function IncorrectConstructor () {};
+  function IncorrectConstructor () {}
 
   const actual = getCanvasElement(new IncorrectConstructor());
   const expected = actual instanceof Error;
@@ -353,7 +356,7 @@ test('`getCanvasElement` should successfully unpack a jQuery object wrapping a c
   };
 
   const actual = new HTMLElement();
-  const expected = getCanvasElement(new jQuery(actual));
+  const expected = getCanvasElement.call({ jQuery }, new jQuery(actual));
 
   assert.equal(actual, expected, msg);
 

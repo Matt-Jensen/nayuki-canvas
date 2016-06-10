@@ -269,13 +269,16 @@
       return String.prototype.toLowerCase.call(s);
     };
 
+    // find any jQuery instance
+    var jQ = (typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object' ? window.jQuery || window.$ : this && this.jQuery; // `this.jQuery` for testing
+
     try {
-      if ((element instanceof jQuery || element instanceof $) && typeof element.get === 'function') {
+      if (jQ && element instanceof jQ && typeof element.get === 'function') {
 
         // resolve first DOM Element from jQuery object
         element = element.get(0);
       }
-    } catch (e) {}
+    } catch (e) {} // eslint-disable-line
 
     try {
       if (element instanceof HTMLElement === true && toLowerCase(element.nodeName) === 'canvas') {
@@ -286,8 +289,6 @@
     } catch (e) {
       return new Error('HTMLElements not supported');
     }
-
-    return element;
   }
 
   /**
