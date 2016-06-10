@@ -1,3 +1,5 @@
+import defaults from './defaults';
+
 import updateNodes from './update-nodes';
 import updateEdges from './update-edges/index';
 import getNodeDeltas from './get-node-deltas/index';
@@ -5,6 +7,8 @@ import redrawCanvas from './redraw-canvas/index';
 import _getOpacity from './get-opacity';
 import initialize from './initialize';
 import next from './next';
+
+import properties from './properties';
 
 import { getCanvasElement, isSupported } from './utils';
 
@@ -17,17 +21,6 @@ const prototype = {
   initialize,
   isSupported,
   next
-};
-
-const defaults = {
-  extraEdges: 20,
-  numNodes: 70,
-  networkStyle: 'balanced',
-  repulsion: 1,
-  BORDER_FADE: -0.02,
-  FADE_IN_RATE: 0.06,  // In the range (0.0, 1.0]
-  FADE_OUT_RATE: 0.03,  // In the range (0.0, 1.0]
-  FRAME_INTERVAL: 20  // In milliseconds
 };
 
 const isNodeEnv = (typeof window === 'undefined' && typeof global === 'object');
@@ -56,78 +49,16 @@ function createCanvas (canvasElem = {}, options = {}) {
   // overwrite config with user preferences
   const config = Object.assign({}, defaults, options);
 
-  const canvas = Object.create(prototype, {
-    idealNumNodes: {
-      get () {
-        return parseInt(this.numNodes, 10);
-      }
-    },
-
-    maxExtraEdges: {
-      get () {
-        const { extraEdges, numNodes } = this;
-        return Math.round(parseFloat(extraEdges) / 100 * numNodes);
-      }
-    },
-
-    radiiWeightPower: {
-      get () {
-        const { networkStyle } = this;
-
-        let radiiWeightPower = 0.5; // balanced
-
-        if (networkStyle === 'mesh') {
-          radiiWeightPower = 0;
-        } else if (networkStyle === 'hubAndSpoke') {
-          radiiWeightPower = 1;
-        }
-
-        return parseFloat(radiiWeightPower);
-      }
-    },
-
-    repulsionForce: {
-      get () {
-        const { repulsion } = this;
-        if (!isNaN(repulsion)) {
-          return repulsion * 0.000001;
-        } else {
-          return repulsion;
-        }
-      },
-
-      set (value) {
-        this.repulsion = parseFloat(value);
-        return this.repulsion;
-      }
-    },
-
-    // at least one of relWidth or relHeight is exactly 1
-    // the aspect ratio relWidth:relHeight is equal to w:h
-    relWidth: {
-      get () {
-        const { width, height } = this.canvasElem;
-        return width / Math.max(width, height);
-      }
-    },
-
-    relHeight: {
-      get () {
-        const { width, height } = this.canvasElem;
-        return height / Math.max(width, height);
-      }
-    }
-  });
+  // create Nayuki Canvas instance
+  const canvas = Object.create(prototype, properties);
 
   // apply configuration to canvas
   Object.assign(canvas, config);
 
   if (isSupported()) {
-
-    // initialize canvas context
-    canvas.graphics = canvasElem.getContext('2d');
+    canvas.graphics = canvasElem.getContext('2d'); // initialize canvas context
   } else {
-    canvas.graphics = {};
+    canvas.graphics = {}; // allow error free node testing
   }
 
   /**

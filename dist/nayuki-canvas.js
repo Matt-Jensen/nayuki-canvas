@@ -1,6 +1,17 @@
 (function () {
   'use strict';
 
+  var defaults = {
+    "extraEdges": 20,
+    "numNodes": 70,
+    "networkStyle": "balanced",
+    "repulsion": 1,
+    "BORDER_FADE": -0.02,
+    "FADE_IN_RATE": 0.06,
+    "FADE_OUT_RATE": 0.03,
+    "FRAME_INTERVAL": 20
+  };
+
   /**
   * Returns an array of updated nodes
   * Updates/adds/removes current nodes based on the given array
@@ -764,6 +775,131 @@
     return this; // allow chaining
   }
 
+  var properties = {
+
+    /**
+     * Calculates the desired number of nodes to render
+     */
+    idealNumNodes: {
+
+      /**
+       * Ensure usable `numNodes` is numeric
+       * @return {Number}
+       */
+
+      get: function get() {
+        return parseInt(this.numNodes, 10);
+      }
+    },
+
+    /**
+     * Calculates suggested max number of edges
+     */
+    maxExtraEdges: {
+
+      /**
+       * Calculate usable `maxExtraEdges`
+       * @return {Number}
+       */
+
+      get: function get() {
+        var extraEdges = this.extraEdges;
+        var numNodes = this.numNodes;
+
+        return Math.round(parseFloat(extraEdges) / 100 * numNodes);
+      }
+    },
+
+    /**
+     * Determine how edges connect to nodes
+     */
+    radiiWeightPower: {
+
+      /**
+       * Calculate usable `networkStyle`
+       * @type {Number}
+       */
+
+      get: function get() {
+        var networkStyle = this.networkStyle;
+
+
+        var radiiWeightPower = 0.5; // balanced
+
+        if (networkStyle === 'mesh') {
+          radiiWeightPower = 0;
+        } else if (networkStyle === 'hubAndSpoke') {
+          radiiWeightPower = 1;
+        }
+
+        return parseFloat(radiiWeightPower);
+      }
+    },
+
+    /**
+     * Determines the speed at which nodes move
+     */
+    repulsionForce: {
+
+      /**
+       * Calculate usable `repulsion`
+       * @return {Number}
+       */
+
+      get: function get() {
+        var repulsion = this.repulsion;
+
+
+        repulsion = parseFloat(repulsion);
+
+        if (isNaN(repulsion) === false) {
+          return repulsion * 0.000001;
+        } else {
+          return 0.000001; // default value
+        }
+      }
+    },
+
+    /**
+     * Determine the relative width of canvas
+     */
+    relWidth: {
+
+      /**
+       * At least one of relWidth or relHeight is exactly 1
+       * @return {Number}
+       */
+
+      get: function get() {
+        var _canvasElem = this.canvasElem;
+        var width = _canvasElem.width;
+        var height = _canvasElem.height;
+
+        return width / Math.max(width, height);
+      }
+    },
+
+    /**
+     * Determine the relative height of canvas
+     */
+    relHeight: {
+
+      /**
+       * The aspect ratio `relWidth`:`relHeight` is equal to w:h
+       * @return {Number}
+       */
+
+      get: function get() {
+        var _canvasElem2 = this.canvasElem;
+        var width = _canvasElem2.width;
+        var height = _canvasElem2.height;
+
+        return height / Math.max(width, height);
+      }
+    }
+
+  };
+
   var prototype = {
     updateNodes: updateNodes,
     updateEdges: updateEdges,
@@ -773,17 +909,6 @@
     initialize: initialize,
     isSupported: isSupported,
     next: next
-  };
-
-  var defaults = {
-    extraEdges: 20,
-    numNodes: 70,
-    networkStyle: 'balanced',
-    repulsion: 1,
-    BORDER_FADE: -0.02,
-    FADE_IN_RATE: 0.06, // In the range (0.0, 1.0]
-    FADE_OUT_RATE: 0.03, // In the range (0.0, 1.0]
-    FRAME_INTERVAL: 20 // In milliseconds
   };
 
   var isNodeEnv = typeof window === 'undefined' && (typeof global === 'undefined' ? 'undefined' : _typeof(global)) === 'object';
@@ -815,88 +940,17 @@
     // overwrite config with user preferences
     var config = Object.assign({}, defaults, options);
 
-    var canvas = Object.create(prototype, {
-      idealNumNodes: {
-        get: function get() {
-          return parseInt(this.numNodes, 10);
-        }
-      },
-
-      maxExtraEdges: {
-        get: function get() {
-          var extraEdges = this.extraEdges;
-          var numNodes = this.numNodes;
-
-          return Math.round(parseFloat(extraEdges) / 100 * numNodes);
-        }
-      },
-
-      radiiWeightPower: {
-        get: function get() {
-          var networkStyle = this.networkStyle;
-
-
-          var radiiWeightPower = 0.5; // balanced
-
-          if (networkStyle === 'mesh') {
-            radiiWeightPower = 0;
-          } else if (networkStyle === 'hubAndSpoke') {
-            radiiWeightPower = 1;
-          }
-
-          return parseFloat(radiiWeightPower);
-        }
-      },
-
-      repulsionForce: {
-        get: function get() {
-          var repulsion = this.repulsion;
-
-          if (!isNaN(repulsion)) {
-            return repulsion * 0.000001;
-          } else {
-            return repulsion;
-          }
-        },
-        set: function set(value) {
-          this.repulsion = parseFloat(value);
-          return this.repulsion;
-        }
-      },
-
-      // at least one of relWidth or relHeight is exactly 1
-      // the aspect ratio relWidth:relHeight is equal to w:h
-      relWidth: {
-        get: function get() {
-          var _canvasElem = this.canvasElem;
-          var width = _canvasElem.width;
-          var height = _canvasElem.height;
-
-          return width / Math.max(width, height);
-        }
-      },
-
-      relHeight: {
-        get: function get() {
-          var _canvasElem2 = this.canvasElem;
-          var width = _canvasElem2.width;
-          var height = _canvasElem2.height;
-
-          return height / Math.max(width, height);
-        }
-      }
-    });
+    // create Nayuki Canvas instance
+    var canvas = Object.create(prototype, properties);
 
     // apply configuration to canvas
     Object.assign(canvas, config);
 
     if (isSupported()) {
-
-      // initialize canvas context
-      canvas.graphics = canvasElem.getContext('2d');
+      canvas.graphics = canvasElem.getContext('2d'); // initialize canvas context
     } else {
-      canvas.graphics = {};
-    }
+        canvas.graphics = {}; // allow error free node testing
+      }
 
     /**
      * Validated canvas element
