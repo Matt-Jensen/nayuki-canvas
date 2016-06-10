@@ -51,7 +51,7 @@ export default function next (idealNumNodes = this.idealNumNodes, relWidth = thi
   /*
    * draw state to canvas
    */
-  this.redrawCanvas();
+  this._redrawCanvas();
 
   return this; // allow chaining
 }

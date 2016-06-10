@@ -771,7 +771,7 @@
     /*
      * draw state to canvas
      */
-    this.redrawCanvas();
+    this._redrawCanvas();
 
     return this; // allow chaining
   }
@@ -919,7 +919,7 @@
     _updateNodes: updateNodes,
     _updateEdges: updateEdges,
     getNodeDeltas: getNodeDeltas,
-    redrawCanvas: redrawCanvas,
+    _redrawCanvas: redrawCanvas,
     _getOpacity: getOpacity,
     initialize: initialize,
     next: next

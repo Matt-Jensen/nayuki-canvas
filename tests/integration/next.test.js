@@ -22,7 +22,7 @@ const prototype = {
   getNodeDeltas () {
     return this.nodes.map(() => 0);
   },
-  redrawCanvas: () => {}
+  _redrawCanvas: () => {}
 };
 
 const createInstance = (conf = {}) =>
@@ -78,7 +78,7 @@ test('should update instance `edges`', assert => {
   const msg = 'instance `edges` were updated';
   const actual = createInstance({ nodes: createNodes(2) });
   const expected = JSON.parse(JSON.stringify(actual.edges)); // clone
-  const originalUpdateEdges = prototype.updateEdges;
+  const originalUpdateEdges = prototype._updateEdges;
 
   // stub to perform some update to nodes
   prototype._updateEdges = function () {
@@ -89,18 +89,18 @@ test('should update instance `edges`', assert => {
 
   assert.notDeepEqual(actual.edges, expected, msg);
 
-  prototype.updateEdges = originalUpdateEdges;
+  prototype._updateEdges = originalUpdateEdges;
   assert.end();
 });
 
-test('should invoke `redrawCanvas`', assert => {
-  const msg = '`redrawCanvas` was called';
+test('should invoke `_redrawCanvas`', assert => {
+  const msg = '`_redrawCanvas` was called';
   const instance = createInstance();
-  const originalRedrawCanvas = prototype.redrawCanvas;
+  const originalRedrawCanvas = prototype._redrawCanvas;
 
-  prototype.redrawCanvas = function () {
+  prototype._redrawCanvas = function () {
     assert.ok(true, msg);
-    prototype.redrawCanvas = originalRedrawCanvas;
+    prototype._redrawCanvas = originalRedrawCanvas;
     assert.end();
   };
 

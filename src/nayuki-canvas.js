@@ -3,7 +3,7 @@ import defaults from './defaults';
 import _updateNodes from './update-nodes';
 import _updateEdges from './update-edges/index';
 import getNodeDeltas from './get-node-deltas/index';
-import redrawCanvas from './redraw-canvas/index';
+import _redrawCanvas from './redraw-canvas/index';
 import _getOpacity from './get-opacity';
 import initialize from './initialize';
 import next from './next';
@@ -16,7 +16,7 @@ const prototype = {
   _updateNodes,
   _updateEdges,
   getNodeDeltas,
-  redrawCanvas,
+  _redrawCanvas,
   _getOpacity,
   initialize,
   next
