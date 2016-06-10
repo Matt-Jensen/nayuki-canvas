@@ -16,7 +16,7 @@ const prototype = {
   _updateNodes () {
     return this.nodes;
   },
-  updateEdges () {
+  _updateEdges () {
     return this.edges;
   },
   getNodeDeltas () {
@@ -81,7 +81,7 @@ test('should update instance `edges`', assert => {
   const originalUpdateEdges = prototype.updateEdges;
 
   // stub to perform some update to nodes
-  prototype.updateEdges = function () {
+  prototype._updateEdges = function () {
     return this.nodes.map(() => createEdges(1)[0]);
   };
 

@@ -46,7 +46,7 @@ export default function next (idealNumNodes = this.idealNumNodes, relWidth = thi
   /*
    * update edges' trajectory and opacity
    */
-  this.edges = this.updateEdges(); // create new edges, update/drop existing
+  this.edges = this._updateEdges(); // create new edges, update/drop existing
 
   /*
    * draw state to canvas

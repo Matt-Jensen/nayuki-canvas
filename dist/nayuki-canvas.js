@@ -766,7 +766,7 @@
     /*
      * update edges' trajectory and opacity
      */
-    this.edges = this.updateEdges(); // create new edges, update/drop existing
+    this.edges = this._updateEdges(); // create new edges, update/drop existing
 
     /*
      * draw state to canvas
@@ -917,7 +917,7 @@
 
   var prototype = {
     _updateNodes: updateNodes,
-    updateEdges: updateEdges,
+    _updateEdges: updateEdges,
     getNodeDeltas: getNodeDeltas,
     redrawCanvas: redrawCanvas,
     _getOpacity: getOpacity,
