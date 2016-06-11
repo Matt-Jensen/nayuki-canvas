@@ -105,27 +105,16 @@ export function isSupported () {
  * @type   {Function}
  * @return {Object|Boolean}
  */
-export function getCanvasElement (element = {}) {
+export function getCanvasElement (element = {}, _HTMLElement = Function, _jQuery = false) {
   const toLowerCase = (s) => String.prototype.toLowerCase.call(s);
 
-  // find any jQuery instance
-  const jQ = (typeof window === 'object' ? (window.jQuery || window.$) : (this && this.jQuery)); // `this.jQuery` for testing
+  if (_jQuery && (element instanceof _jQuery) && (typeof element.get === 'function')) {
+    element = element.get(0); // use first DOM Element in jQuery object
+  }
 
-  try {
-    if (jQ && (element instanceof jQ) && (typeof element.get === 'function')) {
-
-      // resolve first DOM Element from jQuery object
-      element = element.get(0);
-    }
-  } catch (e) {} // eslint-disable-line
-
-  try {
-    if (element instanceof HTMLElement === true && toLowerCase(element.nodeName) === 'canvas') {
-      return element;
-    } else {
-      return new Error('is not a canvas');
-    }
-  } catch (e) {
-    return new Error('HTMLElements not supported');
+  if (element instanceof _HTMLElement === true && toLowerCase(element.nodeName) === 'canvas') {
+    return element;
+  } else {
+    return false;
   }
 }

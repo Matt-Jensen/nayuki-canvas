@@ -32,17 +32,16 @@ const isNodeEnv = (typeof window === 'undefined' && typeof global === 'object');
  * @return {Object}            Nayuki Canvas
  */
 function createCanvas (canvasElem = {}, options = {}) {
-  canvasElem = getCanvasElement(canvasElem);
-
-  if (isNodeEnv === true) {
-    canvasElem = {}; // ignore error
+  if (isNodeEnv) {
+    canvasElem = {};
+  } else {
+    canvasElem = getCanvasElement(canvasElem, HTMLElement, (window.jQuery || window.$));
   }
 
-  if (canvasElem instanceof Error) {
+  if (!canvasElem) {
 
     // failed to resolve canvas element
-    canvasElem.message = `Nayuki Canvas: ${canvasElem.message}`;
-    throw canvasElem;
+    throw new Error('Nayuki Canvas: requires a Canvas element as it\'s first argument');
   }
 
   // overwrite config with user preferences

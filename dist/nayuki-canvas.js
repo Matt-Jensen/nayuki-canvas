@@ -276,29 +276,22 @@
   function getCanvasElement() {
     var element = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
+    var _HTMLElement = arguments.length <= 1 || arguments[1] === undefined ? Function : arguments[1];
+
+    var _jQuery = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+
     var toLowerCase = function toLowerCase(s) {
       return String.prototype.toLowerCase.call(s);
     };
 
-    // find any jQuery instance
-    var jQ = (typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object' ? window.jQuery || window.$ : this && this.jQuery; // `this.jQuery` for testing
+    if (_jQuery && element instanceof _jQuery && typeof element.get === 'function') {
+      element = element.get(0); // use first DOM Element in jQuery object
+    }
 
-    try {
-      if (jQ && element instanceof jQ && typeof element.get === 'function') {
-
-        // resolve first DOM Element from jQuery object
-        element = element.get(0);
-      }
-    } catch (e) {} // eslint-disable-line
-
-    try {
-      if (element instanceof HTMLElement === true && toLowerCase(element.nodeName) === 'canvas') {
-        return element;
-      } else {
-        return new Error('is not a canvas');
-      }
-    } catch (e) {
-      return new Error('HTMLElements not supported');
+    if (element instanceof _HTMLElement === true && toLowerCase(element.nodeName) === 'canvas') {
+      return element;
+    } else {
+      return false;
     }
   }
 
@@ -939,17 +932,16 @@
     var canvasElem = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
     var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-    canvasElem = getCanvasElement(canvasElem);
-
-    if (isNodeEnv === true) {
-      canvasElem = {}; // ignore error
+    if (isNodeEnv) {
+      canvasElem = {};
+    } else {
+      canvasElem = getCanvasElement(canvasElem, HTMLElement, window.jQuery || window.$);
     }
 
-    if (canvasElem instanceof Error) {
+    if (!canvasElem) {
 
       // failed to resolve canvas element
-      canvasElem.message = 'Nayuki Canvas: ' + canvasElem.message;
-      throw canvasElem;
+      throw new Error('Nayuki Canvas: requires a Canvas element as it\'s first argument');
     }
 
     // overwrite config with user preferences
