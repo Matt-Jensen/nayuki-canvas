@@ -288,6 +288,7 @@
       element = element.get(0); // use first DOM Element in jQuery object
     }
 
+    // is a DOM Element and has name canvas
     if (element instanceof _HTMLElement === true && toLowerCase(element.nodeName) === 'canvas') {
       return element;
     } else {
