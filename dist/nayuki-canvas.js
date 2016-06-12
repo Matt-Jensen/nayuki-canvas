@@ -9,7 +9,9 @@
     'BORDER_FADE': -0.02,
     'FADE_IN_RATE': 0.06,
     'FADE_OUT_RATE': 0.03,
-    'FRAME_INTERVAL': 20
+    'FRAME_INTERVAL': 20,
+    'background': '#0275d8',
+    'gradient': 'radial'
   };
 
   /**
@@ -458,36 +460,48 @@
     return deltas;
   }
 
+  var toLowerCase = function toLowerCase(s) {
+    return String.prototype.slice.call(s);
+  };
+
   /**
    * Factory that generates a Canvas Background instance
    * @param {Object}   config
    * @type {Function}
-   * @return {Object}  Canvas Background instance
+   * @return {Object}  HTML5 Canvas gradient instance
    */
-  function canvasBackground(config) {
-    var defaults = {
-      startColor: '#575E85', // TODO make gradient start color configurable
-      stopColor: '#2E3145' // TODO make gradient end color configurable
-      //, background: '' // TODO allow single color backgrounds
-    };
+  function canvasBackground(_ref) {
+    var width = _ref.width;
+    var height = _ref.height;
+    var size = _ref.size;
+    var gradient = _ref.gradient;
+    var graphics = _ref.graphics;
+    var background = _ref.background;
 
-    return Object.assign(Object.create(null, {
-      gradient: {
-        get: function get() {
-          var width = this.width;
-          var height = this.height;
-          var size = this.size;
-          var graphics = this.graphics;
-          var startColor = this.startColor;
-          var stopColor = this.stopColor;
+    var isGradentBackground = background instanceof Array;
 
-          var gradient = graphics.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, size / 2);
-          gradient.addColorStop(0, startColor);
-          gradient.addColorStop(1, stopColor);
-          return gradient;
-        }
-      }
-    }), defaults, config);
+    var colorStops = void 0;
+    if (isGradentBackground) {
+      colorStops = background;
+    } else {
+      colorStops = [background, background]; // fake gradient background
+    }
+
+    var canvasGradient = void 0;
+    if (toLowerCase(gradient) === 'linear') {
+      canvasGradient = graphics.createLinearGradient(width / 2, 0, width / 2, height);
+    } else {
+      canvasGradient = graphics.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, size / 2); // default
+    }
+
+    // add color stops to gradient
+    colorStops.forEach(function (color, index, _ref2) {
+      var total = _ref2.length;
+
+      canvasGradient.addColorStop(index / (total - 1), color);
+    });
+
+    return canvasGradient;
   }
 
   /**
@@ -518,7 +532,7 @@
     var instance = Object.create({ isEdgeVisible: isEdgeVisible }, {
       background: {
         get: function get() {
-          return canvasBackground(this._data).gradient; // TODO make gradient type configurable
+          return canvasBackground(this._data);
         }
       },
 
@@ -595,8 +609,10 @@
     var edges = arguments.length <= 1 || arguments[1] === undefined ? this._edges : arguments[1];
     var canvasElem = arguments.length <= 2 || arguments[2] === undefined ? this._canvasElem : arguments[2];
     var graphics = arguments.length <= 3 || arguments[3] === undefined ? this._graphics : arguments[3];
+    var background = arguments.length <= 4 || arguments[4] === undefined ? this.background : arguments[4];
+    var gradient = arguments.length <= 5 || arguments[5] === undefined ? this.gradient : arguments[5];
 
-    var frame = canvasFrame({ canvasElem: canvasElem, graphics: graphics, nodes: nodes, edges: edges });
+    var frame = canvasFrame({ canvasElem: canvasElem, graphics: graphics, nodes: nodes, edges: edges, background: background, gradient: gradient });
 
     // Set background first (render below nodes & edges)
     graphics.fillStyle = frame.background;

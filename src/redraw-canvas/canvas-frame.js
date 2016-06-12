@@ -28,7 +28,7 @@ export default function canvasFrame (config) {
   const instance = Object.create({ isEdgeVisible }, {
     background: {
       get () {
-        return canvasBackground(this._data).gradient; // TODO make gradient type configurable
+        return canvasBackground(this._data);
       }
     },
 

@@ -1,25 +1,32 @@
+const toLowerCase = (s) => String.prototype.slice.call(s);
+
 /**
  * Factory that generates a Canvas Background instance
  * @param {Object}   config
  * @type {Function}
- * @return {Object}  Canvas Background instance
+ * @return {Object}  HTML5 Canvas gradient instance
  */
-export default function canvasBackground (config) {
-  const defaults = {
-    startColor: '#575E85', // TODO make gradient start color configurable
-    stopColor: '#2E3145' // TODO make gradient end color configurable
-    //, background: '' // TODO allow single color backgrounds
-  };
+export default function canvasBackground ({ width, height, size, gradient, graphics, background }) {
+  const isGradentBackground = (background instanceof Array);
 
-  return Object.assign(Object.create(null, {
-    gradient: {
-      get () {
-        const { width, height, size, graphics, startColor, stopColor } = this;
-        const gradient = graphics.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, size / 2);
-        gradient.addColorStop(0, startColor);
-        gradient.addColorStop(1, stopColor);
-        return gradient;
-      }
-    }
-  }), defaults, config);
+  let colorStops;
+  if (isGradentBackground) {
+    colorStops = background;
+  } else {
+    colorStops = [background, background]; // fake gradient background
+  }
+
+  let canvasGradient;
+  if (toLowerCase(gradient) === 'linear') {
+    canvasGradient = graphics.createLinearGradient(width / 2, 0, width / 2, height);
+  } else {
+    canvasGradient = graphics.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, size / 2); // default
+  }
+
+  // add color stops to gradient
+  colorStops.forEach(function (color, index, { length: total }) {
+    canvasGradient.addColorStop(index / (total - 1), color);
+  });
+
+  return canvasGradient;
 }

@@ -4,6 +4,11 @@ module.exports = function mockGraphics (conf) {
       return Object.create({
         addColorStop () {}
       });
+    },
+    createLinearGradient () {
+      return Object.create({
+        addColorStop () {}
+      });
     }
   }), {
     fillStyle: undefined,

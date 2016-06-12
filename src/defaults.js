@@ -6,5 +6,7 @@ export default {
   'BORDER_FADE': -0.02,
   'FADE_IN_RATE': 0.06,
   'FADE_OUT_RATE': 0.03,
-  'FRAME_INTERVAL': 20
+  'FRAME_INTERVAL': 20,
+  'background': '#0275d8',
+  'gradient': 'radial'
 };
