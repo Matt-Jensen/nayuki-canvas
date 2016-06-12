@@ -53,56 +53,6 @@
     return newNodes;
   }
 
-  var prototype$1 = {
-    getRepr: function getRepr(i) {
-      if (this.parents[i] !== i) {
-        this.parents[i] = this.getRepr(this.parents[i]);
-      }
-      return this.parents[i];
-    },
-    mergeSets: function mergeSets(i, j) {
-      var repr0 = this.getRepr(i);
-      var repr1 = this.getRepr(j);
-
-      if (repr0 === repr1) {
-        return false;
-      }
-
-      var cmp = this.ranks[repr0] - this.ranks[repr1];
-      if (cmp >= 0) {
-        if (cmp === 0) {
-          this.ranks[repr0]++;
-        }
-        this.parents[repr1] = repr0;
-      } else {
-        this.parents[repr0] = repr1;
-      }
-
-      return true;
-    }
-  };
-
-  /**
-   * The union-find data structure.
-   * A lite version of https://www.nayuki.io/page/disjoint-set-data-structure
-   * @param  {Number} size
-   * @type   {Function}
-   * @return {Object}
-   */
-  function disjointSet(size) {
-    var instance = {
-      parents: { value: [] },
-      ranks: { value: [], writable: true }
-    };
-
-    for (var i = 0; i < size; i++) {
-      instance.parents.value.push(i);
-      instance.ranks.value.push(0);
-    }
-
-    return Object.create(prototype$1, instance);
-  }
-
   var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
     return typeof obj;
   } : function (obj) {
@@ -158,24 +108,90 @@
   };
 
   /**
-   * Tests whether the given array of edge objects contains an edge with
-   * the given endpoints (undirected). Pure function, no side effects.
-   * @param {Array}    allEdges
-   * @param {Object}   edge
+   * Returns a sorted array of edges with weights, for all unique edge pairs. Pure function, no side effects.
+   * @param {Array}     nodes
+   * @param {Number}    radiiWeightPower
    * @type {Function}
-   * @return {Boolean}
+   * @return {Array}    [[weight, index1, index2]]
    */
-  function containsEdge(allEdges, edge) {
-    for (var i = 0; i < allEdges.length; i++) {
-      var elem = allEdges[i];
-      var sameEdge = elem.nodeA === edge.nodeA && elem.nodeB === edge.nodeB;
-      var symetricalEdge = elem.nodeA === edge.nodeB && elem.nodeB === edge.nodeA;
+  function calcAllEdgeWeights(nodes, radiiWeightPower) {
 
-      if (sameEdge || symetricalEdge) {
-        return true;
+    // Each entry has the form [weight, nodeAIndex, nodeBIndex], where nodeAIndex < nodeBIndex
+    var result = [];
+
+    for (var i = 0; i < nodes.length; i++) {
+      // Calculate all n * (n - 1) / 2 edges
+      var nodeA = nodes[i];
+
+      for (var j = 0; j < i; j++) {
+        var nodeB = nodes[j];
+        var weight = Math.hypot(nodeA.posX - nodeB.posX, nodeA.posY - nodeB.posY); // Euclidean distance
+        weight /= Math.pow(nodeA.radius * nodeB.radius, radiiWeightPower); // Give discount based on node radii
+        result.push([weight, i, j]);
       }
     }
-    return false;
+
+    // Sort array by ascending weight
+    return result.sort(function (_ref, _ref2) {
+      var _ref4 = slicedToArray(_ref, 1);
+
+      var x = _ref4[0];
+
+      var _ref3 = slicedToArray(_ref2, 1);
+
+      var y = _ref3[0];
+      return x < y ? -1 : x > y ? 1 : 0;
+    });
+  }
+
+  var prototype$1 = {
+    getRepr: function getRepr(i) {
+      if (this.parents[i] !== i) {
+        this.parents[i] = this.getRepr(this.parents[i]);
+      }
+      return this.parents[i];
+    },
+    mergeSets: function mergeSets(i, j) {
+      var repr0 = this.getRepr(i);
+      var repr1 = this.getRepr(j);
+
+      if (repr0 === repr1) {
+        return false;
+      }
+
+      var cmp = this.ranks[repr0] - this.ranks[repr1];
+      if (cmp >= 0) {
+        if (cmp === 0) {
+          this.ranks[repr0]++;
+        }
+        this.parents[repr1] = repr0;
+      } else {
+        this.parents[repr0] = repr1;
+      }
+
+      return true;
+    }
+  };
+
+  /**
+   * The union-find data structure.
+   * A lite version of https://www.nayuki.io/page/disjoint-set-data-structure
+   * @param  {Number} size
+   * @type   {Function}
+   * @return {Object}
+   */
+  function disjointSet(size) {
+    var instance = {
+      parents: { value: [] },
+      ranks: { value: [], writable: true }
+    };
+
+    for (var i = 0; i < size; i++) {
+      instance.parents.value.push(i);
+      instance.ranks.value.push(0);
+    }
+
+    return Object.create(prototype$1, instance);
   }
 
   /**
@@ -211,89 +227,24 @@
   }
 
   /**
-   * Returns a sorted array of edges with weights, for all unique edge pairs. Pure function, no side effects.
-   * @param {Array}   nodes
-   * @type {Function}
-   * @return {Array}  [[weight, index1, index2]]
-   */
-  function calcAllEdgeWeights(nodes, radiiWeightPower) {
-
-    // Each entry has the form [weight, nodeAIndex, nodeBIndex], where nodeAIndex < nodeBIndex
-    var result = [];
-
-    for (var i = 0; i < nodes.length; i++) {
-      // Calculate all n * (n - 1) / 2 edges
-      var nodeA = nodes[i];
-
-      for (var j = 0; j < i; j++) {
-        var nodeB = nodes[j];
-        var weight = Math.hypot(nodeA.posX - nodeB.posX, nodeA.posY - nodeB.posY); // Euclidean distance
-        weight /= Math.pow(nodeA.radius * nodeB.radius, radiiWeightPower); // Give discount based on node radii
-        result.push([weight, i, j]);
-      }
-    }
-
-    // Sort array by ascending weight
-    return result.sort(function (_ref, _ref2) {
-      var _ref4 = slicedToArray(_ref, 1);
-
-      var x = _ref4[0];
-
-      var _ref3 = slicedToArray(_ref2, 1);
-
-      var y = _ref3[0];
-      return x < y ? -1 : x > y ? 1 : 0;
-    });
-  }
-
-  /**
-   * Create a deep (JSON compliant) copy of a given collection
-   * @param {Array|Object} c
-   * @type {Function}
-   * @return {Array|Object}
-   */
-  function deepCopy(c) {
-    return JSON.parse(JSON.stringify(c));
-  }
-
-  /**
-   * Determines if Nayuki Canvas is supported in the current environment
+   * Tests whether the given array of edge objects contains an edge with
+   * the given endpoints (undirected). Pure function, no side effects.
+   * @param {Array}    allEdges
+   * @param {Object}   edge
    * @type {Function}
    * @return {Boolean}
    */
-  function isSupported() {
-    var elem = (typeof document === 'undefined' ? 'undefined' : _typeof(document)) === 'object' && document.createElement && document.createElement('canvas');
-    return !!(elem && elem.getContext && elem.getContext('2d'));
-  }
+  function containsEdge(allEdges, edge) {
+    for (var i = 0; i < allEdges.length; i++) {
+      var elem = allEdges[i];
+      var sameEdge = elem.nodeA === edge.nodeA && elem.nodeB === edge.nodeB;
+      var symetricalEdge = elem.nodeA === edge.nodeB && elem.nodeB === edge.nodeA;
 
-  /**
-   * Resolve the given value if a Canvas DOM element
-   * otherwise resolve relevant error if not
-   * @param  {Object} element DOM HTMLElment instance
-   * @type   {Function}
-   * @return {Object|Boolean}
-   */
-  function getCanvasElement() {
-    var element = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-    var _HTMLElement = arguments.length <= 1 || arguments[1] === undefined ? Function : arguments[1];
-
-    var _jQuery = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
-
-    var toLowerCase = function toLowerCase(s) {
-      return String.prototype.toLowerCase.call(s);
-    };
-
-    if (_jQuery && element instanceof _jQuery && typeof element.get === 'function') {
-      element = element.get(0); // use first DOM Element in jQuery object
+      if (sameEdge || symetricalEdge) {
+        return true;
+      }
     }
-
-    // is a DOM Element and has name canvas
-    if (element instanceof _HTMLElement === true && toLowerCase(element.nodeName) === 'canvas') {
-      return element;
-    } else {
-      return false;
-    }
+    return false;
   }
 
   /**
@@ -458,6 +409,16 @@
         }
       }
     });
+  }
+
+  /**
+   * Create a deep (JSON compliant) copy of a given collection
+   * @param {Array|Object} c
+   * @type {Function}
+   * @return {Array|Object}
+   */
+  function deepCopy(c) {
+    return JSON.parse(JSON.stringify(c));
   }
 
   /**
@@ -722,7 +683,6 @@
 
 
     // fade out nodes near the borders of the space or exceeding the target number of nodes
-    // TODO make private prototype method
     var isNodeFadingOut = function isNodeFadingOut(_ref) {
       var posX = _ref.posX;
       var posY = _ref.posY;
@@ -909,6 +869,46 @@
     }
 
   };
+
+  /**
+   * Resolve the given value if a Canvas DOM element
+   * otherwise resolve relevant error if not
+   * @param  {Object} element DOM HTMLElment instance
+   * @type   {Function}
+   * @return {Object|Boolean}
+   */
+  function getCanvasElement() {
+    var element = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+    var _HTMLElement = arguments.length <= 1 || arguments[1] === undefined ? Function : arguments[1];
+
+    var _jQuery = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+
+    var toLowerCase = function toLowerCase(s) {
+      return String.prototype.toLowerCase.call(s);
+    };
+
+    if (_jQuery && element instanceof _jQuery && typeof element.get === 'function') {
+      element = element.get(0); // use first DOM Element in jQuery object
+    }
+
+    // is a DOM Element and has name canvas
+    if (element instanceof _HTMLElement === true && toLowerCase(element.nodeName) === 'canvas') {
+      return element;
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * Determines if Nayuki Canvas is supported in the current environment
+   * @type {Function}
+   * @return {Boolean}
+   */
+  function isSupported() {
+    var elem = (typeof document === 'undefined' ? 'undefined' : _typeof(document)) === 'object' && document.createElement && document.createElement('canvas');
+    return !!(elem && elem.getContext && elem.getContext('2d'));
+  }
 
   var prototype = {
     _updateNodes: updateNodes,

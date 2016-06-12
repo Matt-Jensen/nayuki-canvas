@@ -1,5 +1,14 @@
 import nodePair from './node-pair';
-import { deepCopy } from '../utils';
+
+/**
+ * Create a deep (JSON compliant) copy of a given collection
+ * @param {Array|Object} c
+ * @type {Function}
+ * @return {Array|Object}
+ */
+function deepCopy (c) {
+  return JSON.parse(JSON.stringify(c));
+}
 
 /**
  * Create array of deltas based on list of nodes

@@ -1,5 +1,7 @@
+// default configuration
 import defaults from './defaults';
 
+// prototype methods
 import _updateNodes from './update-nodes';
 import _updateEdges from './update-edges/index';
 import _getNodeDeltas from './get-node-deltas/index';
@@ -8,9 +10,12 @@ import _getOpacity from './get-opacity';
 import initialize from './initialize';
 import next from './next';
 
+// instance properties
 import properties from './properties';
 
-import { getCanvasElement, isSupported } from './utils';
+// utils
+import getCanvasElement from './utils/get-canvas-element';
+import isSupported from './utils/is-supported';
 
 const prototype = {
   _updateNodes,

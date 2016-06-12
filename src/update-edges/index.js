@@ -1,4 +1,6 @@
-import { calcAllEdgeWeights, calcSpanningTree, containsEdge } from '../utils';
+import calcAllEdgeWeights from '../utils/calc-all-edge-weights';
+import calcSpanningTree from '../utils/calc-spanning-tree';
+import containsEdge from '../utils/contains-edge';
 import isEdgeActive from './is-edge-active';
 import isTargetSmaller from './is-target-smaller';
 
