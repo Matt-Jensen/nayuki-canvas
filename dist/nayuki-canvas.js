@@ -14,7 +14,8 @@
     'gradient': 'radial',
     'nodeColor': '#f1f1f1',
     'edgeColor': '#b4b4b4',
-    'edgeSize': 0.7
+    'edgeSize': 0.7,
+    'nodeSize': 900
   };
 
   /**
@@ -556,13 +557,14 @@
         get: function get() {
           var _data = this._data;
           var size = _data.size;
+          var nodeSize = _data.nodeSize;
           var nodeColor = _data.nodeColor;
 
 
           return this._data.nodes.map(function (node) {
             return {
               fill: 'rgba(' + color.hexToRGB(nodeColor) + ',' + node.opacity.toFixed(3) + ')',
-              arc: [node.posX * size, node.posY * size, node.radius * size, 0, Math.PI * 2]
+              arc: [node.posX * size, node.posY * size, node.radius * nodeSize, 0, Math.PI * 2]
             };
           });
         }
@@ -574,6 +576,7 @@
 
           var _data2 = this._data;
           var size = _data2.size;
+          var nodeSize = _data2.nodeSize;
           var edgeColor = _data2.edgeColor;
 
 
@@ -599,8 +602,8 @@
               style: 'rgba(' + color.hexToRGB(edgeColor) + ',' + opacity.toFixed(3) + ')',
 
               // Shorten edge so it only touches the circumference of node
-              start: [(nodeA.posX - dx * nodeA.radius) * size, (nodeA.posY - dy * nodeA.radius) * size],
-              end: [(nodeB.posX + dx * nodeB.radius) * size, (nodeB.posY + dy * nodeB.radius) * size]
+              start: [(nodeA.posX - dx * (nodeA.radius * (nodeSize / size))) * size, (nodeA.posY - dy * (nodeA.radius * (nodeSize / size))) * size],
+              end: [(nodeB.posX + dx * (nodeB.radius * (nodeSize / size))) * size, (nodeB.posY + dy * (nodeB.radius * (nodeSize / size))) * size]
             };
           }).filter(function (e) {
             return e;
@@ -632,8 +635,9 @@
     var nodeColor = arguments.length <= 6 || arguments[6] === undefined ? this.nodeColor : arguments[6];
     var edgeColor = arguments.length <= 7 || arguments[7] === undefined ? this.edgeColor : arguments[7];
     var edgeSize = arguments.length <= 8 || arguments[8] === undefined ? this.edgeSize : arguments[8];
+    var nodeSize = arguments.length <= 9 || arguments[9] === undefined ? this.nodeSize : arguments[9];
 
-    var frame = canvasFrame({ canvasElem: canvasElem, graphics: graphics, nodes: nodes, edges: edges, background: background, gradient: gradient, nodeColor: nodeColor, edgeColor: edgeColor });
+    var frame = canvasFrame({ canvasElem: canvasElem, graphics: graphics, nodes: nodes, edges: edges, background: background, gradient: gradient, nodeColor: nodeColor, edgeColor: edgeColor, nodeSize: nodeSize });
 
     // Set background first (render below nodes & edges)
     graphics.fillStyle = frame.background;

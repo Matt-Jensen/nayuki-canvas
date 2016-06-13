@@ -16,7 +16,7 @@ test('should exist', assert => {
 test('should be idempotent', assert => {
   const msg = 'canvas frames are the same';
 
-  const config = { nodes: createNodes(2), edges: createEdges(2), canvasElem };
+  const config = { nodes: createNodes(2), edges: createEdges(2), canvasElem, nodeSize: 100 };
   const actual = canvasFrame(config);
   const expected = canvasFrame(config);
 
@@ -27,7 +27,7 @@ test('should be idempotent', assert => {
 test('should have idempotent methods', assert => {
   const msg = 'canvas frames methods produce same result';
 
-  const config = { nodes: createNodes(2), edges: createEdges(2), canvasElem };
+  const config = { nodes: createNodes(2), edges: createEdges(2), canvasElem, nodeSize: 100 };
   const actual = canvasFrame(config);
   const expected = canvasFrame(config);
 
@@ -38,7 +38,7 @@ test('should have idempotent methods', assert => {
 
 test('should create instances with only pure functions', assert => {
   const msg = '`nodes` were updated';
-  const actual = { nodes: createNodes(2), edges: createEdges(2), canvasElem };
+  const actual = { nodes: createNodes(2), edges: createEdges(2), canvasElem, nodeSize: 100 };
   const expected = JSON.parse(JSON.stringify(actual)); // clone
 
   const cf = canvasFrame(actual);
@@ -111,7 +111,7 @@ test('should create instance that resolves `nodes` proportional to config.nodes'
 test('should create instance that resolves `nodes` with arcs that are multiples of instance `size`', assert => {
   const msg = 'should be a multiple';
 
-  const instance = canvasFrame({ canvasElem, nodes: createNodes(1) });
+  const instance = canvasFrame({ canvasElem, nodes: createNodes(1), nodeSize: 100 });
   const size = instance._data.size;
   const node = instance.nodes[0];
 

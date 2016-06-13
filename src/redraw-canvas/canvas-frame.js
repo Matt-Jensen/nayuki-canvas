@@ -35,18 +35,18 @@ export default function canvasFrame (config) {
 
     nodes: {
       get () {
-        const { size, nodeColor } = this._data;
+        const { size, nodeSize, nodeColor } = this._data;
 
         return this._data.nodes.map(node => ({
           fill: `rgba(${color.hexToRGB(nodeColor)},${node.opacity.toFixed(3)})`,
-          arc: [node.posX * size, node.posY * size, node.radius * size, 0, Math.PI * 2]
+          arc: [node.posX * size, node.posY * size, node.radius * nodeSize, 0, Math.PI * 2]
         }));
       }
     },
 
     edges: {
       get () {
-        const { size, edgeColor } = this._data;
+        const { size, nodeSize, edgeColor } = this._data;
 
         return this._data.edges.map(edge => {
           const { nodeA, nodeB } = edge;
@@ -69,12 +69,12 @@ export default function canvasFrame (config) {
 
             // Shorten edge so it only touches the circumference of node
             start: [
-              (nodeA.posX - dx * nodeA.radius) * size,
-              (nodeA.posY - dy * nodeA.radius) * size
+              (nodeA.posX - dx * (nodeA.radius * (nodeSize / size))) * size,
+              (nodeA.posY - dy * (nodeA.radius * (nodeSize / size))) * size
             ],
             end: [
-              (nodeB.posX + dx * nodeB.radius) * size,
-              (nodeB.posY + dy * nodeB.radius) * size
+              (nodeB.posX + dx * (nodeB.radius * (nodeSize / size))) * size,
+              (nodeB.posY + dy * (nodeB.radius * (nodeSize / size))) * size
             ]
           };
         })
