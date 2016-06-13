@@ -40,7 +40,8 @@ for (let config of configs) {
   .then(bundle => {
     bundle.write({
       dest,
-      format: 'iife'
+      format: 'umd',
+      moduleName: 'nayukiCanvas'
     });
   })
   .catch(console.error);

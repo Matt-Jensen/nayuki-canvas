@@ -25,12 +25,8 @@
       console.log('fadeInRate', myCanvas.fadeInRate);
       console.log('fadeOutRate', myCanvas.fadeOutRate);
       console.log('frameInterval', myCanvas.frameInterval);
-
-      var hash = document.location.hash.replace('#', '');
-      hash = parseInt(hash, 10);
-      hash = isNaN(hash) ? 0 : hash;
-      document.location.hash = hash + 1 + '';
     }
   </script>
+  <script src='/www/hash-counter.js'></script>
 </body>
 </html>

@@ -1,5 +1,8 @@
-(function () {
-  'use strict';
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global.nayukiCanvas = factory());
+}(this, function () { 'use strict';
 
   var defaults = {
     extraEdges: 20,
@@ -1070,14 +1073,6 @@
    */
   createCanvas.isSupported = isSupported;
 
-  if ((typeof exports === 'undefined' ? 'undefined' : _typeof(exports)) === 'object') {
-    module.exports = createCanvas;
-  } else if (typeof define === 'function' && typeof define.amd !== 'undefined') {
-    define(function () {
-      return createCanvas;
-    });
-  } else if (window && !window.nayukiCanvas) {
-    window.nayukiCanvas = createCanvas;
-  }
+  return createCanvas;
 
-}());
+}));
