@@ -10,7 +10,7 @@ import canvasFrame from './canvas-frame';
  * @private
  * @return {Object}  Canvas Frame instance
  */
-export default function redrawCanvas (nodes = this._nodes, edges = this._edges, canvasElem = this._canvasElem, graphics = this._graphics, background = this.background, gradient = this.gradient, nodeColor = this.nodeColor, edgeColor = this.edgeColor) {
+export default function redrawCanvas (nodes = this._nodes, edges = this._edges, canvasElem = this._canvasElem, graphics = this._graphics, background = this.background, gradient = this.gradient, nodeColor = this.nodeColor, edgeColor = this.edgeColor, edgeSize = this.edgeSize) {
   const frame = canvasFrame({ canvasElem, graphics, nodes, edges, background, gradient, nodeColor, edgeColor });
 
   // Set background first (render below nodes & edges)
@@ -26,7 +26,7 @@ export default function redrawCanvas (nodes = this._nodes, edges = this._edges, 
     graphics.fill();
   });
 
-  graphics.lineWidth = (frame._data.size / 800); // TODO make edge width configurable
+  graphics.lineWidth = edgeSize;
 
   // Draw edges (render on top)
   frame.edges

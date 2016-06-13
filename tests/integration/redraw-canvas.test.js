@@ -15,8 +15,8 @@ test('should exist', assert => {
 test('should be a mostly pure function, only updating graphics argument', assert => {
   const msg = 'arguments are unchanged';
 
-  const args = [createNodes(2), createEdges(2), mockCanvas(), mockGraphics({ ignore: true }), '#fff', 'radial', '#fff', '#fff'];
-  const expected = [createNodes(2), createEdges(2), mockCanvas(), mockGraphics({ ignore: true }), '#fff', 'radial', '#fff', '#fff'];
+  const args = [createNodes(2), createEdges(2), mockCanvas(), mockGraphics({ ignore: true }), '#fff', 'radial', '#fff', '#fff', 0.7];
+  const expected = [createNodes(2), createEdges(2), mockCanvas(), mockGraphics({ ignore: true }), '#fff', 'radial', '#fff', '#fff', 0.7];
 
   redrawCanvas(...args);
 
@@ -47,8 +47,8 @@ test('should draw background with idempotence', assert => {
     }
   });
 
-  redrawCanvas(createNodes(), createEdges(), mockCanvas(), graphics, '#fff', 'radial', '#fff', '#fff');
-  redrawCanvas(createNodes(), createEdges(), mockCanvas(), graphics, '#fff', 'radial', '#fff', '#fff');
+  redrawCanvas(createNodes(), createEdges(), mockCanvas(), graphics, '#fff', 'radial', '#fff', '#fff', 0.7);
+  redrawCanvas(createNodes(), createEdges(), mockCanvas(), graphics, '#fff', 'radial', '#fff', '#fff', 0.7);
 
   assert.deepEqual(actual, expected, msg);
   assert.end();
@@ -69,8 +69,8 @@ test('should draw nodes with idempotence', assert => {
     }
   });
 
-  redrawCanvas(createNodes(), createEdges(), mockCanvas(), graphics, '#fff', 'radial', '#fff', '#fff');
-  redrawCanvas(createNodes(), createEdges(), mockCanvas(), graphics, '#fff', 'radial', '#fff', '#fff');
+  redrawCanvas(createNodes(), createEdges(), mockCanvas(), graphics, '#fff', 'radial', '#fff', '#fff', 0.7);
+  redrawCanvas(createNodes(), createEdges(), mockCanvas(), graphics, '#fff', 'radial', '#fff', '#fff', 0.7);
 
   assert.deepEqual(actual, expected, msg);
   assert.end();
@@ -87,7 +87,7 @@ test('should draw each node in Canvas Frame `nodes`', assert => {
   });
 
   // get Canvas Frame object
-  const expected = redrawCanvas(createNodes(2), createEdges(), mockCanvas(), graphics, '#fff', 'radial', '#fff', '#fff');
+  const expected = redrawCanvas(createNodes(2), createEdges(), mockCanvas(), graphics, '#fff', 'radial', '#fff', '#fff', 0.7);
 
   assert.equal(actual.length, expected.nodes.length, msg);
   assert.end();
@@ -121,8 +121,8 @@ test('should draw lines with idempotence', assert => {
   // create edge that connects them
   const edges = createEdges(1, { nodeA: nodes[0], nodeB: nodes[1] });
 
-  redrawCanvas(nodes, edges, mockCanvas(), graphics, '#fff', 'radial', '#fff', '#fff');
-  redrawCanvas(nodes, edges, mockCanvas(), graphics, '#fff', 'radial', '#fff', '#fff');
+  redrawCanvas(nodes, edges, mockCanvas(), graphics, '#fff', 'radial', '#fff', '#fff', 0.7);
+  redrawCanvas(nodes, edges, mockCanvas(), graphics, '#fff', 'radial', '#fff', '#fff', 0.7);
 
   assert.deepEqual(actual, expected, msg);
   assert.end();
@@ -146,7 +146,7 @@ test('should draw each edge in Canvas Frame `edges`', assert => {
 
 
   // get Canvas Frame object
-  const expected = redrawCanvas(nodes, edges, mockCanvas(), graphics, '#fff', 'radial', '#fff', '#fff');
+  const expected = redrawCanvas(nodes, edges, mockCanvas(), graphics, '#fff', 'radial', '#fff', '#fff', 0.7);
 
   assert.equal(actual.length, expected.edges.length, msg);
   assert.end();

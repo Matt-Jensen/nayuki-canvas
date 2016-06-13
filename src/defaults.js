@@ -10,5 +10,6 @@ export default {
   'background': ['#0275d8', '#055396'],
   'gradient': 'radial',
   'nodeColor': '#f1f1f1',
-  'edgeColor': '#b4b4b4'
+  'edgeColor': '#b4b4b4',
+  'edgeSize': 0.7
 };

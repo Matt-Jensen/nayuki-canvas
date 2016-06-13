@@ -13,7 +13,8 @@
     'background': ['#0275d8', '#055396'],
     'gradient': 'radial',
     'nodeColor': '#f1f1f1',
-    'edgeColor': '#b4b4b4'
+    'edgeColor': '#b4b4b4',
+    'edgeSize': 0.7
   };
 
   /**
@@ -630,6 +631,7 @@
     var gradient = arguments.length <= 5 || arguments[5] === undefined ? this.gradient : arguments[5];
     var nodeColor = arguments.length <= 6 || arguments[6] === undefined ? this.nodeColor : arguments[6];
     var edgeColor = arguments.length <= 7 || arguments[7] === undefined ? this.edgeColor : arguments[7];
+    var edgeSize = arguments.length <= 8 || arguments[8] === undefined ? this.edgeSize : arguments[8];
 
     var frame = canvasFrame({ canvasElem: canvasElem, graphics: graphics, nodes: nodes, edges: edges, background: background, gradient: gradient, nodeColor: nodeColor, edgeColor: edgeColor });
 
@@ -645,7 +647,7 @@
       graphics.fill();
     });
 
-    graphics.lineWidth = frame._data.size / 800; // TODO make edge width configurable
+    graphics.lineWidth = edgeSize;
 
     // Draw edges (render on top)
     frame.edges.forEach(function (e) {
