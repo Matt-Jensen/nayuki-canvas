@@ -51,14 +51,14 @@ export default {
   _radiiWeightPower: {
 
     /**
-     * Calculate usable `networkStyle`
+     * Calculate usable `network`
      * @type {Number}
      */
     get () {
-      const { networkStyle } = this;
+      const { network } = this;
 
       // ensure lowercase string
-      const style = (typeof networkStyle === 'string' ? networkStyle.toLowerCase() : networkStyle);
+      const style = (typeof network === 'string' ? network.toLowerCase() : network);
 
       let radiiWeightPower = 0.5; // balanced
 
@@ -123,12 +123,12 @@ export default {
   },
 
   /**
-   * TODO FADE_IN_RATE proxy that keeps in between (0.0 - 1.0)
+   * TODO fadeInRate proxy that keeps in between (0.0 - 1.0)
    * _fadeInRate: {}
    */
 
    /**
-    * TODO FADE_OUT_RATE proxy that keeps in between (0.0 - 1.0)
+    * TODO fadeOutRate proxy that keeps in between (0.0 - 1.0)
     * _fadeOutRate: {}
     */
 };

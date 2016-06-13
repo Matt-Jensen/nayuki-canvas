@@ -16,12 +16,12 @@ test('should be a pure function', assert => {
   const actual = {
     extraEdges: 21,
     numNodes: 71,
-    networkStyle: 'mesh',
+    network: 'mesh',
     repulsion: 10,
-    BORDER_FADE: -0.04,
-    FADE_IN_RATE: 0.16,
-    FADE_OUT_RATE: 0.13,
-    FRAME_INTERVAL: 25
+    borderFade: -0.04,
+    fadeInRate: 0.16,
+    fadeOutRate: 0.13,
+    frameInterval: 25
   };
   const expected = JSON.parse(JSON.stringify(actual)); // clone
 
@@ -90,13 +90,13 @@ test('should invoke `next` via `setInterval` from `start`', assert => {
   assert.end();
 });
 
-test('should pass `FRAME_INTERVAL` to `setInterval` via `start`', assert => {
-  const msg = 'passed `FRAME_INTERVAL`';
+test('should pass `frameInterval` to `setInterval` via `start`', assert => {
+  const msg = 'passed `frameInterval`';
 
   let actual;
   const expected = 20;
 
-  const instance = nayukiCanvas({}, { FRAME_INTERVAL: expected });
+  const instance = nayukiCanvas({}, { frameInterval: expected });
   instance.setInterval = (fn, interval) => { actual = interval; };
 
   instance.start();

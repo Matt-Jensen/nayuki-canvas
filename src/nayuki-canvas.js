@@ -105,7 +105,7 @@ function createCanvas (canvasElem = {}, options = {}) {
      * @return {Object} canvas
      */
     canvas.start = function start () {
-      t = this.setInterval(() => this.next(), this.FRAME_INTERVAL);
+      t = this.setInterval(() => this.next(), this.frameInterval);
       return this;
     };
 

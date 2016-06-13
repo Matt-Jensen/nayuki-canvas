@@ -4,7 +4,7 @@ const { createNodes, createEdges } = require('../helpers/create');
 
 const settings = {
   _idealNumNodes: 2,
-  BORDER_FADE: -0.02,
+  borderFade: -0.02,
   _relWidth: 100,
   _relHeight: 100,
   _nodes: [],

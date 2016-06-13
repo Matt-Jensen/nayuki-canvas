@@ -2,20 +2,20 @@
   'use strict';
 
   var defaults = {
-    'extraEdges': 20,
-    'numNodes': 70,
-    'networkStyle': 'balanced',
-    'repulsion': 1,
-    'BORDER_FADE': -0.02,
-    'FADE_IN_RATE': 0.06,
-    'FADE_OUT_RATE': 0.03,
-    'FRAME_INTERVAL': 20,
-    'background': ['#0275d8', '#055396'],
-    'gradient': 'radial',
-    'nodeColor': '#f1f1f1',
-    'edgeColor': '#b4b4b4',
-    'edgeSize': 0.7,
-    'nodeSize': 900
+    extraEdges: 20,
+    numNodes: 70,
+    network: 'balanced',
+    repulsion: 1,
+    borderFade: -0.02,
+    fadeInRate: 0.06,
+    fadeOutRate: 0.03,
+    frameInterval: 20,
+    background: ['#0275d8', '#055396'],
+    gradient: 'radial',
+    nodeColor: '#f1f1f1',
+    edgeColor: '#b4b4b4',
+    edgeSize: 0.7,
+    nodeSize: 900
   };
 
   /**
@@ -671,20 +671,20 @@
    * Determines input opacity
    * @param {Boolean} isFadingIn
    * @param {Object}  input
-   * @param {Number} FADE_IN_RATE
-   * @param {Number} FADE_OUT_RATE
+   * @param {Number} fadeInRate
+   * @param {Number} fadeOutRate
    * @type {Method}
    * @private
    * @return {Number}
    */
   function getOpacity(isFadingIn, input) {
-    var FADE_IN_RATE = arguments.length <= 2 || arguments[2] === undefined ? this.FADE_IN_RATE : arguments[2];
-    var FADE_OUT_RATE = arguments.length <= 3 || arguments[3] === undefined ? this.FADE_OUT_RATE : arguments[3];
+    var fadeInRate = arguments.length <= 2 || arguments[2] === undefined ? this.fadeInRate : arguments[2];
+    var fadeOutRate = arguments.length <= 3 || arguments[3] === undefined ? this.fadeOutRate : arguments[3];
 
     if (isFadingIn) {
-      return Math.min(input.opacity + FADE_IN_RATE, 1);
+      return Math.min(input.opacity + fadeInRate, 1);
     } else {
-      return Math.max(input.opacity - FADE_OUT_RATE, 0);
+      return Math.max(input.opacity - fadeOutRate, 0);
     }
   }
 
@@ -709,7 +709,7 @@
    * @param {Number}   idealNumNodes
    * @param {Number}   relWidth
    * @param {Number}   relHeight
-   * @param {Number}   BORDER_FADE
+   * @param {Number}   borderFade
    * @type {Method}
    * @return {Object}  Canvas instance
    */
@@ -720,7 +720,7 @@
     var _this = this;
 
     var relHeight = arguments.length <= 2 || arguments[2] === undefined ? this._relHeight : arguments[2];
-    var BORDER_FADE = arguments.length <= 3 || arguments[3] === undefined ? this.BORDER_FADE : arguments[3];
+    var borderFade = arguments.length <= 3 || arguments[3] === undefined ? this.borderFade : arguments[3];
 
 
     // fade out nodes near the borders of the space or exceeding the target number of nodes
@@ -728,7 +728,7 @@
       var posX = _ref.posX;
       var posY = _ref.posY;
 
-      return posX < BORDER_FADE || relWidth - posX < BORDER_FADE || posY < BORDER_FADE || relHeight - posY < BORDER_FADE;
+      return posX < borderFade || relWidth - posX < borderFade || posY < borderFade || relHeight - posY < borderFade;
     };
 
     /*
@@ -827,16 +827,16 @@
     _radiiWeightPower: {
 
       /**
-       * Calculate usable `networkStyle`
+       * Calculate usable `network`
        * @type {Number}
        */
 
       get: function get() {
-        var networkStyle = this.networkStyle;
+        var network = this.network;
 
         // ensure lowercase string
 
-        var style = typeof networkStyle === 'string' ? networkStyle.toLowerCase() : networkStyle;
+        var style = typeof network === 'string' ? network.toLowerCase() : network;
 
         var radiiWeightPower = 0.5; // balanced
 
@@ -1046,7 +1046,7 @@
 
         t = this.setInterval(function () {
           return _this.next();
-        }, this.FRAME_INTERVAL);
+        }, this.frameInterval);
         return this;
       };
 

@@ -4,15 +4,15 @@
  * @param {Number}   idealNumNodes
  * @param {Number}   relWidth
  * @param {Number}   relHeight
- * @param {Number}   BORDER_FADE
+ * @param {Number}   borderFade
  * @type {Method}
  * @return {Object}  Canvas instance
  */
-export default function next (idealNumNodes = this._idealNumNodes, relWidth = this._relWidth, relHeight = this._relHeight, BORDER_FADE = this.BORDER_FADE) {
+export default function next (idealNumNodes = this._idealNumNodes, relWidth = this._relWidth, relHeight = this._relHeight, borderFade = this.borderFade) {
 
   // fade out nodes near the borders of the space or exceeding the target number of nodes
   const isNodeFadingOut = function ({ posX, posY }) {
-    return posX < BORDER_FADE || relWidth - posX < BORDER_FADE || posY < BORDER_FADE || relHeight - posY < BORDER_FADE;
+    return posX < borderFade || relWidth - posX < borderFade || posY < borderFade || relHeight - posY < borderFade;
   };
 
   /*

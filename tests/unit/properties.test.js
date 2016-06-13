@@ -95,30 +95,30 @@ test('should return a number representing `_maxExtraEdges`', assert => {
   assert.end();
 });
 
-test('should return `0.5` from `_radiiWeightPower` when `networkStyle` is `undefined`', assert => {
+test('should return `0.5` from `_radiiWeightPower` when `network` is `undefined`', assert => {
   const msg = 'is `0.5`';
 
-  const actual = properties._radiiWeightPower.get.call({ networkStyle: undefined });
+  const actual = properties._radiiWeightPower.get.call({ network: undefined });
   const expected = 0.5;
 
   assert.equal(actual, expected, msg);
   assert.end();
 });
 
-test('should return `0` from `_radiiWeightPower` when `networkStyle` is `mesh`', assert => {
+test('should return `0` from `_radiiWeightPower` when `network` is `mesh`', assert => {
   const msg = 'is `0`';
 
-  const actual = properties._radiiWeightPower.get.call({ networkStyle: 'mesh' });
+  const actual = properties._radiiWeightPower.get.call({ network: 'mesh' });
   const expected = 0;
 
   assert.equal(actual, expected, msg);
   assert.end();
 });
 
-test('should return `1` from `_radiiWeightPower` when `networkStyle` is `wheel`', assert => {
+test('should return `1` from `_radiiWeightPower` when `network` is `wheel`', assert => {
   const msg = 'is `1`';
 
-  const actual = properties._radiiWeightPower.get.call({ networkStyle: 'wheel' });
+  const actual = properties._radiiWeightPower.get.call({ network: 'wheel' });
   const expected = 1;
 
   assert.equal(actual, expected, msg);
