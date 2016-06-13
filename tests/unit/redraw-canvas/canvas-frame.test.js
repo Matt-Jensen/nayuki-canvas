@@ -36,7 +36,7 @@ test('should have idempotent methods', assert => {
   assert.end();
 });
 
-test('should provide only pure functions', assert => {
+test('should create instances with only pure functions', assert => {
   const msg = '`nodes` were updated';
   const actual = { nodes: createNodes(2), edges: createEdges(2), canvasElem };
   const expected = JSON.parse(JSON.stringify(actual)); // clone
@@ -50,7 +50,7 @@ test('should provide only pure functions', assert => {
   assert.end();
 });
 
-test('should `create()` new Canvas Frame instances', assert => {
+test('should create new Canvas Frame instances', assert => {
   const msg = 'should be an object';
 
   const actual = isObject(canvasFrame({ canvasElem }));
@@ -60,7 +60,7 @@ test('should `create()` new Canvas Frame instances', assert => {
   assert.end();
 });
 
-test('should provide a pure function: `create()`', assert => {
+test('should be a pure function', assert => {
   const msg = 'should not change';
 
   const actual = { canvasElem };
@@ -101,7 +101,6 @@ test('should create instance that resolves `nodes` proportional to config.nodes'
   const msg = 'should have a length of `2`';
 
   const nodes = createNodes(2);
-  console.log(Object.keys(canvasFrame({ canvasElem, nodes })));
   const actual = canvasFrame({ canvasElem, nodes }).nodes.length;
   const expected = nodes.length;
 

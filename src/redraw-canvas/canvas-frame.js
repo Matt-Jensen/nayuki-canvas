@@ -1,4 +1,5 @@
 import canvasBackground from './canvas-background';
+import color from '../utils/color';
 
 /**
  * Determines if an edge is visible
@@ -34,11 +35,10 @@ export default function canvasFrame (config) {
 
     nodes: {
       get () {
-        const { size } = this._data;
-        const color = '129,139,197'; // TODO make node color configurable
+        const { size, nodeColor } = this._data;
 
         return this._data.nodes.map(node => ({
-          fill: `rgba(${color},${node.opacity.toFixed(3)})`,
+          fill: `rgba(${color.hexToRGB(nodeColor)},${node.opacity.toFixed(3)})`,
           arc: [node.posX * size, node.posY * size, node.radius * size, 0, Math.PI * 2]
         }));
       }
@@ -46,8 +46,7 @@ export default function canvasFrame (config) {
 
     edges: {
       get () {
-        const { size } = this._data;
-        const color = '129,139,197'; // TODO make edge color configurable
+        const { size, edgeColor } = this._data;
 
         return this._data.edges.map(edge => {
           const { nodeA, nodeB } = edge;
@@ -66,7 +65,7 @@ export default function canvasFrame (config) {
           }
 
           return {
-            style: `rgba(${color},${opacity.toFixed(3)})`,
+            style: `rgba(${color.hexToRGB(edgeColor)},${opacity.toFixed(3)})`,
 
             // Shorten edge so it only touches the circumference of node
             start: [

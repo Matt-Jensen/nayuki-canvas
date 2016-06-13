@@ -49,7 +49,7 @@ test('should create linear gradient relative to size of canvas', assert => {
   const larger = [];
 
   const stubbedGraphics = Object.assign({
-    createLinearGradient: (function() {
+    createLinearGradient: (function () {
       let called = 0;
       return function (...demensions) {
         if (called === 0) {
@@ -60,7 +60,7 @@ test('should create linear gradient relative to size of canvas', assert => {
         }
 
         return { addColorStop () {} };
-      }
+      };
     }())
   }, mockGraphics);
 
@@ -81,7 +81,7 @@ test('should create radial gradient relative to size of canvas', assert => {
   const larger = [];
 
   const stubbedGraphics = Object.assign({
-    createRadialGradient: (function() {
+    createRadialGradient: (function () {
       let called = 0;
       return function (...demensions) {
         if (called === 0) {
@@ -92,7 +92,7 @@ test('should create radial gradient relative to size of canvas', assert => {
         }
 
         return { addColorStop () {} };
-      }
+      };
     }())
   }, mockGraphics);
 
@@ -113,7 +113,7 @@ test('should add color stop for each color in `background` array', assert => {
   const expected = ['#fff', '#111', '#333'];
 
   const stubbedGraphics = Object.assign({
-    createRadialGradient: function (...demensions) {
+    createRadialGradient () {
       return {
         addColorStop (pos, color) {
           actual.push(color);
@@ -134,17 +134,17 @@ test('should return a canvas gradient instance', assert => {
   const msg = 'is an instance of a canvas gradient';
 
   function TestGradient () {
-    this.addColorStop = function () {}
+    this.addColorStop = function () {};
   }
 
   const stubbedRadial = Object.assign({
-    createRadialGradient: function (...demensions) {
+    createRadialGradient: function () {
       return new TestGradient();
     }
   }, mockGraphics);
 
   const stubbedLinear = Object.assign({
-    createLinearGradient: function (...demensions) {
+    createLinearGradient: function () {
       return new TestGradient();
     }
   }, mockGraphics);

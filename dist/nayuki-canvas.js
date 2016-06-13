@@ -10,8 +10,10 @@
     'FADE_IN_RATE': 0.06,
     'FADE_OUT_RATE': 0.03,
     'FRAME_INTERVAL': 20,
-    'background': '#0275d8',
-    'gradient': 'radial'
+    'background': ['#0275d8', '#055396'],
+    'gradient': 'radial',
+    'nodeColor': '#f1f1f1',
+    'edgeColor': '#b4b4b4'
   };
 
   /**
@@ -504,6 +506,19 @@
     return canvasGradient;
   }
 
+  var color = {
+    _validatedHex: function _validatedHex(hex) {
+      hex = ('' + hex).replace('#', '');
+      return hex.length === 3 ? hex.split('').reduce(function (t, s) {
+        return t + s + s;
+      }, '') : hex;
+    },
+    hexToRGB: function hexToRGB(hex) {
+      var i = parseInt(this._validatedHex(hex), 16);
+      return (i >> 16 & 255) + ',' + (i >> 8 & 255) + ',' + (i & 255);
+    }
+  };
+
   /**
    * Determines if an edge is visible
    * @param  {Object}  edge
@@ -538,13 +553,14 @@
 
       nodes: {
         get: function get() {
-          var size = this._data.size;
+          var _data = this._data;
+          var size = _data.size;
+          var nodeColor = _data.nodeColor;
 
-          var color = '129,139,197'; // TODO make node color configurable
 
           return this._data.nodes.map(function (node) {
             return {
-              fill: 'rgba(' + color + ',' + node.opacity.toFixed(3) + ')',
+              fill: 'rgba(' + color.hexToRGB(nodeColor) + ',' + node.opacity.toFixed(3) + ')',
               arc: [node.posX * size, node.posY * size, node.radius * size, 0, Math.PI * 2]
             };
           });
@@ -555,9 +571,10 @@
         get: function get() {
           var _this = this;
 
-          var size = this._data.size;
+          var _data2 = this._data;
+          var size = _data2.size;
+          var edgeColor = _data2.edgeColor;
 
-          var color = '129,139,197'; // TODO make edge color configurable
 
           return this._data.edges.map(function (edge) {
             var nodeA = edge.nodeA;
@@ -578,7 +595,7 @@
             }
 
             return {
-              style: 'rgba(' + color + ',' + opacity.toFixed(3) + ')',
+              style: 'rgba(' + color.hexToRGB(edgeColor) + ',' + opacity.toFixed(3) + ')',
 
               // Shorten edge so it only touches the circumference of node
               start: [(nodeA.posX - dx * nodeA.radius) * size, (nodeA.posY - dy * nodeA.radius) * size],
@@ -611,8 +628,10 @@
     var graphics = arguments.length <= 3 || arguments[3] === undefined ? this._graphics : arguments[3];
     var background = arguments.length <= 4 || arguments[4] === undefined ? this.background : arguments[4];
     var gradient = arguments.length <= 5 || arguments[5] === undefined ? this.gradient : arguments[5];
+    var nodeColor = arguments.length <= 6 || arguments[6] === undefined ? this.nodeColor : arguments[6];
+    var edgeColor = arguments.length <= 7 || arguments[7] === undefined ? this.edgeColor : arguments[7];
 
-    var frame = canvasFrame({ canvasElem: canvasElem, graphics: graphics, nodes: nodes, edges: edges, background: background, gradient: gradient });
+    var frame = canvasFrame({ canvasElem: canvasElem, graphics: graphics, nodes: nodes, edges: edges, background: background, gradient: gradient, nodeColor: nodeColor, edgeColor: edgeColor });
 
     // Set background first (render below nodes & edges)
     graphics.fillStyle = frame.background;

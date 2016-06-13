@@ -10,8 +10,8 @@ import canvasFrame from './canvas-frame';
  * @private
  * @return {Object}  Canvas Frame instance
  */
-export default function redrawCanvas (nodes = this._nodes, edges = this._edges, canvasElem = this._canvasElem, graphics = this._graphics, background = this.background, gradient = this.gradient) {
-  const frame = canvasFrame({ canvasElem, graphics, nodes, edges, background, gradient });
+export default function redrawCanvas (nodes = this._nodes, edges = this._edges, canvasElem = this._canvasElem, graphics = this._graphics, background = this.background, gradient = this.gradient, nodeColor = this.nodeColor, edgeColor = this.edgeColor) {
+  const frame = canvasFrame({ canvasElem, graphics, nodes, edges, background, gradient, nodeColor, edgeColor });
 
   // Set background first (render below nodes & edges)
   graphics.fillStyle = frame.background;
