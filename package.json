@@ -9,6 +9,7 @@
     "posttest": "node scripts/clean-tests.js",
     "build": "node scripts/build.js",
     "test": "tape 'tests/**/*.test.js'",
+    "e2e-test": "npm run pretest && browserify tests/end-to-end/*.e2e.js | tape-run --browser firefox",
     "watch": "watch 'clear && npm run -s test' src"
   },
   "repository": {
@@ -16,10 +17,12 @@
     "url": "https://github.com/matt-jensen/nayuki-canvas.git"
   },
   "keywords": [
+    "HTML5",
     "canvas",
     "floating",
     "nodes",
-    "2d"
+    "2d",
+    "no-dependencies"
   ],
   "author": "Matt-Jensen",
   "license": "MIT",
@@ -32,13 +35,14 @@
     "babel-plugin-transform-es2015-modules-commonjs": "^6.8.0",
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-es2015-rollup": "^1.1.1",
+    "browserify": "^13.0.1",
     "del": "^2.2.0",
     "eslint": "^2.10.2",
     "rollup": "^0.31.1",
     "rollup-plugin-babel": "^2.4.0",
     "rollup-plugin-uglify": "^0.3.1",
-    "tap-colorize": "^1.2.0",
     "tape": "^4.5.1",
+    "tape-run": "^2.1.4",
     "watch": "^0.18.0"
   }
 }
