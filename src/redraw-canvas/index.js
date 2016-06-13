@@ -17,18 +17,9 @@ export default function redrawCanvas (nodes = this._nodes, edges = this._edges, 
   graphics.fillStyle = frame.background;
   graphics.fillRect(0, 0, frame._data.width, frame._data.height);
 
-  // Draw nodes (render below edges)
-  frame.nodes
-  .forEach(node => {
-    graphics.fillStyle = node.fill;
-    graphics.beginPath();
-    graphics.arc(...node.arc);
-    graphics.fill();
-  });
-
   graphics.lineWidth = edgeSize;
 
-  // Draw edges (render on top)
+  // Draw edges (render below nodes)
   frame.edges
   .forEach(e => {
     graphics.strokeStyle = e.style;
@@ -38,6 +29,15 @@ export default function redrawCanvas (nodes = this._nodes, edges = this._edges, 
     graphics.lineTo(...e.end);
 
     graphics.stroke(); // add to canvas
+  });
+
+  // Draw nodes (render above edges)
+  frame.nodes
+  .forEach(node => {
+    graphics.fillStyle = node.fill;
+    graphics.beginPath();
+    graphics.arc(...node.arc);
+    graphics.fill();
   });
 
   return frame;

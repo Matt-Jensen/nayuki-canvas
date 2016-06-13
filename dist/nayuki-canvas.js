@@ -639,17 +639,9 @@
     graphics.fillStyle = frame.background;
     graphics.fillRect(0, 0, frame._data.width, frame._data.height);
 
-    // Draw nodes (render below edges)
-    frame.nodes.forEach(function (node) {
-      graphics.fillStyle = node.fill;
-      graphics.beginPath();
-      graphics.arc.apply(graphics, toConsumableArray(node.arc));
-      graphics.fill();
-    });
-
     graphics.lineWidth = edgeSize;
 
-    // Draw edges (render on top)
+    // Draw edges (render below nodes)
     frame.edges.forEach(function (e) {
       graphics.strokeStyle = e.style;
       graphics.beginPath();
@@ -658,6 +650,14 @@
       graphics.lineTo.apply(graphics, toConsumableArray(e.end));
 
       graphics.stroke(); // add to canvas
+    });
+
+    // Draw nodes (render above edges)
+    frame.nodes.forEach(function (node) {
+      graphics.fillStyle = node.fill;
+      graphics.beginPath();
+      graphics.arc.apply(graphics, toConsumableArray(node.arc));
+      graphics.fill();
     });
 
     return frame;
