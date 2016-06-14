@@ -9,11 +9,32 @@
 </head>
 <body>
   <!-- <script src="https://code.jquery.com/jquery-3.0.0.min.js" integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script> -->
-  <canvas id="canvas" style="display:block; margin: 0 auto; background-color: gray;" width="800" height="500"></canvas>
+  <canvas id="canvas" style="display:block; margin: 0 auto; background-color: gray;" width="100" height="100"></canvas>
   <script src='../dist/nayuki-canvas.js'></script>
   <script>
+    function nayukiQuery (nc) {
+      return Object.assign(Object.create({
+        colorAt (x, y) {
+          return `rgba(${this._context.getImageData(x, y, 1, 1).data.join(',')})`;
+        }
+      }),
+      {
+        _$: nc,
+        _element: nc._canvasElem,
+        _context: nc._graphics,
+      });
+    }
+
     if (nayukiCanvas.isSupported()) {
-      var myCanvas = nayukiCanvas(document.getElementById('canvas')).start();
+      var myCanvas = nayukiCanvas(document.getElementById('canvas'), { background: '#000', numNodes: 2, nodeSize: 100, nodeColor: '#000', edgeColor: '#fff', edgeSize: 10000 });
+      myCanvas.next();
+      Object.assign(myCanvas._nodes[0], { posX: 0, posY: 0.5, opacity: 1 }); // place center left
+      Object.assign(myCanvas._nodes[1], { posX: 1, posY: 0.5, opacity: 1 }); // place center right
+      Object.assign(myCanvas._edges[0], { nodeA: myCanvas._nodes[0], nodeB: myCanvas._nodes[1], opacity: 1 }); // connect to 2 nodes
+      myCanvas._redrawCanvas(); // draw frame without manipulation
+
+      const nq = nayukiQuery(myCanvas);
+      console.log(myCanvas._edges[0], nq.colorAt(50, 50));
 
       console.log('idealNumNodes', myCanvas._idealNumNodes);
       console.log('maxExtraEdges', myCanvas._maxExtraEdges);

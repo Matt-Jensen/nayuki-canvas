@@ -9,7 +9,7 @@
     "posttest": "node scripts/clean-tests.js",
     "build": "node scripts/build.js",
     "test": "tape 'tests/**/*.test.js'",
-    "e2e-test": "npm run pretest && browserify tests/end-to-end/nayuki-canvas.e2e.js | babel | tape-run -b chrome -w 3000 && osascript -e 'quit app \"Chrome\"'"
+    "e2e-test": "osascript -e 'quit app \"Chrome\"' && npm run pretest && browserify tests/end-to-end/nayuki-canvas.e2e.js | babel | tape-run -b chrome -w 3000"
   },
   "repository": {
     "type": "git",
