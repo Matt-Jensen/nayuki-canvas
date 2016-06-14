@@ -9,8 +9,7 @@
     "posttest": "node scripts/clean-tests.js",
     "build": "node scripts/build.js",
     "test": "tape 'tests/**/*.test.js'",
-    "e2e-test": "npm run pretest && browserify tests/end-to-end/*.e2e.js | tape-run --browser firefox",
-    "watch": "watch 'clear && npm run -s test' src"
+    "e2e-test": "npm run pretest && browserify tests/end-to-end/nayuki-canvas.e2e.js | babel | tape-run -b chrome -w 3000 && osascript -e 'quit app \"Chrome\"'"
   },
   "repository": {
     "type": "git",
@@ -42,7 +41,6 @@
     "rollup-plugin-babel": "^2.4.0",
     "rollup-plugin-uglify": "^0.3.1",
     "tape": "^4.5.1",
-    "tape-run": "^2.1.4",
-    "watch": "^0.18.0"
+    "tape-run": "^2.1.4"
   }
 }
