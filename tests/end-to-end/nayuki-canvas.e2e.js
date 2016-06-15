@@ -117,6 +117,48 @@ test('should update frame on configured `frameInterval`', assert => {
   }, interval + 1);
 });
 
-// test('should update frame after calling `start`', assert => {});
-// test('should stop updating frame after calling `stop` ', assert => {});
+test('should update frame after calling `start`', assert => {
+  const msg = 'canvas frame was updated';
+  assert.plan(1);
+
+  const canvas = createCanvas();
+  const instance = nayukiCanvas(canvas, { frameInterval: 0 });
+
+  instance.next(); // generate initial frame
+  const initial = deepClone(Object.assign({}, { nodes: instance._nodes }, { edges: instance._edges }));
+
+  instance.start();
+
+  setTimeout(function () {
+    const updated = deepClone(Object.assign({}, { nodes: instance._nodes }, { edges: instance._edges }));
+    assert.notDeepEqual(initial, updated, msg);
+    instance.stop();
+    assert.end();
+  }, 1);
+});
+
+test('should stop updating frame after calling `stop` ', assert => {
+  const msg = 'canvas frame stopped updating';
+  assert.plan(1);
+
+  const canvas = createCanvas();
+  const instance = nayukiCanvas(canvas, { frameInterval: 0 });
+
+  instance.next(); // generate initial frame
+  let expected, actual;
+
+  instance.start();
+
+  setTimeout(function () {
+    expected = deepClone(Object.assign({}, { nodes: instance._nodes }, { edges: instance._edges }));
+    instance.stop();
+  }, 1);
+
+  setTimeout(function () {
+    actual = deepClone(Object.assign({}, { nodes: instance._nodes }, { edges: instance._edges }));
+    assert.deepEqual(expected, actual, msg);
+    assert.end();
+  }, 2);
+});
+
 // test('should remove canvas on `destroy`', assert => {});
