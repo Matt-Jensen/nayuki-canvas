@@ -161,4 +161,14 @@ test('should stop updating frame after calling `stop` ', assert => {
   }, 2);
 });
 
-// test('should remove canvas on `destroy`', assert => {});
+test('should remove canvas instance on `destroy`', assert => {
+  const msg = 'destroies rendered canvas';
+
+  const canvas = createCanvas(100, 100, { background: '#ccc' });
+  const instance = nayukiCanvas(canvas, { background: '#f44336', numNodes: 0 });
+
+  instance.next().destroy(); // render frame and remove
+  assert.equal(instance._graphics, null, msg);
+
+  assert.end();
+});

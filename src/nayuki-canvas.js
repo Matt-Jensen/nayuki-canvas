@@ -127,6 +127,7 @@ function createCanvas (canvasElem = {}, options = {}) {
     this.stop(); // ensure `setInterval` has stopped
     this._graphics.clearRect(0, 0, canvas.width, canvas.height); // clear canvas
     this._graphics = this._canvasElem = this._nodes = this._edges = null; // clear up memory
+    return this; // support chaining
   };
 
   // canvas instance
