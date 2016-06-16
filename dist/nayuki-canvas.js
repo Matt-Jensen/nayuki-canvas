@@ -6,7 +6,7 @@
 
   var defaults = {
     extraEdges: 20,
-    numNodes: 70,
+    nodeCount: 70,
     network: 'balanced',
     repulsion: 1,
     borderFade: -0.02,
@@ -25,7 +25,7 @@
   * Returns an array of updated nodes
   * Updates/adds/removes current nodes based on the given array
   * @param {Array}    nodes
-  * @param {Number}   idealNumNodes
+  * @param {Number}   idealnodeCount
   * @param {Number}   relWidth
   * @param {Number}   relHeight
   * @type {Method}
@@ -34,7 +34,7 @@
   */
   function updateNodes() {
     var nodes = arguments.length <= 0 || arguments[0] === undefined ? this._nodes : arguments[0];
-    var idealNumNodes = arguments.length <= 1 || arguments[1] === undefined ? this._idealNumNodes : arguments[1];
+    var idealnodeCount = arguments.length <= 1 || arguments[1] === undefined ? this._idealnodeCount : arguments[1];
     var relWidth = arguments.length <= 2 || arguments[2] === undefined ? this._relWidth : arguments[2];
     var relHeight = arguments.length <= 3 || arguments[3] === undefined ? this._relHeight : arguments[3];
 
@@ -48,7 +48,7 @@
     });
 
     // Add new nodes to fade in
-    for (var i = newNodes.length; i < idealNumNodes; i++) {
+    for (var i = newNodes.length; i < idealnodeCount; i++) {
       newNodes.push({ // Random position and radius, other properties initially zero
         posX: Math.random() * relWidth,
         posY: Math.random() * relHeight,
@@ -709,7 +709,7 @@
   /**
    * WARNING all side effects to canvas state (nodes/edges) are done in this method!
    * Updates nodes, edges then draws new canvas frame
-   * @param {Number}   idealNumNodes
+   * @param {Number}   idealnodeCount
    * @param {Number}   relWidth
    * @param {Number}   relHeight
    * @param {Number}   borderFade
@@ -717,7 +717,7 @@
    * @return {Object}  Canvas instance
    */
   function next() {
-    var idealNumNodes = arguments.length <= 0 || arguments[0] === undefined ? this._idealNumNodes : arguments[0];
+    var idealnodeCount = arguments.length <= 0 || arguments[0] === undefined ? this._idealnodeCount : arguments[0];
     var relWidth = arguments.length <= 1 || arguments[1] === undefined ? this._relWidth : arguments[1];
 
     var _this = this;
@@ -742,7 +742,7 @@
 
     // update current nodes' opacity
     this._nodes.map(function (node, index) {
-      var isFadingIn = !(index >= idealNumNodes || isNodeFadingOut(node));
+      var isFadingIn = !(index >= idealnodeCount || isNodeFadingOut(node));
       node.opacity = _this._getOpacity(isFadingIn, node);
       return node;
     });
@@ -780,18 +780,18 @@
     /**
      * Calculates the desired number of nodes to render
      */
-    _idealNumNodes: {
+    _idealnodeCount: {
 
       /**
-       * Ensure usable `numNodes` is numeric
+       * Ensure usable `nodeCount` is numeric
        * @return {Number}
        */
 
       get: function get() {
-        var result = parseInt(this.numNodes, 10);
+        var result = parseInt(this.nodeCount, 10);
 
         if (isNaN(result)) {
-          throw new Error('Nayuki Canvas: `numNodes` must be a number');
+          throw new Error('Nayuki Canvas: `nodeCount` must be a number');
         }
 
         return result;
@@ -810,17 +810,17 @@
 
       get: function get() {
         var extraEdges = parseInt(this.extraEdges, 10);
-        var numNodes = parseInt(this.numNodes, 10);
+        var nodeCount = parseInt(this.nodeCount, 10);
 
         if (isNaN(extraEdges)) {
           throw new Error('Nayuki Canvas: `extraEdges` must be a number');
         }
 
-        if (isNaN(numNodes)) {
-          throw new Error('Nayuki Canvas: `numNodes` must be a number');
+        if (isNaN(nodeCount)) {
+          throw new Error('Nayuki Canvas: `nodeCount` must be a number');
         }
 
-        return Math.round(extraEdges / 100 * numNodes);
+        return Math.round(extraEdges / 100 * nodeCount);
       }
     },
 

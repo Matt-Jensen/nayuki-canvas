@@ -3,7 +3,7 @@ const next = require('../../tmp/next');
 const { createNodes, createEdges } = require('../helpers/create');
 
 const settings = {
-  _idealNumNodes: 2,
+  _idealnodeCount: 2,
   borderFade: -0.02,
   _relWidth: 100,
   _relHeight: 100,
@@ -44,8 +44,8 @@ test('should support chaning', assert => {
   assert.end();
 });
 
-test('should not change `idealNumNodes`', assert => {
-  const msg = '`idealNumNodes` has not changed';
+test('should not change `idealnodeCount`', assert => {
+  const msg = '`idealnodeCount` has not changed';
   const actual = 100;
   const expected = 100;
 

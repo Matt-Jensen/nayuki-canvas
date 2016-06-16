@@ -15,7 +15,7 @@ test('should be a pure function', assert => {
 
   const actual = {
     extraEdges: 21,
-    numNodes: 71,
+    nodeCount: 71,
     network: 'mesh',
     repulsion: 10,
     borderFade: -0.04,

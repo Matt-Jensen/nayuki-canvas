@@ -8,7 +8,7 @@ test('should render configured background color', assert => {
   const msg = 'renders red RGB background';
 
   const canvas = createCanvas(100, 100, { background: '#ccc' });
-  const instance = nayukiCanvas(canvas, { background: '#f44336', numNodes: 0 });
+  const instance = nayukiCanvas(canvas, { background: '#f44336', nodeCount: 0 });
   const nq = nayukiQuery(instance);
 
   instance.next(); // render frame
@@ -21,7 +21,7 @@ test('should render configured background radial gradient', assert => {
   const msg = 'renders the center red, left black gradient background';
 
   const canvas = createCanvas(1000, 1000, { background: '#ccc' });
-  const instance = nayukiCanvas(canvas, { background: ['#f44336', '#000'], numNodes: 0 });
+  const instance = nayukiCanvas(canvas, { background: ['#f44336', '#000'], nodeCount: 0 });
   const nq = nayukiQuery(instance);
 
   instance.next(); // render frame
@@ -35,7 +35,7 @@ test('should render configured background linear gradient', assert => {
   const msg = 'renders the top red, bottom black linear gradient background';
 
   const canvas = createCanvas(1000, 1000, { background: '#ccc' });
-  const instance = nayukiCanvas(canvas, { background: ['#f44336', '#000'], gradient: 'linear', numNodes: 0 });
+  const instance = nayukiCanvas(canvas, { background: ['#f44336', '#000'], gradient: 'linear', nodeCount: 0 });
   const nq = nayukiQuery(instance);
 
   instance.next(); // render frame
@@ -49,7 +49,7 @@ test('should render configured node color', assert => {
   const msg = 'renders a white node';
 
   const canvas = createCanvas(100, 100, { background: '#ccc' });
-  const instance = nayukiCanvas(canvas, { background: '#000', numNodes: 1, nodeSize: 100000, nodeColor: '#fff' });
+  const instance = nayukiCanvas(canvas, { background: '#000', nodeCount: 1, nodeSize: 100000, nodeColor: '#fff' });
   const nq = nayukiQuery(instance);
 
   instance.next(); // generate node
@@ -65,7 +65,7 @@ test('should render configured edge color', assert => {
   const msg = 'renders white edge';
 
   const canvas = createCanvas(100, 100, { background: '#ccc' });
-  const instance = nayukiCanvas(canvas, { background: '#000', numNodes: 2, nodeSize: 100, nodeColor: '#000', edgeColor: '#fff', edgeSize: 10000 });
+  const instance = nayukiCanvas(canvas, { background: '#000', nodeCount: 2, nodeSize: 100, nodeColor: '#000', edgeColor: '#fff', edgeSize: 10000 });
   const nq = nayukiQuery(instance);
 
   instance.next();
@@ -82,7 +82,7 @@ test('should render configured number of nodes', assert => {
   const msg = 'renders 2 white nodes';
 
   const canvas = createCanvas(100, 100, { background: '#ccc' });
-  const instance = nayukiCanvas(canvas, { background: '#000', numNodes: 2, nodeSize: 10000, nodeColor: '#fff' });
+  const instance = nayukiCanvas(canvas, { background: '#000', nodeCount: 2, nodeSize: 10000, nodeColor: '#fff' });
   const nq = nayukiQuery(instance);
 
   instance.next(); // generate nodes
@@ -165,7 +165,7 @@ test('should remove canvas instance on `destroy`', assert => {
   const msg = 'destroies rendered canvas';
 
   const canvas = createCanvas(100, 100, { background: '#ccc' });
-  const instance = nayukiCanvas(canvas, { background: '#f44336', numNodes: 0 });
+  const instance = nayukiCanvas(canvas, { background: '#f44336', nodeCount: 0 });
 
   instance.next().destroy(); // render frame and remove
   assert.equal(instance._graphics, null, msg);

@@ -3,17 +3,17 @@ export default {
   /**
    * Calculates the desired number of nodes to render
    */
-  _idealNumNodes: {
+  _idealnodeCount: {
 
     /**
-     * Ensure usable `numNodes` is numeric
+     * Ensure usable `nodeCount` is numeric
      * @return {Number}
      */
     get () {
-      const result = parseInt(this.numNodes, 10);
+      const result = parseInt(this.nodeCount, 10);
 
       if (isNaN(result)) {
-        throw new Error('Nayuki Canvas: `numNodes` must be a number');
+        throw new Error('Nayuki Canvas: `nodeCount` must be a number');
       }
 
       return result;
@@ -31,17 +31,17 @@ export default {
      */
     get () {
       const extraEdges = parseInt(this.extraEdges, 10);
-      const numNodes = parseInt(this.numNodes, 10);
+      const nodeCount = parseInt(this.nodeCount, 10);
 
       if (isNaN(extraEdges)) {
         throw new Error('Nayuki Canvas: `extraEdges` must be a number');
       }
 
-      if (isNaN(numNodes)) {
-        throw new Error('Nayuki Canvas: `numNodes` must be a number');
+      if (isNaN(nodeCount)) {
+        throw new Error('Nayuki Canvas: `nodeCount` must be a number');
       }
 
-      return Math.round(extraEdges / 100 * numNodes);
+      return Math.round(extraEdges / 100 * nodeCount);
     }
   },
 

@@ -1,6 +1,6 @@
 export default {
   extraEdges: 20,
-  numNodes: 70,
+  nodeCount: 70,
   network: 'balanced',
   repulsion: 1,
   borderFade: -0.02,

@@ -2,14 +2,14 @@
 * Returns an array of updated nodes
 * Updates/adds/removes current nodes based on the given array
 * @param {Array}    nodes
-* @param {Number}   idealNumNodes
+* @param {Number}   idealnodeCount
 * @param {Number}   relWidth
 * @param {Number}   relHeight
 * @type {Method}
 * @private
 * @return {Array}  Nodes
 */
-export default function updateNodes (nodes = this._nodes, idealNumNodes = this._idealNumNodes, relWidth = this._relWidth, relHeight = this._relHeight) {
+export default function updateNodes (nodes = this._nodes, idealnodeCount = this._idealnodeCount, relWidth = this._relWidth, relHeight = this._relHeight) {
   const newNodes = []; // nodes to render
 
   // Only keep visible nodes
@@ -20,7 +20,7 @@ export default function updateNodes (nodes = this._nodes, idealNumNodes = this._
   });
 
   // Add new nodes to fade in
-  for (let i = newNodes.length; i < idealNumNodes; i++) {
+  for (let i = newNodes.length; i < idealnodeCount; i++) {
     newNodes.push({ // Random position and radius, other properties initially zero
       posX: Math.random() * relWidth,
       posY: Math.random() * relHeight,

@@ -33,22 +33,22 @@ test('should create an updated array of nodes', assert => {
   assert.end();
 });
 
-test('should create new nodes when below `idealNumNodes`', assert => {
+test('should create new nodes when below `idealnodeCount`', assert => {
   const msg = 'has new nodes';
-  const idealNumNodes = 3;
+  const idealnodeCount = 3;
 
-  const actual = updateNodes(createNodes(2), idealNumNodes, 100, 100).length;
-  const expected = idealNumNodes;
+  const actual = updateNodes(createNodes(2), idealnodeCount, 100, 100).length;
+  const expected = idealnodeCount;
 
   assert.equal(actual, expected, msg);
   assert.end();
 });
 
-test('should return more nodes when `idealNumNodes` is higher', assert => {
+test('should return more nodes when `idealnodeCount` is higher', assert => {
   const msg = '`moreNodes` is greater than `lessNodes`';
 
-  const { length: lessNodes } = updateNodes(createNodes(99), 10, 100, 100); // 10 = idealNumNodes
-  const { length: moreNodes } = updateNodes(createNodes(99), 100, 100, 100); // 100 = idealNumNodes
+  const { length: lessNodes } = updateNodes(createNodes(99), 10, 100, 100); // 10 = idealnodeCount
+  const { length: moreNodes } = updateNodes(createNodes(99), 100, 100, 100); // 100 = idealnodeCount
 
   assert.ok(lessNodes < moreNodes, msg);
   assert.end();
@@ -70,7 +70,7 @@ test('should not return old invisible nodes', assert => {
 test('should create new nodes with 0 velocity and opacity', assert => {
   const msg = 'should be blank node';
 
-  const actual = updateNodes([], 1, 100, 100)[0]; // no current nodes, idealNumNodes = 1
+  const actual = updateNodes([], 1, 100, 100)[0]; // no current nodes, idealnodeCount = 1
   const { velX, velY, opacity } = actual;
 
   assert.same(velX, 0, msg);

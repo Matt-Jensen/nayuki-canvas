@@ -1,14 +1,14 @@
 /**
  * WARNING all side effects to canvas state (nodes/edges) are done in this method!
  * Updates nodes, edges then draws new canvas frame
- * @param {Number}   idealNumNodes
+ * @param {Number}   idealnodeCount
  * @param {Number}   relWidth
  * @param {Number}   relHeight
  * @param {Number}   borderFade
  * @type {Method}
  * @return {Object}  Canvas instance
  */
-export default function next (idealNumNodes = this._idealNumNodes, relWidth = this._relWidth, relHeight = this._relHeight, borderFade = this.borderFade) {
+export default function next (idealnodeCount = this._idealnodeCount, relWidth = this._relWidth, relHeight = this._relHeight, borderFade = this.borderFade) {
 
   // fade out nodes near the borders of the space or exceeding the target number of nodes
   const isNodeFadingOut = function ({ posX, posY }) {
@@ -23,7 +23,7 @@ export default function next (idealNumNodes = this._idealNumNodes, relWidth = th
 
   // update current nodes' opacity
   this._nodes.map((node, index) => {
-    const isFadingIn = !(index >= idealNumNodes || isNodeFadingOut(node));
+    const isFadingIn = !(index >= idealnodeCount || isNodeFadingOut(node));
     node.opacity = this._getOpacity(isFadingIn, node);
     return node;
   });

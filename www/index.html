@@ -13,9 +13,9 @@
   <script src='../dist/nayuki-canvas.js'></script>
   <script>
     if (nayukiCanvas.isSupported()) {
-      var myCanvas = nayukiCanvas(document.getElementById('canvas')).start();
+      window.myCanvas = nayukiCanvas(document.getElementById('canvas')).start();
 
-      console.log('idealNumNodes', myCanvas._idealNumNodes);
+      console.log('idealnodeCount', myCanvas._idealnodeCount);
       console.log('maxExtraEdges', myCanvas._maxExtraEdges);
       console.log('radiiWeighPower', myCanvas._radiiWeightPower);
       console.log('repulsionForce', myCanvas._repulsionForce);

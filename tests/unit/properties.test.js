@@ -48,29 +48,29 @@ test('should consist of idempotent accessor property functions', assert => {
   assert.end();
 });
 
-test('should throw an error when `_idealNumNodes` resolves `NaN` from `numNodes`', assert => {
+test('should throw an error when `_idealnodeCount` resolves `NaN` from `nodeCount`', assert => {
   const msg = 'throws an error';
 
-  const actual = () => properties._idealNumNodes.get.call({ numNodes: false });
+  const actual = () => properties._idealnodeCount.get.call({ nodeCount: false });
 
   assert.throws(actual, msg);
   assert.end();
 });
 
-test('should return a number representing `_idealNumNodes`', assert => {
+test('should return a number representing `_idealnodeCount`', assert => {
   const msg = 'is a number';
 
-  const actual = typeof properties._idealNumNodes.get.call({ numNodes: '10' });
+  const actual = typeof properties._idealnodeCount.get.call({ nodeCount: '10' });
   const expected = 'number';
 
   assert.equal(actual, expected, msg);
   assert.end();
 });
 
-test('should throw an error when `_maxExtraEdges` resolves `NaN` from `numNodes`', assert => {
+test('should throw an error when `_maxExtraEdges` resolves `NaN` from `nodeCount`', assert => {
   const msg = 'throws an error';
 
-  const actual = () => properties._maxExtraEdges.get.call({ numNodes: false, extraEdges: 100 });
+  const actual = () => properties._maxExtraEdges.get.call({ nodeCount: false, extraEdges: 100 });
 
   assert.throws(actual, msg);
   assert.end();
@@ -79,7 +79,7 @@ test('should throw an error when `_maxExtraEdges` resolves `NaN` from `numNodes`
 test('should throw an error when `_maxExtraEdges` resolves `NaN` from `extraEdges`', assert => {
   const msg = 'throws an error';
 
-  const actual = () => properties._maxExtraEdges.get.call({ numNodes: 100, extraEdges: false });
+  const actual = () => properties._maxExtraEdges.get.call({ nodeCount: 100, extraEdges: false });
 
   assert.throws(actual, msg);
   assert.end();
@@ -88,7 +88,7 @@ test('should throw an error when `_maxExtraEdges` resolves `NaN` from `extraEdge
 test('should return a number representing `_maxExtraEdges`', assert => {
   const msg = 'is a number';
 
-  const actual = typeof properties._maxExtraEdges.get.call({ numNodes: '10', extraEdges: '100' });
+  const actual = typeof properties._maxExtraEdges.get.call({ nodeCount: '10', extraEdges: '100' });
   const expected = 'number';
 
   assert.equal(actual, expected, msg);
