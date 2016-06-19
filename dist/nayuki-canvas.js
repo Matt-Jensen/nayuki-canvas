@@ -1036,8 +1036,8 @@
       var t = void 0;
 
       // allow stubbing (bind window to prevent illegal invokation in browser)
-      canvas.setInterval = setInterval.bind(isNodeEnv ? global : window);
-      canvas.clearInterval = clearInterval.bind(isNodeEnv ? global : window);
+      canvas.setTimeout = setTimeout.bind(isNodeEnv ? global : window);
+      canvas.clearTimeout = clearTimeout.bind(isNodeEnv ? global : window);
 
       /**
        * Begin reoccuring calls to `canvas.next`
@@ -1047,9 +1047,15 @@
       canvas.start = function start() {
         var _this = this;
 
-        t = this.setInterval(function () {
-          return _this.next();
-        }, this.frameInterval);
+        var timer = arguments.length <= 0 || arguments[0] === undefined ? NaN : arguments[0];
+
+        // only allow `start` calls if unstarted
+        if (timer === t || t === undefined) {
+          t = this.setTimeout(function () {
+            _this.next();
+            _this.start(t);
+          }, this.frameInterval);
+        }
         return this;
       };
 
@@ -1059,7 +1065,7 @@
        * @return {Object} canvas
        */
       canvas.stop = function stop() {
-        this.clearInterval(t);
+        t = this.clearTimeout(t);
         return this;
       };
     })();
@@ -1068,7 +1074,7 @@
      * destroing the canvas instance
      */
     canvas.destroy = function destroy() {
-      this.stop(); // ensure `setInterval` has stopped
+      this.stop(); // ensure `setTimeout` has stopped
       this._graphics.clearRect(0, 0, canvas.width, canvas.height); // clear canvas
       this._graphics = this._canvasElem = this._nodes = this._edges = null; // clear up memory
       return this; // support chaining

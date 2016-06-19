@@ -13,7 +13,7 @@
   <script src='../dist/nayuki-canvas.js'></script>
   <script>
     if (nayukiCanvas.isSupported()) {
-      window.myCanvas = nayukiCanvas(document.getElementById('canvas')).start();
+      var myCanvas = nayukiCanvas(document.getElementById('canvas')).start();
 
       console.log('idealnodeCount', myCanvas._idealnodeCount);
       console.log('maxExtraEdges', myCanvas._maxExtraEdges);

@@ -65,7 +65,7 @@ test('should support chaining via `start`', assert => {
   const msg = 'returns `this`';
 
   const expected = nayukiCanvas();
-  expected.setInterval = function () {};
+  expected.setTimeout = function () {};
 
   const actual = expected.start();
 
@@ -73,14 +73,14 @@ test('should support chaining via `start`', assert => {
   assert.end();
 });
 
-test('should invoke `next` via `setInterval` from `start`', assert => {
+test('should invoke `next` via `setTimeout` from `start`', assert => {
   const msg = '`next` was invoked';
 
   const instance = nayukiCanvas();
   let actual = false;
   const expected = true;
 
-  instance.setInterval = function () {
+  instance.setTimeout = function () {
     actual = true;
   };
 
@@ -90,20 +90,22 @@ test('should invoke `next` via `setInterval` from `start`', assert => {
   assert.end();
 });
 
-test('should pass `frameInterval` to `setInterval` via `start`', assert => {
+test('should pass `frameInterval` to `setTimeout` via `start`', assert => {
   const msg = 'passed `frameInterval`';
 
   let actual;
   const expected = 20;
 
   const instance = nayukiCanvas({}, { frameInterval: expected });
-  instance.setInterval = (fn, interval) => { actual = interval; };
+  instance.setTimeout = (fn, interval) => { actual = interval; };
 
   instance.start();
 
   assert.equal(actual, expected, msg);
   assert.end();
 });
+
+// test('should not invoke `next` on subsequent invokations of `start`', assert => { });
 
 test('should support chaining via `stop`', assert => {
   const msg = 'returns `this`';
@@ -115,14 +117,14 @@ test('should support chaining via `stop`', assert => {
   assert.end();
 });
 
-test('should invoke `clearInterval` via `stop`', assert => {
+test('should invoke `clearTimeout` via `stop`', assert => {
   const msg = 'was invoked';
 
   let actual = false;
   const expected = true;
 
   const instance = nayukiCanvas();
-  instance.clearInterval = () => { actual = true; };
+  instance.clearTimeout = () => { actual = true; };
 
   instance.stop();
 
