@@ -105,7 +105,47 @@ test('should pass `frameInterval` to `setTimeout` via `start`', assert => {
   assert.end();
 });
 
-// test('should not invoke `next` on subsequent invokations of `start`', assert => { });
+test('should use updated `frameInterval` when invoking `setTimeout`', assert => {
+  assert.plan(1);
+  const msg = 'invoked with 20ms `frameInterval`';
+
+  let actual = 10;
+  const expected = 20;
+  const instance = nayukiCanvas({}, { frameInterval: actual });
+  const originalSetTimeout = instance.setTimeout;
+
+  instance.setTimeout = () => assert.equal(actual, expected, msg);
+
+  instance.frameInterval = actual = 20;
+  instance.start();
+
+  instance.setTimeout = originalSetTimeout;
+  assert.end();
+});
+
+test('should not invoke `next` on subsequent invokations of `start`', assert => {
+  const msg = 'subsequent invokation of `start` does not call `next`';
+
+  const instance = nayukiCanvas({});
+  const originalNext = instance.next;
+  instance.next = () => assert.fail(msg); // stub to fail
+
+  instance.frameInterval = 1000;
+  instance.start(); // invoke at 1000ms `frameInterval`
+
+  // subsequent `start`
+  setTimeout(function () {
+    instance.frameInterval = 0;
+    instance.start(); // try to invoke `next` immediately
+  }, 0);
+
+  // wait for any `next` call & cleanup
+  setTimeout(function () {
+    instance.stop(); // prevent original invokation
+    instance.next = originalNext;
+    assert.end();
+  }, 200);
+});
 
 test('should support chaining via `stop`', assert => {
   const msg = 'returns `this`';
