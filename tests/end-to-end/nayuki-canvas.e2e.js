@@ -1,6 +1,7 @@
 const test = require('tape');
 const nayukiCanvas = require('../../tmp/nayuki-canvas');
 const { createCanvas } = require('../helpers/create');
+const { rgbaToHex } = require('../helpers/colors');
 const nayukiQuery = require('../helpers/nayuki-query');
 const deepClone = c => JSON.parse(JSON.stringify(c));
 
@@ -35,13 +36,23 @@ test('should render configured background linear gradient', assert => {
   const msg = 'renders the top red, bottom black linear gradient background';
 
   const canvas = createCanvas(1000, 1000, { background: '#ccc' });
-  const instance = nayukiCanvas(canvas, { background: ['#f44336', '#000'], gradient: 'linear', nodeCount: 0 });
+  const instance = nayukiCanvas(canvas, { background: ['#f44336', '#000000'], gradient: 'linear', nodeCount: 0 });
   const nq = nayukiQuery(instance);
 
   instance.next(); // render frame
 
-  assert.equal(nq.colorAt(0, 0), 'rgba(244,67,54,255)', msg);
-  assert.equal(nq.colorAt(0, 999), 'rgba(0,0,0,255)', msg);
+  const actualTop = rgbaToHex(nq.colorAt(0, 1));
+  const expectedTops = [
+    '#f44336', // most browsers
+    '#f34336' // special snowflake Firefox
+  ];
+
+  assert.ok(expectedTops.indexOf(actualTop) !== -1, msg);
+
+  const actualBottom = rgbaToHex(nq.colorAt(0, 999));
+  const expectedBottom = '#000000';
+
+  assert.equal(actualBottom, expectedBottom, msg);
   assert.end();
 });
 
