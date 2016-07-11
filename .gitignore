@@ -3,5 +3,3 @@ npm-debug.log
 src/original.js
 tmp
 .DS_Store
-.env
-sauce_connect.log
