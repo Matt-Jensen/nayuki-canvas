@@ -1,7 +1,6 @@
 const test = require('tape');
 const nayukiCanvas = require('../../tmp/nayuki-canvas');
 const { createCanvas } = require('../helpers/create');
-const { rgbaToHex } = require('../helpers/colors');
 const nayukiQuery = require('../helpers/nayuki-query');
 const deepClone = c => JSON.parse(JSON.stringify(c));
 
@@ -27,16 +26,16 @@ test('should render configured background radial gradient', assert => {
 
   instance.next(); // render frame
 
-  const actualTop = rgbaToHex(nq.colorAt(0, 1));
+  const actualTop = nq.colorAt(0, 1);
   const expectedTops = [
-    '#f44336', // most browsers
-    '#f34336' // special snowflake Firefox
+    'rgba(244,67,54,255)', // most browsers
+    'rgba(243,67,54,255)' // special snowflake Firefox
   ];
 
   assert.ok(expectedTops.indexOf(actualTop) !== -1, msg);
 
-  const actualBottom = rgbaToHex(nq.colorAt(0, 999));
-  const expectedBottom = '#000000';
+  const actualBottom = nq.colorAt(0, 999);
+  const expectedBottom = 'rgba(0,0,0,255)';
 
   assert.equal(actualBottom, expectedBottom, msg);
   assert.end();
@@ -51,8 +50,18 @@ test('should render configured background linear gradient', assert => {
 
   instance.next(); // render frame
 
-  assert.equal(nq.colorAt(0, 0), 'rgba(244,67,54,255)', msg);
-  assert.equal(nq.colorAt(0, 999), 'rgba(0,0,0,255)', msg);
+  const actualTop = nq.colorAt(0, 1);
+  const expectedTops = [
+    'rgba(244,67,54,255)', // most browsers
+    'rgba(243,67,54,255)' // special snowflake Firefox
+  ];
+
+  assert.ok(expectedTops.indexOf(actualTop) !== -1, msg);
+
+  const actualBottom = nq.colorAt(0, 999);
+  const expectedBottom = 'rgba(0,0,0,255)';
+
+  assert.equal(actualBottom, expectedBottom, msg);
   assert.end();
 });
 
