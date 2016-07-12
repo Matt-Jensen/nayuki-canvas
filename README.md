@@ -1,6 +1,6 @@
 # Nayuki Canvas
 
-[![Travis build status](http://img.shields.io/travis/matt-jensen/nayuki-canvas.svg?style=flat)](https://travis-ci.org/matt-jensen/nayuki-canvas)
+[![Build Status](https://travis-ci.org/Matt-Jensen/nayuki-canvas.svg?branch=master)](https://travis-ci.org/Matt-Jensen/nayuki-canvas)
 [![Dependency Status](https://david-dm.org/matt-jensen/nayuki-canvas.svg)](https://david-dm.org/matt-jensen/nayuki-canvas)
 [![codecov](https://codecov.io/gh/Matt-Jensen/nayuki-canvas/branch/master/graph/badge.svg)](https://codecov.io/gh/Matt-Jensen/nayuki-canvas)
 
