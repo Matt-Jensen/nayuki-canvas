@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <title>Nayuki Canvas</title>
+</head>
+<body>
+  <canvas id="canvas" style="display:block; margin: 0 auto; background-color: gray;" width="800" height="500"></canvas>
+  <script src="https://raw.githubusercontent.com/Matt-Jensen/nayuki-canvas/master/dist/nayuki-canvas.min.js"></script>
+  <script>
+    if (nayukiCanvas.isSupported()) {
+      var myCanvas = nayukiCanvas(document.getElementById('canvas')).start();
+    }
+  </script>
+</body>
+</html>
