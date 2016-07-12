@@ -1,4 +1,4 @@
-const test = require('tape');
+const { test } = require('tap');
 const getCanvasElement = require('../../../tmp/utils/get-canvas-element');
 
 test('should exist', assert => {

@@ -1,4 +1,4 @@
-const test = require('tape');
+const { test } = require('tap');
 const { isArray } = require('util');
 const { createNodes, createEdges } = require('../helpers/create');
 const updateEdges = require('../../tmp/update-edges/index');

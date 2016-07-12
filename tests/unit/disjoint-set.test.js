@@ -1,4 +1,4 @@
-const test = require('tape');
+const { test } = require('tap');
 const disjointSet = require('../../tmp/disjoint-set');
 
 test('should exist', assert => {

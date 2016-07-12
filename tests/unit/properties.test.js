@@ -1,4 +1,4 @@
-const test = require('tape');
+const { test } = require('tap');
 const properties = require('../../tmp/properties');
 const defaults = require('../../tmp/defaults');
 const _canvasElem = { width: 100, height: 100 };

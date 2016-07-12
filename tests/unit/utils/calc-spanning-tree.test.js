@@ -1,4 +1,4 @@
-const test = require('tape');
+const { test } = require('tap');
 const calcSpanningTree = require('../../../tmp/utils/calc-spanning-tree');
 
 test('should exist', assert => {

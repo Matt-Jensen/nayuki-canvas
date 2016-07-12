@@ -1,5 +1,5 @@
 const nayukiCanvas = require('../../tmp/nayuki-canvas');
-const test = require('tape');
+const { test } = require('tap');
 const stripMethods = (o) => JSON.parse(JSON.stringify(o));
 
 test('should exist', assert => {

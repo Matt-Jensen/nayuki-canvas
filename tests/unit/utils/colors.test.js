@@ -1,4 +1,4 @@
-const test = require('tape');
+const { test } = require('tap');
 const color = require('../../../tmp/utils/color');
 
 test('should exist', assert => {

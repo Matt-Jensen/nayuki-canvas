@@ -1,4 +1,4 @@
-const test = require('tape');
+const { test } = require('tap');
 const getOpacity = require('../../tmp/get-opacity');
 
 test('should exist', assert => {

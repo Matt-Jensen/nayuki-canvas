@@ -1,4 +1,4 @@
-const test = require('tape');
+const { test } = require('tap');
 const nodePair = require('../../../tmp/get-node-deltas/node-pair');
 const { createNodes } = require('../../helpers/create');
 

@@ -1,6 +1,6 @@
 /*eslint no-native-reassign: 0 */
 
-const test = require('tape');
+const { test } = require('tap');
 const isSupported = require('../../../tmp/utils/is-supported');
 
 test('should exist', assert => {

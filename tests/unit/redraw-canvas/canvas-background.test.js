@@ -1,4 +1,4 @@
-const test = require('tape');
+const { test } = require('tap');
 const canvasBackground = require('../../../tmp/redraw-canvas/canvas-background');
 const mockGraphics = require('../../helpers/mock-graphics');
 const calcDistance = (x1, y1, x2, y2) => Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));

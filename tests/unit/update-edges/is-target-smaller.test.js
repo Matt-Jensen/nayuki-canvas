@@ -1,4 +1,4 @@
-const test = require('tape');
+const { test } = require('tap');
 const isTargetSmaller = require('../../../tmp/update-edges/is-target-smaller');
 
 test('should exist', assert => {

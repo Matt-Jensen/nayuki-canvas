@@ -1,4 +1,4 @@
-const test = require('tape');
+const { test } = require('tap');
 const containsEdge = require('../../../tmp/utils/contains-edge');
 const { createNodes, createEdges } = require('../../helpers/create');
 

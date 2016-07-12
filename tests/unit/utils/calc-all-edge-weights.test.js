@@ -1,4 +1,4 @@
-const test = require('tape');
+const { test } = require('tap');
 const calcAllEdgeWeights = require('../../../tmp/utils/calc-all-edge-weights');
 const { createNodes } = require('../../helpers/create');
 

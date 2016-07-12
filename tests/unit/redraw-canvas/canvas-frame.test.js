@@ -1,4 +1,4 @@
-const test = require('tape');
+const { test } = require('tap');
 const { isObject, isUndefined } = require('util');
 const { createNodes, createEdges } = require('../../helpers/create');
 const canvasFrame = require('../../../tmp/redraw-canvas/canvas-frame');

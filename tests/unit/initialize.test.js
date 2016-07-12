@@ -1,4 +1,4 @@
-const test = require('tape');
+const { test } = require('tap');
 const initialize = require('../../tmp/initialize');
 
 test('should exist', assert => {

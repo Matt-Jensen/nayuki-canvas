@@ -1,4 +1,4 @@
-const test = require('tape');
+const { test } = require('tap');
 const redrawCanvas = require('../../tmp/redraw-canvas/index');
 const { createNodes, createEdges } = require('../helpers/create');
 const mockGraphics = require('../helpers/mock-graphics');

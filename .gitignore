@@ -5,3 +5,5 @@ tmp
 .DS_Store
 .env
 sauce_connect.log
+.nyc_output
+coverage

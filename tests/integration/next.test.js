@@ -1,4 +1,4 @@
-const test = require('tape');
+const { test } = require('tap');
 const next = require('../../tmp/next');
 const { createNodes, createEdges } = require('../helpers/create');
 
