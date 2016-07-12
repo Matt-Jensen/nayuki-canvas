@@ -1,4 +1,4 @@
-## Nayuki Canvas
+# Nayuki Canvas
 
 [![Travis build status](http://img.shields.io/travis/matt-jensen/nayuki-canvas.svg?style=flat)](https://travis-ci.org/matt-jensen/nayuki-canvas)
 [![Dependency Status](https://david-dm.org/matt-jensen/nayuki-canvas.svg)](https://david-dm.org/matt-jensen/nayuki-canvas)
@@ -15,7 +15,7 @@ $ npm install nayuki-canvas --save-dev
 
 #### Setup (as global)
 ```
-<script src="./path/to/node_modules/nayuki-canvas.min.js">
+<script src="./path/to/node_modules/nayuki-canvas/dist/nayuki-canvas.min.js">
 ```
 **Also consumable as Javascript Module and AMD***
 
