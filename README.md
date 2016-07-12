@@ -4,20 +4,20 @@
 [![Dependency Status](https://david-dm.org/matt-jensen/nayuki-canvas.svg)](https://david-dm.org/matt-jensen/nayuki-canvas)
 [![codecov](https://codecov.io/gh/Matt-Jensen/nayuki-canvas/branch/master/graph/badge.svg)](https://codecov.io/gh/Matt-Jensen/nayuki-canvas)
 
-**Nayuki Canvas** a floating node HTML5 canvas with zero dependencies and lovably simple setup.
+> **Nayuki Canvas** a floating node HTML5 canvas with zero dependencies and lovably simple setup.
 
 ![Screenshot software](https://raw.githubusercontent.com/Matt-Jensen/nayuki-canvas/master/public/screenshot.gif "screenshot of Nayuki Canvas")
 
 ## Install
 ```
-$ npm install nayuki-canvas --save-dev
+$ npm install nayuki-canvas --save
 ```
 
 #### Setup (as global)
 ```
 <script src="./path/to/node_modules/nayuki-canvas/dist/nayuki-canvas.min.js">
 ```
-**Also consumable as Javascript Module and AMD***
+**Also consumable as Javascript Module and AMD**
 
 ## Usage
 ```js
@@ -26,7 +26,7 @@ var config = {};
 var myCanvas = nayukiCanvas(canvas, config).start();
 ```
 
-### API
+## API
 #### Configuration Options
 | Name | Type | Default | Description |
 |---|---|---|---|
@@ -45,10 +45,16 @@ var myCanvas = nayukiCanvas(canvas, config).start();
 | edgeSize | Number | 0.7 | Thickness of edge |
 | nodeSize | Number | 900 | Size of node |
 
-#### Stopping & Starting
+#### Starting & Stopping
 ```js
 myCanvasInstance.start(); // Start Canvas
 myCanvasInstance.stop(); // Freeze Frame™
+```
+
+#### Updating
+```js
+myCanvasInstance.nodeSize = 450;
+// On next frame render nodes will have new size
 ```
 
 #### Removing
@@ -61,6 +67,12 @@ myCanvasInstance.destroy();
 if (nayukiCanvas.isSupported) {
   // canvas time
 }
+```
+
+#### Manual Frame Rendering
+```js
+myCanvasInstance.start().stop(); // queue and cancel frame render
+myCanvasInstance.next(); // manually draw next frame
 ```
 
 ## Created by
