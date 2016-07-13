@@ -64,7 +64,7 @@ myCanvasInstance.destroy();
 
 #### Checking Browser Support
 ```js
-if (nayukiCanvas.isSupported) {
+if (nayukiCanvas.isSupported()) {
   // canvas time
 }
 ```
