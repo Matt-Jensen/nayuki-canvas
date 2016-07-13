@@ -17,6 +17,11 @@ import properties from './properties';
 import getCanvasElement from './utils/get-canvas-element';
 import isSupported from './utils/is-supported';
 
+// polyfills
+import assign from './utils/object-assign';
+
+const { create } = Object;
+
 const prototype = {
   _updateNodes,
   _updateEdges,
@@ -50,13 +55,13 @@ function createCanvas (canvasElem = {}, options = {}) {
   }
 
   // overwrite config with user preferences
-  const config = Object.assign({}, defaults, options);
+  const config = assign({}, defaults, options);
 
   // create Nayuki Canvas instance
-  const canvas = Object.create(prototype, properties);
+  const canvas = create(prototype, properties);
 
   // apply configuration to canvas
-  Object.assign(canvas, config);
+  assign(canvas, config);
 
   if (isSupported()) {
     canvas._graphics = canvasElem.getContext('2d'); // initialize canvas context

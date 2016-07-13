@@ -4,6 +4,8 @@ const { createCanvas } = require('../helpers/create');
 const nayukiQuery = require('../helpers/nayuki-query');
 const deepClone = c => JSON.parse(JSON.stringify(c));
 
+const { assign } = require('lodash');
+
 test('should render configured background color', assert => {
   const msg = 'renders red RGB background';
 
@@ -73,7 +75,7 @@ test('should render configured node color', assert => {
   const nq = nayukiQuery(instance);
 
   instance.next(); // generate node
-  Object.assign(instance._nodes[0], { posX: 0.5, posY: 0.5, opacity: 1 }); // place center
+  assign(instance._nodes[0], { posX: 0.5, posY: 0.5, opacity: 1 }); // place center
   instance._redrawCanvas(); // draw frame without manipulation
 
   assert.equal(nq.colorAt(50, 50), 'rgba(255,255,255,255)', msg);
@@ -89,9 +91,9 @@ test('should render configured edge color', assert => {
   const nq = nayukiQuery(instance);
 
   instance.next();
-  Object.assign(instance._nodes[0], { posX: 0, posY: 0.5, opacity: 1 }); // place center left
-  Object.assign(instance._nodes[1], { posX: 1, posY: 0.5, opacity: 1 }); // place center right
-  Object.assign(instance._edges[0], { nodeA: instance._nodes[0], nodeB: instance._nodes[1], opacity: 1 }); // connect to both nodes
+  assign(instance._nodes[0], { posX: 0, posY: 0.5, opacity: 1 }); // place center left
+  assign(instance._nodes[1], { posX: 1, posY: 0.5, opacity: 1 }); // place center right
+  assign(instance._edges[0], { nodeA: instance._nodes[0], nodeB: instance._nodes[1], opacity: 1 }); // connect to both nodes
   instance._redrawCanvas(); // draw frame without manipulation
 
   assert.equal(nq.colorAt(50, 50), 'rgba(255,255,255,255)', msg);
@@ -106,8 +108,8 @@ test('should render configured number of nodes', assert => {
   const nq = nayukiQuery(instance);
 
   instance.next(); // generate nodes
-  Object.assign(instance._nodes[0], { posX: 0, posY: 0.5, opacity: 1 }); // place center left
-  Object.assign(instance._nodes[1], { posX: 1, posY: 0.5, opacity: 1 }); // place center right
+  assign(instance._nodes[0], { posX: 0, posY: 0.5, opacity: 1 }); // place center left
+  assign(instance._nodes[1], { posX: 1, posY: 0.5, opacity: 1 }); // place center right
   instance._redrawCanvas(); // draw frame without manipulation
 
   assert.equal(nq.colorAt(1, 50), 'rgba(255,255,255,255)', msg);
@@ -125,12 +127,12 @@ test('should update frame on configured `frameInterval`', assert => {
   const instance = nayukiCanvas(canvas, { frameInterval: interval });
 
   instance.next(); // generate initial frame
-  const initial = deepClone(Object.assign({}, { nodes: instance._nodes }, { edges: instance._edges }));
+  const initial = deepClone(assign({}, { nodes: instance._nodes }, { edges: instance._edges }));
 
   instance.start();
 
   setTimeout(function () {
-    const updated = deepClone(Object.assign({}, { nodes: instance._nodes }, { edges: instance._edges }));
+    const updated = deepClone(assign({}, { nodes: instance._nodes }, { edges: instance._edges }));
     assert.notDeepEqual(initial, updated, msg);
     instance.stop();
     assert.end();
@@ -145,12 +147,12 @@ test('should update frame after calling `start`', assert => {
   const instance = nayukiCanvas(canvas, { frameInterval: 0 });
 
   instance.next(); // generate initial frame
-  const initial = deepClone(Object.assign({}, { nodes: instance._nodes }, { edges: instance._edges }));
+  const initial = deepClone(assign({}, { nodes: instance._nodes }, { edges: instance._edges }));
 
   instance.start();
 
   setTimeout(function () {
-    const updated = deepClone(Object.assign({}, { nodes: instance._nodes }, { edges: instance._edges }));
+    const updated = deepClone(assign({}, { nodes: instance._nodes }, { edges: instance._edges }));
     assert.notDeepEqual(initial, updated, msg);
     instance.stop();
     assert.end();
@@ -170,12 +172,12 @@ test('should stop updating frame after calling `stop` ', assert => {
   instance.start();
 
   setTimeout(function () {
-    expected = deepClone(Object.assign({}, { nodes: instance._nodes }, { edges: instance._edges }));
+    expected = deepClone(assign({}, { nodes: instance._nodes }, { edges: instance._edges }));
     instance.stop();
   }, 1);
 
   setTimeout(function () {
-    actual = deepClone(Object.assign({}, { nodes: instance._nodes }, { edges: instance._edges }));
+    actual = deepClone(assign({}, { nodes: instance._nodes }, { edges: instance._edges }));
     assert.deepEqual(expected, actual, msg);
     assert.end();
   }, 2);

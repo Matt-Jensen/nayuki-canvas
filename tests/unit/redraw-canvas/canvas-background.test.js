@@ -2,6 +2,7 @@ const { test } = require('tap');
 const canvasBackground = require('../../../tmp/redraw-canvas/canvas-background');
 const mockGraphics = require('../../helpers/mock-graphics');
 const calcDistance = (x1, y1, x2, y2) => Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+const { assign } = require('lodash');
 const mockConf = {
   width: 100,
   height: 100,
@@ -23,8 +24,8 @@ test('should exist', assert => {
 
 test('should be a pure function', assert => {
   const msg = 'not updated';
-  const actual = Object.assign({}, mockConf); // copy
-  const expected = Object.assign({}, actual); // copy
+  const actual = assign({}, mockConf); // copy
+  const expected = assign({}, actual); // copy
 
   canvasBackground(actual);
 
@@ -35,7 +36,7 @@ test('should be a pure function', assert => {
 test('should be idempotent', assert => {
   const msg = 'canvas backgrounds are the same';
 
-  const config = Object.assign({}, mockConf);
+  const config = assign({}, mockConf);
   const actual = canvasBackground(config);
   const expected = canvasBackground(config);
 
@@ -48,7 +49,7 @@ test('should create linear gradient relative to size of canvas', assert => {
   const smaller = [];
   const larger = [];
 
-  const stubbedGraphics = Object.assign({
+  const stubbedGraphics = assign({
     createLinearGradient: (function () {
       let called = 0;
       return function (...demensions) {
@@ -64,9 +65,9 @@ test('should create linear gradient relative to size of canvas', assert => {
     }())
   }, mockGraphics);
 
-  const stubbedConf = Object.assign({}, mockConf, { gradient: 'linear', graphics: stubbedGraphics });
-  const smallConf = Object.assign({}, stubbedConf);
-  const largeConf = Object.assign({}, stubbedConf, { width: 1000, height: 1000, size: 1000 });
+  const stubbedConf = assign({}, mockConf, { gradient: 'linear', graphics: stubbedGraphics });
+  const smallConf = assign({}, stubbedConf);
+  const largeConf = assign({}, stubbedConf, { width: 1000, height: 1000, size: 1000 });
 
   canvasBackground(smallConf);
   canvasBackground(largeConf);
@@ -80,7 +81,7 @@ test('should create radial gradient relative to size of canvas', assert => {
   const smaller = [];
   const larger = [];
 
-  const stubbedGraphics = Object.assign({
+  const stubbedGraphics = assign({
     createRadialGradient: (function () {
       let called = 0;
       return function (...demensions) {
@@ -96,9 +97,9 @@ test('should create radial gradient relative to size of canvas', assert => {
     }())
   }, mockGraphics);
 
-  const stubbedConf = Object.assign({}, mockConf, { graphics: stubbedGraphics });
-  const smallConf = Object.assign({}, stubbedConf);
-  const largeConf = Object.assign({}, stubbedConf, { width: 1000, height: 1000, size: 1000 });
+  const stubbedConf = assign({}, mockConf, { graphics: stubbedGraphics });
+  const smallConf = assign({}, stubbedConf);
+  const largeConf = assign({}, stubbedConf, { width: 1000, height: 1000, size: 1000 });
 
   canvasBackground(smallConf);
   canvasBackground(largeConf);
@@ -112,7 +113,7 @@ test('should add color stop for each color in `background` array', assert => {
   const actual = [];
   const expected = ['#fff', '#111', '#333'];
 
-  const stubbedGraphics = Object.assign({
+  const stubbedGraphics = assign({
     createRadialGradient () {
       return {
         addColorStop (pos, color) {
@@ -122,7 +123,7 @@ test('should add color stop for each color in `background` array', assert => {
     }
   }, mockGraphics);
 
-  const config = Object.assign({}, mockConf, { background: expected, graphics: stubbedGraphics });
+  const config = assign({}, mockConf, { background: expected, graphics: stubbedGraphics });
 
   canvasBackground(config);
 
@@ -137,20 +138,20 @@ test('should return a canvas gradient instance', assert => {
     this.addColorStop = function () {};
   }
 
-  const stubbedRadial = Object.assign({
+  const stubbedRadial = assign({
     createRadialGradient: function () {
       return new TestGradient();
     }
   }, mockGraphics);
 
-  const stubbedLinear = Object.assign({
+  const stubbedLinear = assign({
     createLinearGradient: function () {
       return new TestGradient();
     }
   }, mockGraphics);
 
-  const radialConf = Object.assign({}, mockConf, { graphics: stubbedRadial });
-  const linearConf = Object.assign({}, mockConf, { gradient: 'linear', graphics: stubbedLinear });
+  const radialConf = assign({}, mockConf, { graphics: stubbedRadial });
+  const linearConf = assign({}, mockConf, { gradient: 'linear', graphics: stubbedLinear });
 
   const radialGradient = canvasBackground(radialConf);
   const linearGradient = canvasBackground(linearConf);

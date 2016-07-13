@@ -282,6 +282,35 @@
     };
   }
 
+  function isObject(target) {
+    return (typeof target === 'undefined' ? 'undefined' : _typeof(target)) === 'object' && target instanceof Array === false;
+  }
+
+  // polyfill based on: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+  function objectAssign(target) {
+    if (typeof Object.assign === 'function') {
+      return Object.assign.apply(Object, arguments);
+    }
+
+    if (!isObject(target)) {
+      throw new Error('Cannot perform assign on non-object');
+    }
+
+    for (var index = 1; index < arguments.length; index++) {
+      var source = arguments[index];
+
+      if (isObject(source)) {
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+    }
+
+    return target;
+  }
+
   /**
   * Returns a new array of edges by reading the given array of nodes and by updating/adding/removing edges
   * based on the other given array. Although both argument arrays and nodes are unmodified,
@@ -325,7 +354,7 @@
 
     // update existing egdge opacity and prune faded edges
     edges.map(function (edge) {
-      var e = Object.assign({}, edge);
+      var e = objectAssign({}, edge);
       var isFadingIn = containsEdge(idealEdges, e);
 
       e.opacity = getOpacity.apply(_this, [isFadingIn, e]);
@@ -524,12 +553,15 @@
     }
   };
 
+  var create$1 = Object.create;
+
   /**
    * Determines if an edge is visible
    * @param  {Object}  edge
    * @param  {Number}  mag
    * @return {Boolean}
    */
+
   function isEdgeVisible(edge, mag) {
     // Do edge's nodes overlap
     return mag > edge.nodeA.radius + edge.nodeB.radius;
@@ -542,14 +574,14 @@
    * @return {Object}   Canvas Frame instance
    */
   function canvasFrame(config) {
-    var data = Object.assign({
+    var data = objectAssign({
       // get frame dimensions
       width: config.canvasElem.width,
       height: config.canvasElem.height,
       size: Math.max(config.canvasElem.width, config.canvasElem.height)
     }, config);
 
-    var instance = Object.create({ isEdgeVisible: isEdgeVisible }, {
+    var instance = create$1({ isEdgeVisible: isEdgeVisible }, {
       background: {
         get: function get() {
           return canvasBackground(this._data);
@@ -615,7 +647,7 @@
       }
     });
 
-    return Object.assign(instance, { _data: data });
+    return objectAssign(instance, { _data: data });
   }
 
   /**
@@ -954,6 +986,9 @@
     return !!(elem && elem.getContext && elem.getContext('2d'));
   }
 
+  var create = Object.create;
+
+
   var prototype = {
     _updateNodes: updateNodes,
     _updateEdges: updateEdges,
@@ -990,13 +1025,13 @@
     }
 
     // overwrite config with user preferences
-    var config = Object.assign({}, defaults, options);
+    var config = objectAssign({}, defaults, options);
 
     // create Nayuki Canvas instance
-    var canvas = Object.create(prototype, properties);
+    var canvas = create(prototype, properties);
 
     // apply configuration to canvas
-    Object.assign(canvas, config);
+    objectAssign(canvas, config);
 
     if (isSupported()) {
       canvas._graphics = canvasElem.getContext('2d'); // initialize canvas context

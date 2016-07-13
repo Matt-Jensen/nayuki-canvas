@@ -4,6 +4,9 @@ import containsEdge from '../utils/contains-edge';
 import isEdgeActive from './is-edge-active';
 import isTargetSmaller from './is-target-smaller';
 
+// polyfills
+import assign from '../utils/object-assign';
+
 /**
 * Returns a new array of edges by reading the given array of nodes and by updating/adding/removing edges
 * based on the other given array. Although both argument arrays and nodes are unmodified,
@@ -38,7 +41,7 @@ export default function updateEdges (nodes = this._nodes, edges = this._edges, m
 
   // update existing egdge opacity and prune faded edges
   edges.map(edge => {
-    const e = Object.assign({}, edge);
+    const e = assign({}, edge);
     const isFadingIn = containsEdge(idealEdges, e);
 
     e.opacity = getOpacity.apply(this, [isFadingIn, e]);

@@ -46,6 +46,7 @@
     "del": "^2.2.0",
     "dotenv": "^2.0.0",
     "eslint": "^2.10.2",
+    "lodash": "^4.13.1",
     "rollup": "^0.31.1",
     "rollup-plugin-babel": "^2.4.0",
     "rollup-plugin-uglify": "^0.3.1",
