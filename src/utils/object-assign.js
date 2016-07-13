@@ -1,10 +1,10 @@
-function isObject (target) {
+export function isObject (target) {
   return (typeof target === 'object') && (target instanceof Array === false);
 }
 
 // polyfill based on: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
 export default function objectAssign (target) {
-  if (typeof Object.assign !== 'function') {
+  if (typeof Object.assign === 'function') {
     return Object.assign(...arguments);
   }
 

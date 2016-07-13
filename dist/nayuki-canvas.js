@@ -288,7 +288,7 @@
 
   // polyfill based on: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
   function objectAssign(target) {
-    if (typeof Object.assign !== 'function') {
+    if (typeof Object.assign === 'function') {
       return Object.assign.apply(Object, arguments);
     }
 

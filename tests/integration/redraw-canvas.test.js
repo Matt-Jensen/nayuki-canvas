@@ -2,7 +2,7 @@ const { test } = require('tap');
 const redrawCanvas = require('../../tmp/redraw-canvas/index');
 const { createNodes, createEdges } = require('../helpers/create');
 const mockGraphics = require('../helpers/mock-graphics');
-const { assign } = Object;
+const { assign } = require('lodash');
 const mockCanvas = () => assign({}, { width: 100, height: 100 });
 
 test('should exist', assert => {
