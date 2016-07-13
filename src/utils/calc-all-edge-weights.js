@@ -1,3 +1,6 @@
+// polyfills
+import { mathHypot } from './math';
+
 /**
  * Returns a sorted array of edges with weights, for all unique edge pairs. Pure function, no side effects.
  * @param {Array}     nodes
@@ -15,7 +18,7 @@ export default function calcAllEdgeWeights (nodes, radiiWeightPower) {
 
     for (let j = 0; j < i; j++) {
       const nodeB = nodes[j];
-      let weight = Math.hypot(nodeA.posX - nodeB.posX, nodeA.posY - nodeB.posY);  // Euclidean distance
+      let weight = mathHypot(nodeA.posX - nodeB.posX, nodeA.posY - nodeB.posY);  // Euclidean distance
       weight /= Math.pow(nodeA.radius * nodeB.radius, radiiWeightPower);  // Give discount based on node radii
       result.push([weight, i, j]);
     }

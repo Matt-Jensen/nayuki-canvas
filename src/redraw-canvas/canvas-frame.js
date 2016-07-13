@@ -3,6 +3,7 @@ import color from '../utils/color';
 
 // polyfills
 import assign from '../utils/object-assign';
+import { mathHypot } from '../utils/math';
 
 const { create } = Object;
 
@@ -60,7 +61,7 @@ export default function canvasFrame (config) {
           let dy = nodeA.posY - nodeB.posY;
 
           const opacity = Math.min(Math.min(nodeA.opacity, nodeB.opacity), edge.opacity);
-          const mag = Math.hypot(dx, dy);
+          const mag = mathHypot(dx, dy);
 
           dx /= mag; // make dx a unit vector, pointing from B to A
           dy /= mag; // make dy a unit vector, pointing from B to A

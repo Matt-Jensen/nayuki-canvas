@@ -62,6 +62,25 @@
     return newNodes;
   }
 
+  // polyfill based on: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/hypot
+  function mathHypot() {
+    if (typeof Math.hypot === 'function') {
+      return Math.hypot.apply(Math, arguments);
+    }
+
+    var y = 0;
+    var length = arguments.length;
+
+    for (var i = 0; i < length; i++) {
+      if (arguments[i] === Infinity || arguments[i] === -Infinity) {
+        return Infinity;
+      }
+      y += arguments[i] * arguments[i];
+    }
+
+    return Math.sqrt(y);
+  }
+
   var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
     return typeof obj;
   } : function (obj) {
@@ -134,7 +153,7 @@
 
       for (var j = 0; j < i; j++) {
         var nodeB = nodes[j];
-        var weight = Math.hypot(nodeA.posX - nodeB.posX, nodeA.posY - nodeB.posY); // Euclidean distance
+        var weight = mathHypot(nodeA.posX - nodeB.posX, nodeA.posY - nodeB.posY); // Euclidean distance
         weight /= Math.pow(nodeA.radius * nodeB.radius, radiiWeightPower); // Give discount based on node radii
         result.push([weight, i, j]);
       }
@@ -624,7 +643,7 @@
             var dy = nodeA.posY - nodeB.posY;
 
             var opacity = Math.min(Math.min(nodeA.opacity, nodeB.opacity), edge.opacity);
-            var mag = Math.hypot(dx, dy);
+            var mag = mathHypot(dx, dy);
 
             dx /= mag; // make dx a unit vector, pointing from B to A
             dy /= mag; // make dy a unit vector, pointing from B to A
