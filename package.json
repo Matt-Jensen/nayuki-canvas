@@ -1,6 +1,6 @@
 {
   "name": "nayuki-canvas",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A floating node HTML5 canvas",
   "main": "dist/nayuki-canvas.js",
   "scripts": {
