@@ -10,8 +10,7 @@ getJsPaths('src')
       plugins: [
         babel({
           babelrc: false,
-          presets: ['es2015-rollup'],
-          plugins: ['transform-object-assign']
+          presets: ['es2015-rollup']
         })
       ]
     });

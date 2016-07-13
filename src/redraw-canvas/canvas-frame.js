@@ -1,6 +1,11 @@
 import canvasBackground from './canvas-background';
 import color from '../utils/color';
 
+// polyfills
+import assign from '../utils/object-assign';
+
+const { create } = Object;
+
 /**
  * Determines if an edge is visible
  * @param  {Object}  edge
@@ -19,14 +24,14 @@ function isEdgeVisible (edge, mag) {
  * @return {Object}   Canvas Frame instance
  */
 export default function canvasFrame (config) {
-  const data = Object.assign({
+  const data = assign({
     // get frame dimensions
     width: config.canvasElem.width,
     height: config.canvasElem.height,
     size: Math.max(config.canvasElem.width, config.canvasElem.height)
   }, config);
 
-  const instance = Object.create({ isEdgeVisible }, {
+  const instance = create({ isEdgeVisible }, {
     background: {
       get () {
         return canvasBackground(this._data);
@@ -83,5 +88,5 @@ export default function canvasFrame (config) {
     }
   });
 
-  return Object.assign(instance, { _data: data });
+  return assign(instance, { _data: data });
 }

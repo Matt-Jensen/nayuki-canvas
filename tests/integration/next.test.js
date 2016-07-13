@@ -1,6 +1,9 @@
 const { test } = require('tap');
 const next = require('../../tmp/next');
 const { createNodes, createEdges } = require('../helpers/create');
+const { assign } = require('lodash');
+
+const { create } = Object;
 
 const settings = {
   _idealnodeCount: 2,
@@ -26,7 +29,7 @@ const prototype = {
 };
 
 const createInstance = (conf = {}) =>
-  Object.assign(Object.create(prototype), settings, conf);
+  assign(create(prototype), settings, conf);
 
 test('should exist', assert => {
   const msg = 'exports a module';
@@ -63,7 +66,7 @@ test('should update instance `nodes`', assert => {
 
   // stub to perform some update to nodes
   prototype._updateNodes = function () {
-    return this._nodes.map(n => Object.assign({}, n, { posX: 2 }));
+    return this._nodes.map(n => assign({}, n, { posX: 2 }));
   };
 
   next.call(actual);

@@ -2,6 +2,9 @@ const { test } = require('tap');
 const properties = require('../../tmp/properties');
 const defaults = require('../../tmp/defaults');
 const _canvasElem = { width: 100, height: 100 };
+const { assign } = require('lodash');
+
+const { keys } = Object;
 
 test('should exist', assert => {
   const msg = 'exports a module';
@@ -14,10 +17,10 @@ test('should exist', assert => {
 test('should consist of pure accessor property function', assert => {
   const msg = 'is not changed';
 
-  const actual = Object.assign({}, { _canvasElem }, defaults);
+  const actual = assign({}, { _canvasElem }, defaults);
   const expected = JSON.parse(JSON.stringify(actual));
 
-  Object.keys(properties).forEach(function (property) {
+  keys(properties).forEach(function (property) {
     properties[property].get.call(actual);
   });
 
@@ -32,15 +35,15 @@ test('should consist of idempotent accessor property functions', assert => {
   const actual = {};
   const expected = {};
 
-  instance = Object.assign({}, { _canvasElem }, defaults);
+  instance = assign({}, { _canvasElem }, defaults);
 
-  Object.keys(properties).forEach(function (property) {
+  keys(properties).forEach(function (property) {
     actual[property] = properties[property].get.call(instance);
   });
 
-  instance = Object.assign({}, { _canvasElem }, defaults);
+  instance = assign({}, { _canvasElem }, defaults);
 
-  Object.keys(properties).forEach(function (property) {
+  keys(properties).forEach(function (property) {
     expected[property] = properties[property].get.call(instance);
   });
 

@@ -1,12 +1,16 @@
+const { assign } = require('lodash');
+
+const { create } = Object;
+
 module.exports = function mockGraphics (conf) {
-  return Object.assign(Object.create({
+  return assign(create({
     createRadialGradient () {
-      return Object.create({
+      return create({
         addColorStop () {}
       });
     },
     createLinearGradient () {
-      return Object.create({
+      return create({
         addColorStop () {}
       });
     }

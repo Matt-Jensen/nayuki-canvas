@@ -9,8 +9,7 @@ const configs = [
     plugins: [
       babel({
         babelrc: false,
-        presets: ['es2015-rollup'],
-        plugins: ['transform-object-assign']
+        presets: ['es2015-rollup']
       })
     ]
   }
@@ -22,8 +21,7 @@ if (process.argv[2] !== 'dev') {
     plugins: [
       babel({
         babelrc: false,
-        presets: ['es2015-rollup'],
-        plugins: ['transform-object-assign']
+        presets: ['es2015-rollup']
       }),
       uglify()
     ]

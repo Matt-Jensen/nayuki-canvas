@@ -1,6 +1,7 @@
 const { test } = require('tap');
 const isEdgeActive = require('../../../tmp/update-edges/is-edge-active');
 const { createEdges } = require('../../helpers/create');
+const { assign } = require('lodash');
 
 test('should exist', assert => {
   const msg = 'exports a module';
@@ -14,7 +15,7 @@ test('should be a pure function', assert => {
   const msg = 'should not change';
 
   const actual = { opacity: 0.5, nodeA: { opacity: 0.5 }, nodeB: { opacity: 0.5 } };
-  const expected = Object.assign({}, actual);
+  const expected = assign({}, actual);
 
   isEdgeActive(actual);
 
