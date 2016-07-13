@@ -68,6 +68,20 @@
     return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
   };
 
+  var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
   var slicedToArray = function () {
     function sliceIterator(arr, i) {
       var _arr = [];
@@ -325,7 +339,7 @@
 
     // update existing egdge opacity and prune faded edges
     edges.map(function (edge) {
-      var e = Object.assign({}, edge);
+      var e = _extends({}, edge);
       var isFadingIn = containsEdge(idealEdges, e);
 
       e.opacity = getOpacity.apply(_this, [isFadingIn, e]);
@@ -542,7 +556,7 @@
    * @return {Object}   Canvas Frame instance
    */
   function canvasFrame(config) {
-    var data = Object.assign({
+    var data = _extends({
       // get frame dimensions
       width: config.canvasElem.width,
       height: config.canvasElem.height,
@@ -615,7 +629,7 @@
       }
     });
 
-    return Object.assign(instance, { _data: data });
+    return _extends(instance, { _data: data });
   }
 
   /**
@@ -990,13 +1004,13 @@
     }
 
     // overwrite config with user preferences
-    var config = Object.assign({}, defaults, options);
+    var config = _extends({}, defaults, options);
 
     // create Nayuki Canvas instance
     var canvas = Object.create(prototype, properties);
 
     // apply configuration to canvas
-    Object.assign(canvas, config);
+    _extends(canvas, config);
 
     if (isSupported()) {
       canvas._graphics = canvasElem.getContext('2d'); // initialize canvas context
